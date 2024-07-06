@@ -4,14 +4,14 @@ import 'package:image_picker/image_picker.dart';
 
 import 'enums.dart';
 
-class UserModel with ChangeNotifier{
+class UserModel{
   int userIdx;
   int loginType;
   String userAccount;
   String userNickname;
   String userBirth;
   String userProfileImage;
-  int loverUserIdx;
+  int loverIdx;
   String loverNickname;
   int homePresetType;
   int topBarType;
@@ -20,6 +20,7 @@ class UserModel with ChangeNotifier{
   bool topBarActivate;
   int userState;
   String loveDday;
+  int appLockState;
 
   UserModel(
       {required this.userIdx,
@@ -28,7 +29,7 @@ class UserModel with ChangeNotifier{
         required this.userNickname,
         required this.userBirth,
         required this.userProfileImage,
-        required this.loverUserIdx,
+        required this.loverIdx,
         required this.loverNickname,
         required this.homePresetType,
         required this.topBarType,
@@ -37,6 +38,7 @@ class UserModel with ChangeNotifier{
         required this.topBarActivate,
         required this.userState,
         required this.loveDday,
+        required this.appLockState
       });
 
   factory UserModel.fromData(Map<String, dynamic> data){
@@ -47,15 +49,16 @@ class UserModel with ChangeNotifier{
         userNickname: data['user_nickname'],
         userBirth: data['user_birth'],
         userProfileImage: data['user_profile_image'],
-        loverUserIdx: data['lover_user_idx'],
+        loverIdx: data['lover_idx'],
         loverNickname: data['lover_nickname'],
         homePresetType: data['home_preset_type'],
         topBarType: data['top_bar_type'],
         profileMessage: data['profile_message'],
         alarmsAllow: data['alarms_allow'],
-      topBarActivate: data['top_bar_activate'],
-      userState: data['user_state'],
-      loveDday: data['love_d_day'],
+        topBarActivate: data['top_bar_activate'],
+        userState: data['user_state'],
+        loveDday: data['love_d_day'],
+        appLockState: data['app_lock_state']
     );
   }
 
@@ -67,14 +70,15 @@ class UserModel with ChangeNotifier{
     }
   }
 
-  XFile? _image;
-  XFile? get image => _image;
-  void setImage(XFile? image) {
-    _image = image;
-    notifyListeners();
-  }
-
-  void providerNotify(){
-    notifyListeners();
-  }
+  //
+  // XFile? _image;
+  // XFile? get image => _image;
+  // void setImage(XFile? image) {
+  //   _image = image;
+  //   notifyListeners();
+  // }
+  //
+  // void providerNotify(){
+  //   notifyListeners();
+  // }
 }

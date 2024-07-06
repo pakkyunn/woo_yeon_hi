@@ -3,13 +3,12 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
-import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/widget/more/app_setting_top_app_bar.dart';
 
 import '../../dao/user_dao.dart';
-import '../../model/enums.dart';
-import '../../model/user_model.dart';
+import '../../dialogs.dart';
+import '../../provider/login_register_provider.dart';
 import '../../style/color.dart';
 import '../../style/text_style.dart';
 import '../login/login_screen.dart';
@@ -23,53 +22,15 @@ class AppSettingScreen extends StatefulWidget {
 }
 
 class _AppSettingScreenState extends State<AppSettingScreen> {
-  static const storage =
-      FlutterSecureStorage(); //flutter_secure_storage 사용을 위한 초기화 작업
-  late String userAccount = "";
-  late bool alarmsAllow = false;
-  late int loginType = 0;
-
-  final LocalAuthentication auth = LocalAuthentication();
-
-  late bool _isBioAuthSupported;
-  late bool switchValue = false;
-  bool _isLoading = true; // Loading 상태를 나타내는 변수
-
-  @override
-  void initState() {
-    super.initState();
-    auth.isDeviceSupported().then(
-          (bool isSupported) =>
-              setState(() => _isBioAuthSupported = isSupported),
-        );
-    _asyncMethod();
-  }
-
-  Future<void> _asyncMethod() async {
-    userAccount = (await storage.read(key: "loginAccount"))!;
-    alarmsAllow = await getSpecificUserData(userAccount, 'alarms_allow');
-    loginType = await getSpecificUserData(userAccount, 'login_type');
-
-    setState(() {
-      switchValue = alarmsAllow; // homePresetType을 가져온 후에 presetIndex 설정
-      _isLoading = false; // 데이터 로드가 완료되면 로딩 상태를 false로 설정
-    });
-  }
+  static const storage = FlutterSecureStorage();
 
   @override
   Widget build(BuildContext context) {
     var deviceWidth = MediaQuery.of(context).size.width;
     var deviceHeight = MediaQuery.of(context).size.height;
 
-    if (_isLoading) {
-      // 로딩 중인 상태를 표시
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    } else {
-      return Scaffold(
+      return Consumer<UserProvider>(builder: (context, provider, child) {
+        return Scaffold(
           appBar: const AppSettingTopAppBar(),
           body: Container(
               width: deviceWidth,
@@ -93,12 +54,12 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
                                 const Text("알림 받기",
                                     style: TextStyleFamily.smallTitleTextStyle),
                                 Switch(
-                                    value: switchValue,
+                                    value: provider.alarmsAllow,
                                     activeColor: ColorFamily.white,
                                     activeTrackColor: ColorFamily.pink,
                                     inactiveThumbColor: ColorFamily.gray,
                                     inactiveTrackColor: ColorFamily.white,
-                                    trackOutlineColor: switchValue
+                                    trackOutlineColor: provider.alarmsAllow
                                         ? MaterialStateProperty.all(
                                             Colors.transparent)
                                         : MaterialStateProperty.all(
@@ -106,10 +67,11 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
                                     trackOutlineWidth:
                                         const MaterialStatePropertyAll(1),
                                     onChanged: (bool value) async {
-                                      setState(() {
-                                        switchValue = value;
-                                      });
-                                      await updateSpecificUserData(userAccount, 'alarms_allow', switchValue);
+                                      provider.setAlarmsAllow(value);
+                                      await updateSpecificUserData(provider.userIdx, 'alarms_allow', value);
+                                      value
+                                      ? showPinkSnackBar(context, '앱 알림이 설정되었습니다.')
+                                      : showPinkSnackBar(context, '앱 알림이 해제되었습니다.');
                                     }),
                               ],
                             ),
@@ -132,8 +94,8 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => AppLockSettingScreen(
-                                        bioAuth: _isBioAuthSupported)));
+                                    builder: (context) => const AppLockSettingScreen()
+                                ));
                           },
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -193,12 +155,12 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
                         child: InkWell(
                           splashFactory: NoSplash.splashFactory,
                           onTap: () async {
-                            await storage.delete(key: "loginData");
-                            signOut();
+                            _logOut(context);
                             Navigator.of(context).pushAndRemoveUntil(
                                 MaterialPageRoute(
                                     builder: (context) => const LoginScreen()),
                                 (Route<dynamic> route) => false);
+                            showBlackToast("로그아웃 되었습니다.");
                           },
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -220,11 +182,11 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
                       )),
                 ],
               )));
-    }
+    });
   }
 
-  void signOut() async {
-    switch (loginType) {
+  void _logOut(BuildContext context) async {
+    switch (Provider.of<UserProvider>(context, listen: false).loginType) {
       case 1:
         await GoogleSignIn().signOut();
         break;
@@ -239,6 +201,8 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
       case 0:
         break;
     }
-    updateSpecificUserData(userAccount, 'login_type', 0);
+    await updateSpecificUserData(Provider.of<UserProvider>(context, listen: false).userIdx, 'login_type', 0);
+    await updateSpecificUserData(Provider.of<UserProvider>(context, listen: false).userIdx, 'user_state', 2);
+    await storage.delete(key: "lockPassword");
   }
 }

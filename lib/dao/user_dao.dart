@@ -15,9 +15,8 @@ Future<void> saveUserData(UserModel user) async {
     "user_account": user.userAccount,
     "user_nickname": user.userNickname,
     "user_birth": user.userBirth,
-    "user_profileImage": user.userProfileImage,
-    "lover_user_idx": user.loverUserIdx,
-    "lover_nickname": user.loverNickname,
+    "user_profile_image": user.userProfileImage,
+    "lover_idx": user.loverIdx,
     "home_preset_type": user.homePresetType,
     "top_bar_type": user.topBarType,
     "profile_message": user.profileMessage,
@@ -28,12 +27,12 @@ Future<void> saveUserData(UserModel user) async {
   });
 }
 
-Future<Map<String, dynamic>> getUserData(String userAccount) async {
+Future<Map<String, dynamic>> getUserData(int userIdx) async {
   Map<String, dynamic> results = {};
 
   Query<Map<String, dynamic>> query = FirebaseFirestore.instance
       .collection('userData')
-      .where('user_account', isEqualTo: userAccount);
+      .where('user_idx', isEqualTo: userIdx);
 
   var querySnapShot = await query.get();
   for (var doc in querySnapShot.docs) {
@@ -43,13 +42,13 @@ Future<Map<String, dynamic>> getUserData(String userAccount) async {
   return results;
 }
 
-dynamic getSpecificUserData(String userAccount, String data) async {
+dynamic getSpecificUserData(int userIdx, String data) async {
   Map<String, dynamic> results = {};
   dynamic result;
 
   Query<Map<String, dynamic>> query = FirebaseFirestore.instance
       .collection('userData')
-      .where('user_account', isEqualTo: userAccount);
+      .where('user_idx', isEqualTo: userIdx);
 
   var querySnapShot = await query.get();
   for (var doc in querySnapShot.docs) {
@@ -61,46 +60,29 @@ dynamic getSpecificUserData(String userAccount, String data) async {
   return result;
 }
 
-// Future<void> updateUserData(String userAccount) async {
-//   var querySnapshot = await FirebaseFirestore.instance
-//       .collection('userData')
-//       .where('user_account', isEqualTo: userAccount)
-//       .get();
-//   var document = querySnapshot.docs.first;
-//
-//   if (querySnapshot.docs.isNotEmpty) {
-//     document.reference.update({
-//       updateItem: updateContent
-//     });
-//
-//     }
-// }
-// }
-
-
-
-Future<void> updateSpecificUserData(String userAccount, String updateItem, var updateContent) async {
+Future<void> updateSpecificUserData(
+    int userIdx, String updateItem, var updateContent) async {
   var querySnapshot = await FirebaseFirestore.instance
       .collection('userData')
-      .where('user_account', isEqualTo: userAccount)
+      .where('user_idx', isEqualTo: userIdx)
       .get();
 
   var document = querySnapshot.docs.first;
   document.reference.update({updateItem: updateContent});
 }
 
-Future<void> deleteUserData(String userAccount) async {
-  QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
+Future<void> deleteUserData(int userIdx) async {
+  QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
+      .instance
       .collection('userData')
-      .where('user_account', isEqualTo: userAccount)
+      .where('user_idx', isEqualTo: userIdx)
       .get();
 
-  for (DocumentSnapshot<Map<String, dynamic>> docSnapshot in querySnapshot.docs) {
+  for (DocumentSnapshot<Map<String, dynamic>> docSnapshot
+      in querySnapshot.docs) {
     await docSnapshot.reference.delete();
   }
 }
-
-
 
 Future<int> getUserSequence() async {
   var querySnapShot = await FirebaseFirestore.instance

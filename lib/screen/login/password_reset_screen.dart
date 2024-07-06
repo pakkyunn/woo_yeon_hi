@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_timer_countdown/flutter_timer_countdown.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:woo_yeon_hi/dao/user_dao.dart';
 import 'package:woo_yeon_hi/screen/main_screen.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/style/font.dart';
 import 'package:woo_yeon_hi/widget/login/password_reset_top_app_bar.dart';
 
-import '../../model/enums.dart';
-import '../../model/user_model.dart';
+import '../../dao/more_dao.dart';
+import '../../dialogs.dart';
+import '../../provider/login_register_provider.dart';
+import '../../provider/more_provider.dart';
 import '../../style/text_style.dart';
 import '../register/code_connect_screen.dart';
 
@@ -21,28 +24,16 @@ class PasswordResetScreen extends StatefulWidget {
 
 class _PasswordResetScreenState extends State<PasswordResetScreen> {
 
-  bool _showErrorMessages = false;
-  bool _isAuthCodeGenerated = false;
-  bool _isAuthCodeExpired = false;
-  String _authCodeText = "";
   String _authCode = getRandomString(6);
-
-  dynamic userProvider;
-  dynamic authNumberTextEditController;
   DateTime? _timerStartTime;
-
-  @override
-  void initState() {
-    super.initState();
-    userProvider = Provider.of<UserModel>(context, listen: false);
-    authNumberTextEditController = TextEditingController();
-  }
 
   @override
   Widget build(BuildContext context) {
     var deviceWidth = MediaQuery.of(context).size.width;
     var deviceHeight = MediaQuery.of(context).size.height;
 
+    return Consumer2<UserProvider, AuthCodeProvider>(
+        builder: (context, userProvider, authCodeProvider, child) {
     return Scaffold(
         appBar: const PasswordResetTopAppBar(),
         body: Container(
@@ -116,7 +107,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                           onTapOutside: (event) {
                             FocusScope.of(context).unfocus();
                           },
-                          controller: authNumberTextEditController,
+                          controller: authCodeProvider.authNumberTextEditController,
                           decoration: const InputDecoration(
                               counter: SizedBox(),
                               focusedBorder: UnderlineInputBorder(
@@ -128,14 +119,11 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                               fontFamily: FontFamily.mapleStoryLight,
                             ),
                           ),
-                          autovalidateMode: _showErrorMessages
+                          autovalidateMode: authCodeProvider.showError
                               ? AutovalidateMode.always
                               : AutovalidateMode.disabled,
                           validator: (value) {
-                            if (value != "TEST") {
-                              return '인증코드가 일치하지 않습니다.';
-                            }
-                            return null;
+                            return '코드가 일치하지 않습니다.';
                           },
                           cursorColor: ColorFamily.black,
                           textAlign: TextAlign.center,
@@ -154,31 +142,28 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                       elevation: 0.5,
                       child: InkWell(
                         borderRadius: BorderRadius.circular(20),
-                        onTap: (){
+                        onTap: () async {
+                          if(authCodeProvider.isAuthCodeGenerated){
+                            await deleteAuthCodeData(userProvider.userIdx);
+                          }
+
                           setState(() {
                             _timerStartTime = DateTime.now();
-                            _isAuthCodeGenerated = true;
-                            _isAuthCodeExpired = false;
-                            _authCode =
-                                getRandomString(8);
-                            _authCodeText = _authCode;
-                            //TODO 인증번호를 로그인 계정으로 전송.
+                            _authCode = getRandomString(6);
                           });
-                          Fluttertoast.showToast(
-                              msg: "인증코드가 전송되었습니다.",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.BOTTOM,
-                              timeInSecForIosWeb: 1,
-                              backgroundColor: ColorFamily.black,
-                              textColor: ColorFamily.white,
-                              fontSize: 14.0
-                          );
+
+                          //TODO 인증번호를 로그인 계정으로 전송
+                          await saveAuthCodeData(_authCode, userProvider.userIdx);
+                          authCodeProvider.setIsAuthCodeGenerated(true);
+                          authCodeProvider.setIsAuthCodeExpired(false);
+                          authCodeProvider.setAuthCodeText(_authCode);
+                          showBlackToast("인증코드가 전송되었습니다.");
                         },
                         child: Container(
                           alignment: Alignment.center,
                           height: deviceHeight * 0.045,
                           width: deviceWidth * 0.3,
-                          child: _isAuthCodeGenerated
+                          child: authCodeProvider.isAuthCodeGenerated
                               ? const Text(
                               "재요청",
                               style: TextStyleFamily.normalTextStyle)
@@ -190,7 +175,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                     )
                   ]),
                 ),
-                _isAuthCodeGenerated
+                authCodeProvider.isAuthCodeGenerated
                 ? SizedBox(
                   width: deviceWidth - 80,
                   child: Row(children: [
@@ -205,7 +190,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                       height: deviceHeight * 0.045,
                       width: deviceWidth * 0.3,
                       child:
-                      _isAuthCodeExpired
+                      authCodeProvider.isAuthCodeExpired
                       ? const Text(
                           "인증코드가 만료되었습니다.",
                           style: TextStyle(
@@ -225,25 +210,12 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                               fontSize: 12,
                               fontFamily: FontFamily.mapleStoryLight),
                           spacerWidth: 2,
-                          endTime: _timerStartTime !=
-                              null
-                              ? _timerStartTime!
-                              .add(
-                            const Duration(
-                                minutes:
-                                5),
-                          )
-                              : DateTime.now()
-                              .add(
-                            const Duration(
-                                minutes:
-                                5),
-                          ),
-                          onEnd: () {
-                              setState(() {
-                                _authCodeText = '${_authCodeText}a'; //생성된 인증코드를 소문자가 포함된 7자리로 만들어 유효하지 않은 인증코드로 만듦
-                                _isAuthCodeExpired =  true;
-                              });
+                          endTime: _timerStartTime != null
+                              ? _timerStartTime!.add(const Duration(minutes:5))
+                              : DateTime.now().add(const Duration(minutes:5)),
+                          onEnd: () async {
+                            await deleteAuthCodeData(userProvider.userIdx);
+                            authCodeProvider.setIsAuthCodeExpired(true);
                           }),
                     ),
                   ]),
@@ -261,33 +233,22 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                       borderRadius: BorderRadius.circular(20.0),
                     ),
                     child: InkWell(
-                      onTap: () {
-                        if (authNumberTextEditController.text ==
-                            "TEST") {
-                          setState(() {
-                            userProvider.appLockState = 0;
-                            userProvider.lockPassword = [0, 0, 0, 0];
-                          });
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                  const MainScreen()),
-                                  (route) => false);
-                          Fluttertoast.showToast(
-                              msg: "앱 잠금을 초기화하였습니다.",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.BOTTOM,
-                              timeInSecForIosWeb: 1,
-                              backgroundColor: ColorFamily.black,
-                              textColor: ColorFamily.white,
-                              fontSize: 14.0
-                          );
-                        } else {
-                          setState(() {
-                            _showErrorMessages = true;
-                          });
-                        }
+                      onTap: () async {
+                        var code = await isVerifiedCode(_authCode, userProvider.userIdx);
+                        code != null
+                        ? code == authCodeProvider.authNumberTextEditController.text
+                          ? {authCodeProvider.setShowError(false),
+                             await deleteAuthCodeData(userProvider.userIdx),
+                             await updateSpecificUserData(userProvider.userIdx, 'app_lock_state', 0),
+                             userProvider.setLockPassword([0, 0, 0, 0]),
+                             Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) =>
+                              const MainScreen()), (route) => false),
+                        await Future.delayed(const Duration(milliseconds: 200), () {
+                          showBlackToast("앱 잠금을 초기화하였습니다.");
+                        })
+                            }
+                          : authCodeProvider.setShowError(true)
+                        : showBlackToast("유효하지 않은 코드입니다.");
                       },
                       borderRadius: BorderRadius.circular(20.0),
                       child: const Align(
@@ -301,6 +262,6 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                   ),
                 ),
               ]),
-            )));
+            )));});
   }
 }
