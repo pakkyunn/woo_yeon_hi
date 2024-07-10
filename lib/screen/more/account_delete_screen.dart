@@ -112,7 +112,7 @@ class _AccountDeleteScreenState extends State<AccountDeleteScreen> {
                     splashColor: ColorFamily.gray,
                       onTap: () {
                         if (isAgreed) {
-                          accountDeleting(context);
+                          _accountDeleting(context);
                           Navigator.of(context).pushAndRemoveUntil(
                               MaterialPageRoute(
                                   builder: (context) => const LoginScreen()),
@@ -147,7 +147,7 @@ class _AccountDeleteScreenState extends State<AccountDeleteScreen> {
         ));
   }
 
-  void accountDeleting(BuildContext context) async {
+  void _accountDeleting(BuildContext context) async {
     switch (Provider.of<UserProvider>(context, listen: false).loginType) {
       case 1:
         await GoogleSignIn().signOut();
@@ -165,6 +165,7 @@ class _AccountDeleteScreenState extends State<AccountDeleteScreen> {
     }
     await updateSpecificUserData(Provider.of<UserProvider>(context, listen: false).userIdx, 'login_type', 0);
     await updateSpecificUserData(Provider.of<UserProvider>(context, listen: false).userIdx, 'user_state', 1);
+    await updateSpecificUserData(Provider.of<UserProvider>(context, listen: false).userIdx, 'app_lock_state', 0);
     await storage.delete(key: "lockPassword");
   }
 }

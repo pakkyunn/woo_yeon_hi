@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:woo_yeon_hi/dao/user_dao.dart';
 
-import '../model/user_model.dart';
-
 Future<bool> saveConnectCodeData(String code, int idx) async {
   var querySnapshot = await FirebaseFirestore.instance
       .collection('CodeData')
@@ -14,7 +12,8 @@ Future<bool> saveConnectCodeData(String code, int idx) async {
     await FirebaseFirestore.instance.collection('CodeData').add({
       'connect_code': code,
       'host_idx': idx,
-      'code_connect_state': false
+      'code_connect_state': false,
+      'expired_time': DateTime.now().add(const Duration(minutes: 5)).toIso8601String(),
     });
     return true;
   }
@@ -67,8 +66,6 @@ Future<bool> isCodeConnected(String code) async {
 
   return false;
 }
-
-
 
 Future<void> saveUserInfo(String userAccount) async {
   try {

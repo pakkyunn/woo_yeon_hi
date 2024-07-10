@@ -16,7 +16,7 @@ class UserModel{
   int homePresetType;
   int topBarType;
   String profileMessage;
-  bool alarmsAllow;
+  bool notificationAllow;
   bool topBarActivate;
   int userState;
   String loveDday;
@@ -34,7 +34,7 @@ class UserModel{
         required this.homePresetType,
         required this.topBarType,
         required this.profileMessage,
-        required this.alarmsAllow,
+        required this.notificationAllow,
         required this.topBarActivate,
         required this.userState,
         required this.loveDday,
@@ -54,7 +54,7 @@ class UserModel{
         homePresetType: data['home_preset_type'],
         topBarType: data['top_bar_type'],
         profileMessage: data['profile_message'],
-        alarmsAllow: data['alarms_allow'],
+        notificationAllow: data['notification_allow'],
         topBarActivate: data['top_bar_activate'],
         userState: data['user_state'],
         loveDday: data['love_d_day'],

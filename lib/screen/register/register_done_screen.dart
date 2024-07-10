@@ -200,7 +200,7 @@ Future<void> _registerUserData(
       'user_profile_image': "lib/assets/images/default_profile.png",
       'top_bar_type': 0,
       'profile_message': "",
-      'alarms_allow': false,
+      'notification_allow': false,
       'top_bar_activate': false,
       'app_lock_state': 0,
     });

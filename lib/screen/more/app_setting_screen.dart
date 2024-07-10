@@ -51,15 +51,15 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text("알림 받기",
+                                const Text("앱 알림 받기",
                                     style: TextStyleFamily.smallTitleTextStyle),
                                 Switch(
-                                    value: provider.alarmsAllow,
+                                    value: provider.notificationAllow,
                                     activeColor: ColorFamily.white,
                                     activeTrackColor: ColorFamily.pink,
                                     inactiveThumbColor: ColorFamily.gray,
                                     inactiveTrackColor: ColorFamily.white,
-                                    trackOutlineColor: provider.alarmsAllow
+                                    trackOutlineColor: provider.notificationAllow
                                         ? MaterialStateProperty.all(
                                             Colors.transparent)
                                         : MaterialStateProperty.all(
@@ -67,8 +67,8 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
                                     trackOutlineWidth:
                                         const MaterialStatePropertyAll(1),
                                     onChanged: (bool value) async {
-                                      provider.setAlarmsAllow(value);
-                                      await updateSpecificUserData(provider.userIdx, 'alarms_allow', value);
+                                      provider.setNotificationAllow(value);
+                                      await updateSpecificUserData(provider.userIdx, 'notification_allow', value);
                                       value
                                       ? showPinkSnackBar(context, '앱 알림이 설정되었습니다.')
                                       : showPinkSnackBar(context, '앱 알림이 해제되었습니다.');
@@ -156,11 +156,6 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
                           splashFactory: NoSplash.splashFactory,
                           onTap: () async {
                             _logOut(context);
-                            Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                    builder: (context) => const LoginScreen()),
-                                (Route<dynamic> route) => false);
-                            showBlackToast("로그아웃 되었습니다.");
                           },
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -204,5 +199,10 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
     await updateSpecificUserData(Provider.of<UserProvider>(context, listen: false).userIdx, 'login_type', 0);
     await updateSpecificUserData(Provider.of<UserProvider>(context, listen: false).userIdx, 'user_state', 2);
     await storage.delete(key: "lockPassword");
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+            builder: (context) => const LoginScreen()),
+            (Route<dynamic> route) => false);
+    showBlackToast("로그아웃 되었습니다.");
   }
 }

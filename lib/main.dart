@@ -38,7 +38,6 @@ Future<void> main() async {
   initializeDateFormatting().then((_) async {
     final userData = await fetchUserData();
 
-
     runApp(MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => UserProvider())
@@ -46,12 +45,12 @@ Future<void> main() async {
         child: WooYeonHi(
           userIdx: userData['userIdx'],
           userAccount: userData['userAccount'],
-          alarmsAllow: userData['alarmsAllow'],
           appLockState: userData['appLockState'],
           homePresetType: userData['homePresetType'],
           loginType: userData['loginType'],
           loveDday: userData['loveDday'],
           loverIdx: userData['loverIdx'],
+          notificationAllow: userData['notificationAllow'],
           profileMessage: userData['profileMessage'],
           topBarActivate: userData['topBarActivate'],
           topBarType: userData['topBarType'],
@@ -66,15 +65,14 @@ Future<void> main() async {
 class WooYeonHi extends StatefulWidget {
   WooYeonHi(
       {super.key,
-
       required this.userIdx,
       required this.userAccount,
-      required this.alarmsAllow,
       required this.appLockState,
       required this.homePresetType,
       required this.loginType,
       required this.loveDday,
       required this.loverIdx,
+      required this.notificationAllow,
       required this.profileMessage,
       required this.topBarActivate,
       required this.topBarType,
@@ -85,12 +83,12 @@ class WooYeonHi extends StatefulWidget {
 
   final int userIdx;
   final String userAccount;
-  final bool alarmsAllow;
   final int appLockState;
   final int homePresetType;
   final int loginType;
   final String loveDday;
   final int loverIdx;
+  final bool notificationAllow;
   final String profileMessage;
   final bool topBarActivate;
   final int topBarType;
@@ -107,8 +105,7 @@ class _WooYeonHiState extends State<WooYeonHi> {
   @override
   build(BuildContext context) {
 
-    Provider.of<UserProvider>(context, listen: false).setUserAllData(widget.userIdx, widget.userAccount, widget.alarmsAllow, widget.appLockState, widget.homePresetType, widget.loginType, widget.loveDday, widget.loverIdx, widget.profileMessage, widget.topBarActivate, widget.topBarType, widget.userBirth, widget.userNickname, widget.userProfileImage, widget.userState);
-
+    Provider.of<UserProvider>(context, listen: false).setUserAllData(widget.userIdx, widget.userAccount, widget.appLockState, widget.homePresetType, widget.loginType, widget.loveDday, widget.loverIdx, widget.notificationAllow, widget.profileMessage, widget.topBarActivate, widget.topBarType, widget.userBirth, widget.userNickname, widget.userProfileImage, widget.userState);
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => CalendarProvider()),
@@ -118,12 +115,9 @@ class _WooYeonHiState extends State<WooYeonHi> {
           ChangeNotifierProvider(create: (context) => DiaryProvider()),
           ChangeNotifierProvider(create: (context) => FootprintProvider()),
           ChangeNotifierProvider(create: (context) => LedgerProvider()),
-          ChangeNotifierProvider(
-              create: (context) => FootPrintSlidableProvider()),
-          ChangeNotifierProvider(
-              create: (context) => FootPrintDatePlanSlidableProvider()),
-          ChangeNotifierProvider(
-              create: (context) => FootprintDraggableSheetProvider()),
+          ChangeNotifierProvider(create: (context) => FootPrintSlidableProvider()),
+          ChangeNotifierProvider(create: (context) => FootPrintDatePlanSlidableProvider()),
+          ChangeNotifierProvider(create: (context) => FootprintDraggableSheetProvider()),
           ChangeNotifierProvider(create: (context) => BioAuthProvider()),
           ChangeNotifierProvider(create: (context) => PasswordProvider()),
         ],
@@ -145,13 +139,13 @@ class _WooYeonHiState extends State<WooYeonHi> {
                 onSurface: Colors.black,
               ),
               useMaterial3: true),
-          home: widget.userIdx == 0
+          home: widget.userIdx == 0 // 미등록 계정
               ? const LoginScreen()
-              : widget.userState == 1
-                  ? const LoginScreen()
-                  : widget.appLockState == 0
-                      ? const MainScreen()
-                      : const PasswordEnterScreen(),
+              : widget.userState == 0 // 등록계정 & 계정상태 정상
+                  ? widget.appLockState == 0 // 앱 잠금 미설정
+                    ? const MainScreen()
+                    : const PasswordEnterScreen() // 앱 잠금 설정
+                  : const LoginScreen(), // 등록계정 & 계정상태 비정상(삭제처리중/로그아웃)
           onGenerateRoute: RouteGenerator.generateRoute,
         ));
   }

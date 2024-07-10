@@ -11,7 +11,7 @@ import '../dialogs.dart';
 class UserProvider extends ChangeNotifier {
   int _userIdx = 0;
   String _userAccount = "";
-  bool _alarmsAllow = false;
+  bool _notificationAllow = false;
   int _appLockState = 0;
   int _homePresetType = 0;
   int _loginType = 0;
@@ -33,7 +33,7 @@ class UserProvider extends ChangeNotifier {
 
   String get userAccount => _userAccount;
 
-  bool get alarmsAllow => _alarmsAllow;
+  bool get notificationAllow => _notificationAllow;
 
   int get appLockState => _appLockState;
 
@@ -143,8 +143,8 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setAlarmsAllow(bool allow) {
-    _alarmsAllow = allow;
+  void setNotificationAllow(bool allow) {
+    _notificationAllow = allow;
     notifyListeners();
   }
 
@@ -171,12 +171,12 @@ class UserProvider extends ChangeNotifier {
   void setUserAllData(
       int userIdx,
       String userAccount,
-      bool alarmsAllow,
       int appLockState,
       int homePresetType,
       int loginType,
       String loveDday,
       int loverIdx,
+      bool notificationAllow,
       String profileMessage,
       bool topBarActivate,
       int topBarType,
@@ -186,12 +186,12 @@ class UserProvider extends ChangeNotifier {
       int userState) {
     _userIdx = userIdx;
     _userAccount = userAccount;
-    _alarmsAllow = alarmsAllow;
     _appLockState = appLockState;
     _homePresetType = homePresetType;
     _loginType = loginType;
     _loveDday = loveDday;
     _loverIdx = loverIdx;
+    _notificationAllow = notificationAllow;
     _profileMsg = profileMessage;
     _topBarActivate = topBarActivate;
     _topBarType = topBarType;

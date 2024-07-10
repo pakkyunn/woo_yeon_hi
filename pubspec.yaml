@@ -74,6 +74,8 @@ dependencies:
   retrofit: ^4.1.0
   json_annotation: ^4.8.1
   proj4dart: ^2.1.0
+  mailer: ^6.1.1
+
 
 
 dev_dependencies:

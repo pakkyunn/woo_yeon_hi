@@ -42,6 +42,7 @@ Future<bool> saveAuthCodeData(String code, int idx) async {
     await FirebaseFirestore.instance.collection('CodeData').add({
       'auth_code': code,
       'user_idx': idx,
+      'expired_time': DateTime.now().add(const Duration(minutes: 5)).toIso8601String(),
     });
     return true;
   }
@@ -59,7 +60,7 @@ Future<String?> isVerifiedCode(String code, int idx) async {
     for (var doc in querySnapShot.docs) {
       results = doc.data();
     }
-    if(results['user_idx']==idx){
+    if(results['user_idx'] == idx && DateTime.now().isBefore(DateTime.parse(results['expired_time']))){
       result = results['auth_code'];
     } else {
       result = null;

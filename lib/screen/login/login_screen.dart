@@ -122,19 +122,8 @@ class _RegisterScreen extends State<LoginScreen> {
                       ),
                       child: InkWell(
                         onTap: () async {
-                          switch (await getSpecificUserData(provider.userIdx, "user_state")??2) {
-                            case 0:
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const MainScreen()));
-                            case 1:
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) =>
-                                      const AccountProcessingScreen()));
-
-                            case 2:
+                          switch (await getSpecificUserData(provider.userIdx, "user_state")??0) {
+                            case 0: // 미등록 계정
                               await signInWithGoogle();
                               if (loginSuccess == true) {
                                 provider.setLoginType(1);
@@ -151,9 +140,21 @@ class _RegisterScreen extends State<LoginScreen> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const CodeConnectScreen()));
+                                        const CodeConnectScreen()));
                                 showBlackToast("구글 계정으로 로그인 되었습니다.");
                               }
+
+                            case 1: // 삭제처리중 계정
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      const AccountProcessingScreen()));
+
+                            case 2: // 로그아웃 계정
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                      const MainScreen()));
                           }
                         },
                         borderRadius: BorderRadius.circular(20.0),
@@ -169,7 +170,7 @@ class _RegisterScreen extends State<LoginScreen> {
                                         "lib/assets/icons/google_logo.svg",
                                         height: 24,
                                         width: 24)),
-                                const Text("구글 계정으로 등록하기",
+                                const Text("구글 계정으로 로그인하기",
                                     style: TextStyleFamily.smallTitleTextStyle),
                                 const SizedBox(height: 24, width: 24)
                               ],
@@ -230,7 +231,7 @@ class _RegisterScreen extends State<LoginScreen> {
                                         "lib/assets/icons/kakao_logo.svg",
                                         height: 24,
                                         width: 24)),
-                                const Text("카카오 계정으로 등록하기",
+                                const Text("카카오 계정으로 로그인하기",
                                     style: TextStyle(
                                         fontSize: 15,
                                         fontFamily: FontFamily.mapleStoryLight,

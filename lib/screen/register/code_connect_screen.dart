@@ -1,12 +1,7 @@
-import 'dart:async';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/dao/login_register_dao.dart';
 import 'package:woo_yeon_hi/dialogs.dart';
@@ -18,8 +13,6 @@ import 'package:woo_yeon_hi/style/font.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter_timer_countdown/flutter_timer_countdown.dart';
 
-import '../../dao/user_dao.dart';
-import '../../model/user_model.dart';
 import '../../provider/login_register_provider.dart';
 import '../../style/text_style.dart';
 import '../../utils.dart';
@@ -409,9 +402,8 @@ class _ConnectCodeScreenState extends State<CodeConnectScreen> {
                                               maxLength: 8,
                                               keyboardType: TextInputType.text,
                                               inputFormatters: [
-                                                FilteringTextInputFormatter
-                                                    .allow(
-                                                        RegExp(r'[a-zA-Z0-9]')),
+                                                UpperCaseTextFormatter(),
+                                                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
                                               ],
                                               textAlign: TextAlign.center,
                                               style: const TextStyle(
@@ -432,49 +424,7 @@ class _ConnectCodeScreenState extends State<CodeConnectScreen> {
                                             ),
                                             child: InkWell(
                                                 onTap: () async {
-                                                  if (await getSpecificConnectCodeData(
-                                                          codeTextEditController
-                                                              .text,
-                                                          'host_idx') ==
-                                                      provider.userIdx) {
-                                                    showBlackToast("본인의 코드로 연결할 수 없습니다.");
-                                                  } else if (await isCodeDataExist(
-                                                              codeTextEditController
-                                                                  .text) ==
-                                                          true &&
-                                                      await isCodeConnected(
-                                                              codeTextEditController
-                                                                  .text) ==
-                                                          false) {
-                                                    var hostIdx =
-                                                        await getSpecificConnectCodeData(
-                                                            codeTextEditController
-                                                                .text,
-                                                            'host_idx');
-                                                    await deleteConnectCodeData(
-                                                        _connectCode);
-                                                    await saveLoverIdx(
-                                                        provider.userIdx,
-                                                        hostIdx);
-                                                    await updateConnectCode(
-                                                        codeTextEditController
-                                                            .text,
-                                                        provider.userIdx);
-                                                    provider
-                                                        .setLoverIdx(hostIdx);
-                                                    //게스트화면 이동
-                                                    Navigator.pushAndRemoveUntil(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                const NickNameSettingScreen(
-                                                                    isHost:
-                                                                        false)),
-                                                        (route) => false);
-                                                    showBlackToast("연결되었습니다!");
-                                                  } else {
-                                                    showBlackToast("유효하지 않은 연결코드입니다.");
-                                                  }
+                                                  _codeVerify(provider, codeTextEditController.text, _connectCode, context);
                                                 },
                                                 borderRadius:
                                                     BorderRadius.circular(20.0),
@@ -520,8 +470,23 @@ class _ConnectCodeScreenState extends State<CodeConnectScreen> {
   }
 }
 
-const _chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567890';
-Random _rnd = Random();
 
-String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
-    length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
+  Future<void> _codeVerify(UserProvider userProvider, String codeInput, String connectCode, BuildContext context) async {
+    if (await getSpecificConnectCodeData(codeInput, 'host_idx') == userProvider.userIdx) {
+      showBlackToast("본인의 코드로 연결할 수 없습니다.");
+    } else if (await isCodeDataExist(codeInput) == true &&
+        await isCodeConnected(codeInput) == false &&
+        DateTime.now().isBefore(DateTime.parse(await getSpecificConnectCodeData(codeInput, 'expired_time')))) {
+      var hostIdx = await getSpecificConnectCodeData(codeInput, 'host_idx');
+      await deleteConnectCodeData(connectCode);
+      await saveLoverIdx(userProvider.userIdx, hostIdx);
+      await updateConnectCode(codeInput, userProvider.userIdx);
+      userProvider.setLoverIdx(hostIdx);
+      //게스트화면 이동
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) =>
+      const NickNameSettingScreen(isHost: false)), (route) => false);
+      showBlackToast("연결되었습니다!");
+    } else {
+      showBlackToast("유효하지 않은 연결코드입니다.");
+    }
+  }

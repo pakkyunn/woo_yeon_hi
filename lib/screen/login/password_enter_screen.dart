@@ -472,7 +472,7 @@ class _PasswordEnterScreenState extends State<PasswordEnterScreen> {
 
   Future<List<int>> _fetchPassword() async {
     const storage = FlutterSecureStorage();
-    List<int> lockPassword = stringToList(((await storage.read(key: "lockPassword")) ?? ""));
+    List<int> lockPassword = stringToList(((await storage.read(key: "lockPassword")) ?? "10,10,10,10"));
     return lockPassword;
   }
 
