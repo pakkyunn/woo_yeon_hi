@@ -52,18 +52,18 @@ class DefaultFirebaseOptions {
 
   static FirebaseOptions android = FirebaseOptions(
     apiKey: dotenv.env['FIRE_BASE_OPTIONS_ANDROID_KEY']!,
-    appId: '1:803579865417:android:ca90e76c09002f7dccd298',
-    messagingSenderId: '803579865417',
-    projectId: 'wooyeonhi-1d839',
-    storageBucket: 'wooyeonhi-1d839.appspot.com',
+    appId: '1:824566808647:android:878219e1a98193eca6b162',
+    messagingSenderId: '824566808647',
+    projectId: 'wooyeonhi-6b487',
+    storageBucket: 'wooyeonhi-6b487.appspot.com',
   );
 
   static FirebaseOptions ios = FirebaseOptions(
     apiKey: dotenv.env['FIRE_BASE_OPTIONS_IOS_KEY']!,
-    appId: '1:803579865417:ios:77f717eb4743e910ccd298',
-    messagingSenderId: '803579865417',
-    projectId: 'wooyeonhi-1d839',
-    storageBucket: 'wooyeonhi-1d839.appspot.com',
+    appId: '1:824566808647:ios:9b8911ea23ee10c2a6b162',
+    messagingSenderId: '824566808647',
+    projectId: 'wooyeonhi-6b487',
+    storageBucket: 'wooyeonhi-6b487.appspot.com',
     iosBundleId: 'kr.co.lion.wooYeonHi',
   );
 }
