@@ -44,7 +44,7 @@ class TextStyleFamily{
 
   /// 다이얼로그 타이틀 텍스트 스타일. size 20, black, bold
   static const TextStyle dialogTitleTextStyle = TextStyle(
-      fontFamily: FontFamily.mapleStoryBold,
+      fontFamily: FontFamily.mapleStoryLight,
       fontSize: 20,
       color: ColorFamily.black
   );
@@ -65,7 +65,8 @@ class TextStyleFamily{
   /// 소제목 텍스트 스타일. size 15
   static const TextStyle smallTitleTextStyle = TextStyle(fontFamily: FontFamily.mapleStoryLight, fontSize: 15, color: ColorFamily.black);
 
-  
+  /// 소제목 텍스트 스타일. size 15
+  static const TextStyle smallTitleTextStyle_pink = TextStyle(fontFamily: FontFamily.mapleStoryLight, fontSize: 15, color: ColorFamily.pink);
 
   /// 비밀번호 입력 숫자 텍스트 스타일. size 20
   static const TextStyle passwordTextStyle = TextStyle(fontFamily: FontFamily.mapleStoryLight, fontSize: 20, color: ColorFamily.black);

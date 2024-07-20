@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:woo_yeon_hi/model/photo_map_model.dart';
 import 'package:woo_yeon_hi/screen/footPrint/footprint_photo_map_detail_screen.dart';
 
 import '../../style/color.dart';
 import '../../style/text_style.dart';
 
 class FootprintHistoryTopAppBar extends StatefulWidget implements PreferredSizeWidget{
-  const FootprintHistoryTopAppBar({super.key});
+  FootprintHistoryTopAppBar(this.photoMap, {super.key});
+  PhotoMap photoMap;
 
   @override
   State<FootprintHistoryTopAppBar> createState() => _FootprintHistoryTopAppBarState();
@@ -35,7 +37,7 @@ class _FootprintHistoryTopAppBarState extends State<FootprintHistoryTopAppBar> {
       actions: [
         IconButton(
           onPressed: () {
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const FootprintPhotoMapDetailScreen()));
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => FootprintPhotoMapDetailScreen(widget.photoMap)));
           },
           icon: SvgPicture.asset('lib/assets/icons/map.svg'),
         ),

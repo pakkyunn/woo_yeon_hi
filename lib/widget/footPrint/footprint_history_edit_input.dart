@@ -18,7 +18,8 @@ class FootprintHistoryEditInput extends StatefulWidget {
   FootprintHistoryEditProvider provider;
 
   @override
-  State<FootprintHistoryEditInput> createState() => _FootprintHistoryEditInputState();
+  State<FootprintHistoryEditInput> createState() =>
+      _FootprintHistoryEditInputState();
 }
 
 class _FootprintHistoryEditInputState extends State<FootprintHistoryEditInput> {
@@ -34,21 +35,38 @@ class _FootprintHistoryEditInputState extends State<FootprintHistoryEditInput> {
             InkWell(
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=> FootprintHistoryEditPlaceScreen(widget.provider, MapType.KOREA_FULL.type)));
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => FootprintHistoryEditPlaceScreen(
+                            widget.provider, MapType.KOREA_FULL.type)));
+                // widget.provider.setPlace(null);
+                widget.provider.clearSearchPlace();
               },
               child: Row(
                 children: [
                   SvgPicture.asset('lib/assets/icons/map.svg'),
-                  const SizedBox(width: 15,),
+                  const SizedBox(
+                    width: 15,
+                  ),
                   widget.provider.selectedPlace != null
                       ? Row(
-                    children: [
-                      Text(widget.provider.selectedPlace!, style: TextStyleFamily.normalTextStyle,),
-                      const Text(" (선택한 지역)", style: TextStyleFamily.hintTextStyle ,)
-                    ],
-                  )
-                      : const Text("(선택한 지역)", style: TextStyleFamily.hintTextStyle ,)
+                          children: [
+                            Text(
+                              widget.provider.selectedPlace!.title,
+                              style: TextStyleFamily.normalTextStyle,
+                            ),
+                            const Text(
+                              " (선택한 지역)",
+                              style: TextStyleFamily.hintTextStyle,
+                            )
+                          ],
+                        )
+                      : const Text(
+                          "(선택한 지역)",
+                          style: TextStyleFamily.hintTextStyle,
+                        )
                 ],
               ),
             ),
@@ -60,20 +78,28 @@ class _FootprintHistoryEditInputState extends State<FootprintHistoryEditInput> {
             InkWell(
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
-              onTap: (){
+              onTap: () {
                 _showCalendarBottomSheet(widget.provider);
               },
               child: Row(
                 children: [
                   SvgPicture.asset('lib/assets/icons/calendar.svg'),
-                  const SizedBox(width: 15,),
+                  const SizedBox(
+                    width: 15,
+                  ),
                   widget.provider.date != null
                       ? Row(
-                    children: [
-                      Text(widget.provider.date!, style: TextStyleFamily.normalTextStyle,),
-                    ],
-                  )
-                      : const Text("날짜 입력", style: TextStyleFamily.hintTextStyle ,)
+                          children: [
+                            Text(
+                              widget.provider.date!,
+                              style: TextStyleFamily.normalTextStyle,
+                            ),
+                          ],
+                        )
+                      : const Text(
+                          "날짜 입력",
+                          style: TextStyleFamily.hintTextStyle,
+                        )
                 ],
               ),
             ),
@@ -85,7 +111,9 @@ class _FootprintHistoryEditInputState extends State<FootprintHistoryEditInput> {
             Row(
               children: [
                 SvgPicture.asset('lib/assets/icons/woo_yeon_hi.svg'),
-                const SizedBox(width: 15,),
+                const SizedBox(
+                  width: 15,
+                ),
                 Expanded(
                   child: TextField(
                     controller: widget.provider.titleController,
@@ -93,14 +121,14 @@ class _FootprintHistoryEditInputState extends State<FootprintHistoryEditInput> {
                     maxLines: 1,
                     keyboardType: TextInputType.text,
                     cursorColor: ColorFamily.black,
-                    onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
+                    onTapOutside: (event) =>
+                        FocusManager.instance.primaryFocus?.unfocus(),
                     decoration: const InputDecoration(
                         isDense: true,
                         contentPadding: EdgeInsets.zero,
                         border: InputBorder.none,
                         hintStyle: TextStyleFamily.hintTextStyle,
-                        hintText: "히스토리 제목"
-                    ),
+                        hintText: "히스토리 제목"),
                   ),
                 )
               ],
@@ -113,25 +141,32 @@ class _FootprintHistoryEditInputState extends State<FootprintHistoryEditInput> {
             Row(
               children: [
                 SvgPicture.asset('lib/assets/icons/message-question.svg'),
-                const SizedBox(width: 15,),
-                const Text("어떤 추억을 만드셨나요?", style: TextStyleFamily.normalTextStyle,)
+                const SizedBox(
+                  width: 15,
+                ),
+                const Text(
+                  "어떤 추억을 만드셨나요?",
+                  style: TextStyleFamily.normalTextStyle,
+                )
               ],
             ),
-            const SizedBox(height: 20,),
+            const SizedBox(
+              height: 20,
+            ),
             TextField(
               controller: widget.provider.contentController,
               style: TextStyleFamily.normalTextStyle,
               maxLines: null,
               keyboardType: TextInputType.multiline,
               cursorColor: ColorFamily.black,
-              onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
+              onTapOutside: (event) =>
+                  FocusManager.instance.primaryFocus?.unfocus(),
               decoration: const InputDecoration(
                   isDense: true,
                   contentPadding: EdgeInsets.zero,
                   border: InputBorder.none,
                   hintStyle: TextStyleFamily.hintTextStyle,
-                  hintText: "내용을 입력해주세요."
-              ),
+                  hintText: "내용을 입력해주세요."),
             )
           ],
         ),
@@ -154,195 +189,196 @@ class _FootprintHistoryEditInputState extends State<FootprintHistoryEditInput> {
     showModalBottomSheet(
         context: context,
         backgroundColor: ColorFamily.white,
-        builder: (context){
-          return StatefulBuilder(
-              builder: (context, bottomState) {
-                return SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.6,
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Stack(
-                        children: [
-                          TableCalendar(
-                            firstDay:  DateTime.utc(2024, 3, 16),
-                            lastDay: DateTime.utc(2024, 8, 14),
-                            focusedDay: _focusedDay,
-                            locale: 'ko_kr',
-                            rowHeight: 50,
-                            headerStyle: const HeaderStyle(
-                              titleCentered: true,
-                              titleTextStyle: TextStyleFamily.appBarTitleBoldTextStyle,
-                              formatButtonVisible: false,
-                            ),
-                            daysOfWeekStyle: const DaysOfWeekStyle(
-                                weekdayStyle: TextStyleFamily.normalTextStyle,
-                                weekendStyle: TextStyleFamily.normalTextStyle
-                            ),
-                            calendarBuilders: CalendarBuilders(
-                              defaultBuilder: (context, day, focusedDay){
-                                return Container(
-                                  alignment: Alignment.topCenter,
-                                  padding: const EdgeInsets.only(top: 15),
+        builder: (context) {
+          return StatefulBuilder(builder: (context, bottomState) {
+            return SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height * 0.6,
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Stack(
+                    children: [
+                      TableCalendar(
+                        firstDay: DateTime.utc(2024, 3, 16),
+                        lastDay: DateTime.utc(2024, 8, 14),
+                        focusedDay: _focusedDay,
+                        locale: 'ko_kr',
+                        rowHeight: 50,
+                        headerStyle: const HeaderStyle(
+                          titleCentered: true,
+                          titleTextStyle:
+                              TextStyleFamily.appBarTitleBoldTextStyle,
+                          formatButtonVisible: false,
+                        ),
+                        daysOfWeekStyle: const DaysOfWeekStyle(
+                            weekdayStyle: TextStyleFamily.normalTextStyle,
+                            weekendStyle: TextStyleFamily.normalTextStyle),
+                        calendarBuilders: CalendarBuilders(
+                          defaultBuilder: (context, day, focusedDay) {
+                            return Container(
+                              alignment: Alignment.topCenter,
+                              padding: const EdgeInsets.only(top: 15),
+                              child: Text(
+                                textAlign: TextAlign.center,
+                                DateFormat('d').format(day),
+                                style: TextStyle(
+                                    color: isWeekend(day)
+                                        ? Colors.red
+                                        : isSaturday(day)
+                                            ? Colors.blueAccent
+                                            : ColorFamily.black,
+                                    fontFamily: FontFamily.mapleStoryLight),
+                              ),
+                            );
+                          },
+                          outsideBuilder: (context, day, focusedDay) {
+                            return Container(
+                              alignment: Alignment.topCenter,
+                              padding: const EdgeInsets.only(top: 15),
+                              child: Text(
+                                textAlign: TextAlign.center,
+                                DateFormat('d').format(day),
+                                style: const TextStyle(
+                                    color: ColorFamily.gray,
+                                    fontFamily: FontFamily.mapleStoryLight),
+                              ),
+                            );
+                          },
+                          disabledBuilder: (context, day, focusedDay) {
+                            return Container(
+                              alignment: Alignment.topCenter,
+                              padding: const EdgeInsets.only(top: 15),
+                              child: Text(
+                                textAlign: TextAlign.center,
+                                DateFormat('d').format(day),
+                                style: const TextStyle(
+                                    color: ColorFamily.gray,
+                                    fontFamily: FontFamily.mapleStoryLight),
+                              ),
+                            );
+                          },
+                          selectedBuilder: (context, day, focusedDay) {
+                            return Container(
+                              alignment: Alignment.topCenter,
+                              padding: const EdgeInsets.only(top: 10),
+                              child: Container(
+                                width: 30,
+                                height: 30,
+                                decoration: const BoxDecoration(
+                                  color: ColorFamily.pink,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
                                   child: Text(
                                     textAlign: TextAlign.center,
                                     DateFormat('d').format(day),
                                     style: TextStyle(
                                         color: isWeekend(day)
-                                            ? Colors.red
+                                            ? ColorFamily.white
                                             : isSaturday(day)
-                                            ?Colors.blueAccent
-                                            :ColorFamily.black
-                                        ,
-                                        fontFamily: FontFamily.mapleStoryLight
-                                    ),
-                                  ),
-                                );
-                              },
-                              outsideBuilder: (context, day, focusedDay){
-                                return Container(
-                                  alignment: Alignment.topCenter,
-                                  padding: const EdgeInsets.only(top: 15),
-                                  child: Text(
-                                    textAlign: TextAlign.center,
-                                    DateFormat('d').format(day),
-                                    style: const TextStyle(
-                                        color: ColorFamily.gray,
-                                        fontFamily: FontFamily.mapleStoryLight
-                                    ),
-                                  ),
-                                );
-                              },
-                              disabledBuilder: (context, day, focusedDay){
-                                return Container(
-                                  alignment: Alignment.topCenter,
-                                  padding: const EdgeInsets.only(top: 15),
-                                  child: Text(
-                                    textAlign: TextAlign.center,
-                                    DateFormat('d').format(day),
-                                    style: const TextStyle(
-                                        color: ColorFamily.gray,
-                                        fontFamily: FontFamily.mapleStoryLight
-                                    ),
-                                  ),
-                                );
-                              },
-                              selectedBuilder: (context, day, focusedDay){
-                                return Container(
-                                  alignment: Alignment.topCenter,
-                                  padding: const EdgeInsets.only(top: 10),
-                                  child: Container(
-                                    width: 30,
-                                    height: 30,
-                                    decoration: const BoxDecoration(
-                                      color: ColorFamily.pink,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        textAlign: TextAlign.center,
-                                        DateFormat('d').format(day),
-                                        style: TextStyle(
-                                            color: isWeekend(day)
                                                 ? ColorFamily.white
-                                                : isSaturday(day)?ColorFamily.white:ColorFamily.black,
-                                            fontFamily: FontFamily.mapleStoryLight
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                              todayBuilder: (context, day, focusedDay){
-                                return Container(
-                                  alignment: Alignment.topCenter,
-                                  padding: const EdgeInsets.only(top: 15),
-                                  child: Text(
-                                    textAlign: TextAlign.center,
-                                    DateFormat('d').format(day),
-                                    style: const TextStyle(
-                                        color: ColorFamily.pink,
-                                        fontFamily: FontFamily.mapleStoryLight
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                            selectedDayPredicate: (day){
-                              return isSameDay(_selectedDay, day);
-                            },
-                            onDaySelected: (selectedDay, focusedDay) {
-                              bottomState((){
-                                setState(() {
-                                  _selectedDay = selectedDay;
-                                  _focusedDay = focusedDay; // update `_focusedDay` here as well
-                                });
-                              });
-                            },
-                            onPageChanged: (focusedDay) {
-                              _focusedDay = focusedDay;
-                            },
-                          ),
-                          // 이벤트 버튼들
-                          Positioned(
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  width: ((MediaQuery.of(context).size.width - 40) / 2) - 10,
-                                  height: 40,
-                                  child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                          backgroundColor: ColorFamily.white,
-                                          surfaceTintColor: ColorFamily.white
-                                      ),
-                                      onPressed: (){
-                                        bottomState((){
-                                          setState(() {
-                                            _focusedDay = DateTime.now();
-                                          });
-                                        });
-                                      },
-                                      child: const Text("오늘 날짜로", style: TextStyleFamily.normalTextStyle,)
+                                                : ColorFamily.black,
+                                        fontFamily: FontFamily.mapleStoryLight),
                                   ),
                                 ),
-                                const SizedBox(width: 20,),
-                                SizedBox(
-                                  width: ((MediaQuery.of(context).size.width - 40) / 2) - 10,
-                                  height: 40,
-                                  child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                          backgroundColor: ColorFamily.beige,
-                                          surfaceTintColor: ColorFamily.beige
-                                      ),
-                                      onPressed: (){
-                                        if(_selectedDay != null){
-                                          var date = DateFormat('yyyy. M.dd.').format(_selectedDay!);
-                                          provider.setDate(date);
-                                        }else{
-                                          var date = DateFormat('yyyy. M.dd.').format(_focusedDay);
-                                          provider.setDate(date);
-                                        }
-
-                                        Navigator.pop(context);
-                                      },
-                                      child: const Text("확인", style: TextStyleFamily.normalTextStyle,)
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
+                              ),
+                            );
+                          },
+                          todayBuilder: (context, day, focusedDay) {
+                            return Container(
+                              alignment: Alignment.topCenter,
+                              padding: const EdgeInsets.only(top: 15),
+                              child: Text(
+                                textAlign: TextAlign.center,
+                                DateFormat('d').format(day),
+                                style: const TextStyle(
+                                    color: ColorFamily.pink,
+                                    fontFamily: FontFamily.mapleStoryLight),
+                              ),
+                            );
+                          },
+                        ),
+                        selectedDayPredicate: (day) {
+                          return isSameDay(_selectedDay, day);
+                        },
+                        onDaySelected: (selectedDay, focusedDay) {
+                          bottomState(() {
+                            setState(() {
+                              _selectedDay = selectedDay;
+                              _focusedDay =
+                                  focusedDay; // update `_focusedDay` here as well
+                            });
+                          });
+                        },
+                        onPageChanged: (focusedDay) {
+                          _focusedDay = focusedDay;
+                        },
                       ),
-                    )
-                );
-              }
-          );
-        }
-    );
+                      // 이벤트 버튼들
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: ((MediaQuery.of(context).size.width - 40) /
+                                      2) -
+                                  10,
+                              height: 40,
+                              child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: ColorFamily.white,
+                                      surfaceTintColor: ColorFamily.white),
+                                  onPressed: () {
+                                    bottomState(() {
+                                      setState(() {
+                                        _focusedDay = DateTime.now();
+                                      });
+                                    });
+                                  },
+                                  child: const Text(
+                                    "오늘 날짜로",
+                                    style: TextStyleFamily.normalTextStyle,
+                                  )),
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            SizedBox(
+                              width: ((MediaQuery.of(context).size.width - 40) /
+                                      2) -
+                                  10,
+                              height: 40,
+                              child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: ColorFamily.beige,
+                                      surfaceTintColor: ColorFamily.beige),
+                                  onPressed: () {
+                                    if (_selectedDay != null) {
+                                      var date = DateFormat('yyyy. M.dd.')
+                                          .format(_selectedDay!);
+                                      provider.setDate(date);
+                                    } else {
+                                      var date = DateFormat('yyyy. M.dd.')
+                                          .format(_focusedDay);
+                                      provider.setDate(date);
+                                    }
+
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text(
+                                    "확인",
+                                    style: TextStyleFamily.normalTextStyle,
+                                  )),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ));
+          });
+        });
   }
 }
-
-
