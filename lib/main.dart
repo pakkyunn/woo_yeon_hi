@@ -18,6 +18,7 @@ import 'package:woo_yeon_hi/routes/routes_generator.dart';
 import 'package:woo_yeon_hi/screen/login/login_screen.dart';
 import 'package:woo_yeon_hi/utils.dart';
 
+import 'dao/more_dao.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {

@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/utils.dart';
-import '../../model/user_model.dart';
 import '../../provider/login_register_provider.dart';
 import '../../style/font.dart';
 import '../../style/text_style.dart';
@@ -20,14 +19,6 @@ class DdaySettingCalendar extends StatefulWidget {
 
 class _DdaySettingCalendarState extends State<DdaySettingCalendar> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
-  // DateTime _focusedDay = DateTime.now();
-  // DateTime? _selectedDay;
-  //
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _selectedDay = _focusedDay;
-  // }
 
   bool isHoliday(DateTime day) {
     return day.weekday == DateTime.sunday;

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
@@ -25,9 +24,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _RegisterScreen extends State<LoginScreen> {
-  static const storage = FlutterSecureStorage();
   bool loginSuccess = false;
-
 
   signInWithGoogle() async {
     GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
@@ -50,10 +47,10 @@ class _RegisterScreen extends State<LoginScreen> {
         await _fetchKakaoUserInfo();
       } catch (error) {
         print('카카오톡으로 로그인 실패 $error');
-        showBlackToast("카카오 계정 로그인에 실패하였습니다.");
+        showBlackToast("카카오톡 로그인에 실패하였습니다.");
         if (error is PlatformException && error.code == 'CANCELED') {
           print('사용자가 로그인 취소');
-          showBlackToast("카카오 계정 로그인을 취소하였습니다.");
+          showBlackToast("카카오톡 로그인을 취소하였습니다.");
           return;
         }
 
@@ -122,27 +119,9 @@ class _RegisterScreen extends State<LoginScreen> {
                       ),
                       child: InkWell(
                         onTap: () async {
-                          switch (await getSpecificUserData(provider.userIdx, "user_state")??0) {
-                            case 0: // 미등록 계정
-                              await signInWithGoogle();
-                              if (loginSuccess == true) {
-                                provider.setLoginType(1);
-                                await storage.write(
-                                    key: "userAccount",
-                                    value: provider.userAccount);
-                                await storage.write(
-                                    key: "userIdx",
-                                    value: "${provider.userIdx}");
-                                await saveUserInfo(provider.userAccount);
-                                var userIdx = await getUserSequence();
-                                provider.setUserIdx(userIdx);
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                        const CodeConnectScreen()));
-                                showBlackToast("구글 계정으로 로그인 되었습니다.");
-                              }
+                          switch (await getSpecificUserData(provider.userIdx, "user_state")??3) {
+                            case 0: // 정상 계정
+                              //TODO 정상계정일 경우 코드
 
                             case 1: // 삭제처리중 계정
                               Navigator.of(context).push(MaterialPageRoute(
@@ -155,6 +134,21 @@ class _RegisterScreen extends State<LoginScreen> {
                                   MaterialPageRoute(
                                       builder: (context) =>
                                       const MainScreen()));
+
+                            case 3: // 미등록 계정
+                              await signInWithGoogle();
+                              if (loginSuccess == true) {
+                                var userIdx = await getUserSequence()+1;
+                                await saveUserInfo(provider.userAccount, userIdx, 1);
+                                provider.setUserIdx(userIdx);
+                                provider.setLoginType(1);
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                        const CodeConnectScreen()));
+                                showBlackToast("구글 계정으로 로그인 되었습니다.");
+                              }
                           }
                         },
                         borderRadius: BorderRadius.circular(20.0),
@@ -185,35 +179,34 @@ class _RegisterScreen extends State<LoginScreen> {
                       ),
                       child: InkWell(
                         onTap: () async {
-                          switch (provider.userState) {
-                            case 0:
+                          switch (await getSpecificUserData(provider.userIdx, "user_state")??3) {
+                            case 0: // 정상 계정
+                            //TODO 정상계정일 경우 코드
+
+                            case 1: // 삭제처리중 계정
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                  const AccountProcessingScreen()));
+
+                            case 2: // 로그아웃 계정
                               Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
                                       const MainScreen()));
-                            case 1:
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) =>
-                                  const AccountProcessingScreen()));
 
-                            case 2:
+                            case 3: // 미등록 계정
                               await signInWithKakao();
                               if (loginSuccess == true) {
-                                provider.setLoginType(2);
-                                await storage.write(
-                                    key: "userAccount",
-                                    value: provider.userAccount);
-                                await storage.write(
-                                    key: "userIdx",
-                                    value: "${provider.userIdx}");
-                                await saveUserInfo(provider.userAccount);
-                                var userIdx = await getUserSequence();
+                                var userIdx = await getUserSequence()+1;
+                                await saveUserInfo(provider.userAccount, userIdx, 2);
                                 provider.setUserIdx(userIdx);
+                                provider.setLoginType(2);
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => const CodeConnectScreen()));
+                                        builder: (context) =>
+                                        const CodeConnectScreen()));
                                 showBlackToast("카카오 계정으로 로그인 되었습니다.");
                               }
                           }

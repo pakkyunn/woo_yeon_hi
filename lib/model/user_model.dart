@@ -1,10 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:image_picker/image_picker.dart';
 
-import 'enums.dart';
-
-class UserModel{
+class UserModel {
   int userIdx;
   int loginType;
   String userAccount;
@@ -22,24 +18,23 @@ class UserModel{
   String loveDday;
   int appLockState;
 
-  UserModel(
-      {required this.userIdx,
-       required this.loginType,
-       required this.userAccount,
-        required this.userNickname,
-        required this.userBirth,
-        required this.userProfileImage,
-        required this.loverIdx,
-        required this.loverNickname,
-        required this.homePresetType,
-        required this.topBarType,
-        required this.profileMessage,
-        required this.notificationAllow,
-        required this.topBarActivate,
-        required this.userState,
-        required this.loveDday,
-        required this.appLockState
-      });
+  UserModel({required this.userIdx,
+    required this.loginType,
+    required this.userAccount,
+    required this.userNickname,
+    required this.userBirth,
+    required this.userProfileImage,
+    required this.loverIdx,
+    required this.loverNickname,
+    required this.homePresetType,
+    required this.topBarType,
+    required this.profileMessage,
+    required this.notificationAllow,
+    required this.topBarActivate,
+    required this.userState,
+    required this.loveDday,
+    required this.appLockState
+  });
 
   factory UserModel.fromData(Map<String, dynamic> data){
     return UserModel(
@@ -62,23 +57,12 @@ class UserModel{
     );
   }
 
-  bool checkProvider(TextEditingController textEditingController){
-    if(textEditingController.text.isEmpty || textEditingController.text == ""){
+  bool checkProvider(TextEditingController textEditingController) {
+    if (textEditingController.text.isEmpty ||
+        textEditingController.text == "") {
       return false;
-    }else{
+    } else {
       return true;
     }
   }
-
-  //
-  // XFile? _image;
-  // XFile? get image => _image;
-  // void setImage(XFile? image) {
-  //   _image = image;
-  //   notifyListeners();
-  // }
-  //
-  // void providerNotify(){
-  //   notifyListeners();
-  // }
 }

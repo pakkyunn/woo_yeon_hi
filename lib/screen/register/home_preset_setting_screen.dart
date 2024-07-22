@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/screen/register/register_done_screen.dart';
 import 'package:woo_yeon_hi/screen/login/login_screen.dart';
 import 'package:woo_yeon_hi/style/text_style.dart';
 
-import '../../dao/user_dao.dart';
-import '../../dialogs.dart';
-import '../../model/enums.dart';
-import '../../model/user_model.dart';
 import '../../provider/login_register_provider.dart';
 import '../../style/color.dart';
 import '../../style/font.dart';
@@ -159,10 +153,10 @@ class _RegisterDoneScreenState extends State<HomePresetSettingScreen> {
                                   ),
                                   const SizedBox(height: 20),
                                   SizedBox(
-                                    height: deviceHeight * 0.5,
+                                    height: deviceHeight * 0.45,
                                     child: Swiper(
                                       index: presetIndex,
-                                      viewportFraction: 0.5,
+                                      viewportFraction: 0.45,
                                       scale: 0.6,
                                       itemBuilder:
                                           (BuildContext context, int index) {

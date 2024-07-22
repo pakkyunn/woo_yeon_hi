@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:provider/provider.dart';
-import 'package:woo_yeon_hi/model/user_model.dart';
 import 'package:woo_yeon_hi/screen/register/birthday_setting_screen.dart';
 import 'package:woo_yeon_hi/screen/login/login_screen.dart';
 import 'package:woo_yeon_hi/style/text_style.dart';
 
 import '../../dao/user_dao.dart';
-import '../../dialogs.dart';
-import '../../model/enums.dart';
 import '../../provider/login_register_provider.dart';
 import '../../style/color.dart';
 import '../../style/font.dart';

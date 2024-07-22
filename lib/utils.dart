@@ -98,8 +98,7 @@ void signOut(BuildContext context) async {
     case 0:
       break;
   }
-  await deleteUserData(
-      Provider.of<UserProvider>(context, listen: false).userIdx);
+  await deleteUserData(Provider.of<UserProvider>(context, listen: false).userIdx);
   await storage.delete(key: "userIdx");
   await storage.delete(key: "userAccount");
   Provider.of<UserProvider>(context, listen: false).setUserIdx(0);

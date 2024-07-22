@@ -15,6 +15,7 @@ import 'package:woo_yeon_hi/utils.dart';
 
 import '../../dao/user_dao.dart';
 import '../../dialogs.dart';
+import '../../model/user_model.dart';
 import '../../provider/login_register_provider.dart';
 import '../../style/font.dart';
 import '../../widget/more/profile_edit_album.dart';
@@ -28,11 +29,11 @@ class ProfileEditScreen extends StatefulWidget {
 
 class _ProfileEditScreenState extends State<ProfileEditScreen> {
   final FocusNode _nickNamefocusNode = FocusNode();
-  final FocusNode _profileMsgfocusNode = FocusNode();
+  final FocusNode _profileMessageFocusNode = FocusNode();
 
   late String tempProfileImage;
   late String tempUserNickname;
-  late String tempProfileMsg;
+  late String tempProfileMessage;
   late String tempUserBirth;
   late DateTime _selectedDate;
 
@@ -46,7 +47,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     var provider = Provider.of<UserProvider>(context, listen: false);
     tempProfileImage = provider.userProfileImage;
     tempUserNickname = provider.userNickname;
-    tempProfileMsg = provider.profileMsg;
+    tempProfileMessage = provider.profileMessage;
     tempUserBirth = provider.userBirth;
     _selectedDate = stringToDate(tempUserBirth);
   }
@@ -54,7 +55,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
   @override
   void dispose() {
     _nickNamefocusNode.dispose();
-    _profileMsgfocusNode.dispose();
+    _profileMessageFocusNode.dispose();
     super.dispose();
   }
 
@@ -73,18 +74,18 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
             if (tempProfileImage != provider.userProfileImage ||
                 tempUserNickname != provider.userNickname ||
                 tempUserBirth != provider.userBirth ||
-                tempProfileMsg != provider.profileMsg) {
+                tempProfileMessage != provider.profileMessage) {
               dialogTitleWithContent(
                 context, "프로필 편집 취소", "변경사항은 저장되지 않습니다.",
                     () {
                   Navigator.pop(context, false);
                   _nickNamefocusNode.unfocus();
-                  _profileMsgfocusNode.unfocus();
+                  _profileMessageFocusNode.unfocus();
                   },
                     () {
                   Navigator.pop(context, true);
                   _nickNamefocusNode.unfocus();
-                  _profileMsgfocusNode.unfocus();
+                  _profileMessageFocusNode.unfocus();
                   Future.delayed(const Duration(milliseconds: 100), () {
                   Navigator.of(context).pop();
                   });
@@ -108,18 +109,18 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                   if (tempProfileImage != provider.userProfileImage ||
                       tempUserNickname != provider.userNickname ||
                       tempUserBirth != provider.userBirth ||
-                      tempProfileMsg != provider.profileMsg) {
+                      tempProfileMessage != provider.profileMessage) {
                     dialogTitleWithContent(
                         context, "프로필 편집 취소", "변경사항은 저장되지 않습니다.",
                             () {
                           Navigator.pop(context, false);
                           _nickNamefocusNode.unfocus();
-                          _profileMsgfocusNode.unfocus();
+                          _profileMessageFocusNode.unfocus();
                         },
                             () {
                           Navigator.pop(context, true);
                           _nickNamefocusNode.unfocus();
-                          _profileMsgfocusNode.unfocus();
+                          _profileMessageFocusNode.unfocus();
                           Future.delayed(const Duration(milliseconds: 100), () {
                             Navigator.of(context).pop();
                           });
@@ -137,7 +138,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                     FocusScope.of(context).unfocus();
                     if (tempUserNickname.isNotEmpty) {
                       provider.setUserProfile(tempProfileImage,
-                          tempUserNickname, tempUserBirth, tempProfileMsg);
+                          tempUserNickname, tempUserBirth, tempProfileMessage);
                       FocusScope.of(context).unfocus();
                       Future.delayed(const Duration(milliseconds: 100),
                           () async {
@@ -148,7 +149,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                         await updateSpecificUserData(
                             provider.userIdx, 'user_birth', tempUserBirth);
                         await updateSpecificUserData(provider.userIdx,
-                            'profile_message', tempProfileMsg);
+                            'profile_message', tempProfileMessage);
                       });
 
                       Future.delayed(const Duration(milliseconds: 100), () {
@@ -328,11 +329,11 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                                     tempUserBirth = dateToString(_selectedDate);
                                   });
                                   _nickNamefocusNode.unfocus();
-                                  _profileMsgfocusNode.unfocus();
+                                  _profileMessageFocusNode.unfocus();
                                 },
                                 onCancel: () {
                                   _nickNamefocusNode.unfocus();
-                                  _profileMsgfocusNode.unfocus();
+                                  _profileMessageFocusNode.unfocus();
                                 },
                               );
                             },
@@ -371,15 +372,15 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                           child: Padding(
                             padding: const EdgeInsets.only(left: 15),
                             child: TextFormField(
-                              focusNode: _profileMsgfocusNode,
-                              initialValue: tempProfileMsg,
+                              focusNode: _profileMessageFocusNode,
+                              initialValue: tempProfileMessage,
                               onChanged: (value) {
                                 setState(() {
-                                  tempProfileMsg = value;
+                                  tempProfileMessage = value;
                                 });
                               },
                               onFieldSubmitted: (value) {
-                                tempProfileMsg = value;
+                                tempProfileMessage = value;
                               },
                               maxLines: 4,
                               maxLength: 60,

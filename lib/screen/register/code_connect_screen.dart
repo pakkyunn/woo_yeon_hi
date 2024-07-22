@@ -474,9 +474,10 @@ class _ConnectCodeScreenState extends State<CodeConnectScreen> {
   Future<void> _codeVerify(UserProvider userProvider, String codeInput, String connectCode, BuildContext context) async {
     if (await getSpecificConnectCodeData(codeInput, 'host_idx') == userProvider.userIdx) {
       showBlackToast("본인의 코드로 연결할 수 없습니다.");
-    } else if (await isCodeDataExist(codeInput) == true &&
-        await isCodeConnected(codeInput) == false &&
-        DateTime.now().isBefore(DateTime.parse(await getSpecificConnectCodeData(codeInput, 'expired_time')))) {
+    } else if (await isCodeDataExist(codeInput) == true
+        && await isCodeConnected(codeInput) == false
+        && DateTime.now().isBefore(DateTime.parse(await getSpecificConnectCodeData(codeInput, 'expired_time')))
+    ){
       var hostIdx = await getSpecificConnectCodeData(codeInput, 'host_idx');
       await deleteConnectCodeData(connectCode);
       await saveLoverIdx(userProvider.userIdx, hostIdx);

@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:provider/provider.dart';
+import 'package:woo_yeon_hi/dao/user_dao.dart';
 import 'package:woo_yeon_hi/screen/more/app_setting_screen.dart';
 import 'package:woo_yeon_hi/screen/more/daily_summary_screen.dart';
 import 'package:woo_yeon_hi/screen/more/help_screen.dart';
@@ -11,6 +13,7 @@ import 'package:woo_yeon_hi/screen/more/ui_style_setting_screen.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/style/font.dart';
 import 'package:woo_yeon_hi/style/text_style.dart';
+import '../../model/user_model.dart';
 import '../../provider/login_register_provider.dart';
 import '../../widget/more/more_top_app_bar.dart';
 import 'account_management_screen.dart';
@@ -27,6 +30,9 @@ class _MoreScreenState extends State<MoreScreen> {
   Widget build(BuildContext context) {
     var deviceWidth = MediaQuery.of(context).size.width;
     var deviceHeight = MediaQuery.of(context).size.height;
+
+    final userSyncNickname = Provider.of<String>(context);
+    Provider.of<UserProvider>(context).setUserNickname(userSyncNickname);
 
     return Scaffold(
         resizeToAvoidBottomInset: false,
@@ -124,7 +130,7 @@ class _MoreScreenState extends State<MoreScreen> {
                               const SizedBox(height: 15),
                               SizedBox(
                                   width: deviceWidth * 0.4,
-                                  child: Text(provider.profileMsg,
+                                  child: Text(provider.profileMessage,
                                       style: const TextStyle(
                                           color: ColorFamily.black,
                                           fontSize: 12,

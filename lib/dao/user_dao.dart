@@ -9,7 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import '../model/user_model.dart';
 
 Future<void> saveUserData(UserModel user) async {
-  await FirebaseFirestore.instance.collection('userData').add({
+  await FirebaseFirestore.instance.collection('UserData').add({
     "user_idx": user.userIdx,
     "login_type": user.loginType,
     "user_account": user.userAccount,
@@ -31,7 +31,7 @@ Future<Map<String, dynamic>> getUserData(int userIdx) async {
   Map<String, dynamic> results = {};
 
   Query<Map<String, dynamic>> query = FirebaseFirestore.instance
-      .collection('userData')
+      .collection('UserData')
       .where('user_idx', isEqualTo: userIdx);
 
   var querySnapShot = await query.get();
@@ -47,7 +47,7 @@ dynamic getSpecificUserData(int userIdx, String data) async {
   dynamic result;
 
   Query<Map<String, dynamic>> query = FirebaseFirestore.instance
-      .collection('userData')
+      .collection('UserData')
       .where('user_idx', isEqualTo: userIdx);
 
   var querySnapShot = await query.get();
@@ -63,7 +63,7 @@ dynamic getSpecificUserData(int userIdx, String data) async {
 Future<void> updateSpecificUserData(
     int userIdx, String updateItem, var updateContent) async {
   var querySnapshot = await FirebaseFirestore.instance
-      .collection('userData')
+      .collection('UserData')
       .where('user_idx', isEqualTo: userIdx)
       .get();
 
@@ -74,7 +74,7 @@ Future<void> updateSpecificUserData(
 Future<void> deleteUserData(int userIdx) async {
   QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
       .instance
-      .collection('userData')
+      .collection('UserData')
       .where('user_idx', isEqualTo: userIdx)
       .get();
 

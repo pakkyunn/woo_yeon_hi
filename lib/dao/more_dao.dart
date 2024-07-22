@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import '../model/user_model.dart';
 import '../utils.dart';
 
 Future<bool> isExistOnSummaryDate(DateTime date) async {
@@ -34,7 +34,7 @@ Future<bool> isExistOnSummaryDate(DateTime date) async {
 Future<bool> saveAuthCodeData(String code, int idx) async {
   var querySnapshot = await FirebaseFirestore.instance
       .collection('CodeData')
-      .where('code', isEqualTo: code)
+      .where('auth_code', isEqualTo: code)
       .get();
   if(querySnapshot.docs.isNotEmpty){
     return false;
@@ -81,4 +81,18 @@ Future<void> deleteAuthCodeData(int userIdx) async {
   for (DocumentSnapshot<Map<String, dynamic>> docSnapshot in querySnapshot.docs) {
     await docSnapshot.reference.delete();
   }
+}
+
+Stream<String> userNicknameStream(int userIdx) {
+  return FirebaseFirestore.instance
+      .collection('UserData')
+      .where('user_idx', isEqualTo: userIdx)
+      .snapshots()
+      .map((snapshot) {
+    if (snapshot.docs.isNotEmpty) {
+      return snapshot.docs.first.data()['user_nickname'] ?? '';
+    } else {
+      return '';
+    }
+  });
 }

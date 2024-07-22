@@ -4,7 +4,7 @@ import 'package:woo_yeon_hi/dao/user_dao.dart';
 Future<bool> saveConnectCodeData(String code, int idx) async {
   var querySnapshot = await FirebaseFirestore.instance
       .collection('CodeData')
-      .where('code', isEqualTo: code)
+      .where('connect_code', isEqualTo: code)
       .get();
   if(querySnapshot.docs.isNotEmpty){
     return false;
@@ -22,7 +22,7 @@ Future<bool> saveConnectCodeData(String code, int idx) async {
 Future<void> deleteConnectCodeData(String code) async {
   QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
       .collection('CodeData')
-      .where('code', isEqualTo: code)
+      .where('connect_code', isEqualTo: code)
       .get();
 
   for (DocumentSnapshot<Map<String, dynamic>> docSnapshot in querySnapshot.docs) {
@@ -33,7 +33,7 @@ Future<void> deleteConnectCodeData(String code) async {
 Future<bool> isCodeDataExist(String code) async {
   var querySnapshot = await FirebaseFirestore.instance
       .collection('CodeData')
-      .where('code', isEqualTo: code)
+      .where('connect_code', isEqualTo: code)
       .get();
 
 // 해당 코드의 문서가 존재하는지 확인
@@ -47,7 +47,7 @@ Future<bool> isCodeDataExist(String code) async {
 Future<bool> isCodeConnected(String code) async {
   var querySnapshot = await FirebaseFirestore.instance
       .collection('CodeData')
-      .where('code', isEqualTo: code)
+      .where('connect_code', isEqualTo: code)
       .get();
 
 // 해당 코드의 code_connect_state를 확인
@@ -67,14 +67,14 @@ Future<bool> isCodeConnected(String code) async {
   return false;
 }
 
-Future<void> saveUserInfo(String userAccount) async {
+Future<void> saveUserInfo(String userAccount, int userIdx, int loginType) async {
   try {
-    var userIdx = await getUserSequence() + 1;
     await setUserSequence(userIdx);
-    await FirebaseFirestore.instance.collection('userData').add({
+    await FirebaseFirestore.instance.collection('UserData').add({
       'user_idx': userIdx,
       'user_account': userAccount,
-      'user_nickname': "기본닉네임"
+      'user_nickname': "기본닉네임",
+      'login_type':loginType,
     });
   } catch (e) {
     print("Error writing document: $e");
@@ -84,8 +84,8 @@ Future<void> saveUserInfo(String userAccount) async {
 
 Future<void> saveLoverIdx(int userIdx, int loverIdx) async {
   try {
-    // userAccount 필드와 일치하는 문서 검색
-    var querySnapshot = await FirebaseFirestore.instance.collection('userData')
+    // userIdx 필드와 일치하는 문서 검색
+    var querySnapshot = await FirebaseFirestore.instance.collection('UserData')
         .where('user_idx', isEqualTo: userIdx)
         .get();
 
@@ -96,7 +96,7 @@ Future<void> saveLoverIdx(int userIdx, int loverIdx) async {
         String docId = doc.id;
 
         // 새로운 필드를 추가하여 문서 업데이트
-        await FirebaseFirestore.instance.collection('userData').doc(docId).update({'lover_idx': loverIdx});
+        await FirebaseFirestore.instance.collection('UserData').doc(docId).update({'lover_idx': loverIdx});
       }
       print('문서 업데이트 완료');
     } else {
@@ -113,7 +113,7 @@ dynamic getSpecificConnectCodeData(String code, String dataField) async {
 
   Query<Map<String, dynamic>> query = FirebaseFirestore.instance
       .collection('CodeData')
-      .where('code', isEqualTo: code);
+      .where('connect_code', isEqualTo: code);
 
   var querySnapShot = await query.get();
   for (var doc in querySnapShot.docs) {
@@ -130,7 +130,7 @@ Future<void> updateConnectCode(String code, int userIdx) async {
   try {
     // userIdx 필드와 일치하는 문서 검색
     var querySnapshot = await FirebaseFirestore.instance.collection('CodeData')
-        .where('code', isEqualTo: code)
+        .where('connect_code', isEqualTo: code)
         .get();
 
     // 문서가 존재하는 경우 업데이트

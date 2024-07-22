@@ -17,7 +17,7 @@ class UserProvider extends ChangeNotifier {
   int _loginType = 0;
   String _loveDday = dateToString(DateTime.now());
   int _loverIdx = 0;
-  String _profileMsg = "";
+  String _profileMessage = "";
   bool _topBarActivate = false;
   int _topBarType = 0;
   String _userBirth = dateToString(DateTime.now());
@@ -45,7 +45,7 @@ class UserProvider extends ChangeNotifier {
 
   int get loverIdx => _loverIdx;
 
-  String get profileMsg => _profileMsg;
+  String get profileMessage => _profileMessage;
 
   bool get topBarActivate => _topBarActivate;
 
@@ -128,8 +128,8 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setProfileMsg(String profileMsg) {
-    _profileMsg = profileMsg;
+  void setProfileMessage(String profileMessage) {
+    _profileMessage = profileMessage;
     notifyListeners();
   }
 
@@ -192,7 +192,7 @@ class UserProvider extends ChangeNotifier {
     _loveDday = loveDday;
     _loverIdx = loverIdx;
     _notificationAllow = notificationAllow;
-    _profileMsg = profileMessage;
+    _profileMessage = profileMessage;
     _topBarActivate = topBarActivate;
     _topBarType = topBarType;
     _userBirth = userBirth;
@@ -202,11 +202,11 @@ class UserProvider extends ChangeNotifier {
   }
 
   void setUserProfile(String profileImage, String userNickname,
-      String userBirth, String profileMsg) {
+      String userBirth, String profileMessage) {
     _userProfileImage = profileImage;
     _userNickname = userNickname;
     _userBirth = userBirth;
-    _profileMsg = profileMsg;
+    _profileMessage = profileMessage;
 
     notifyListeners();
   }

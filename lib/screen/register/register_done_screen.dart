@@ -1,6 +1,7 @@
 import 'package:animated_background/animated_background.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/screen/main_screen.dart';
 import 'package:woo_yeon_hi/style/color.dart';
@@ -8,6 +9,7 @@ import 'package:woo_yeon_hi/style/text_style.dart';
 
 import '../../provider/login_register_provider.dart';
 import '../../style/font.dart';
+import '../../utils.dart';
 
 class RegisterDoneScreen extends StatefulWidget {
   const RegisterDoneScreen(
@@ -27,7 +29,6 @@ class _RegisterDoneScreen extends State<RegisterDoneScreen>
   Widget build(BuildContext context) {
     var deviceWidth = MediaQuery.of(context).size.width;
     var deviceHeight = MediaQuery.of(context).size.height;
-
     _registerUserData(
         context, Provider.of<UserProvider>(context, listen: false));
 
@@ -181,13 +182,19 @@ class _RegisterDoneScreen extends State<RegisterDoneScreen>
   }
 }
 
-Future<void> _registerUserData(
-    BuildContext context, UserProvider provider) async {
-  var userIdx = provider.userIdx;
+Future<void> _registerUserData(BuildContext context, UserProvider provider) async {
+
+  const storage = FlutterSecureStorage();
+  await storage.write(
+      key: "userAccount",
+      value: provider.userAccount);
+  await storage.write(
+      key: "userIdx",
+      value: "${provider.userIdx}");
 
   var myQuerySnapshot = await FirebaseFirestore.instance
-      .collection('userData')
-      .where('user_idx', isEqualTo: userIdx)
+      .collection('UserData')
+      .where('user_idx', isEqualTo: provider.userIdx)
       .get();
   var myDocument = myQuerySnapshot.docs.first;
 

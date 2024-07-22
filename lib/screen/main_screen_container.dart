@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:woo_yeon_hi/provider/login_register_provider.dart';
+import '../dao/more_dao.dart';
+import '../model/user_model.dart';
 import '../provider/tab_page_index_provider.dart';
 import 'diary/diary_screen.dart';
 import 'footPrint/footprint_screen.dart';
@@ -21,6 +24,8 @@ class _MainScreenContainerState extends State<MainScreenContainer> {
   @override
   Widget build(BuildContext context) {
     var tabPageIndexProvider = Provider.of<TabPageIndexProvider>(context, listen:false);
+    var userProvider = Provider.of<UserProvider>(context, listen:false);
+
     var currentPageIndex = tabPageIndexProvider.currentPageIndex;
     tabPageIndexProvider.addListener(() {
       // 화면의 순서값을 변경한다.
@@ -28,7 +33,15 @@ class _MainScreenContainerState extends State<MainScreenContainer> {
         currentPageIndex = tabPageIndexProvider.currentPageIndex;
       });
     });
-    return Container(
+    return MultiProvider(
+        providers: [
+          StreamProvider<String>(
+            create: (_) => userNicknameStream(userProvider.userIdx),
+            initialData: '',
+            catchError: (_, __) => '',
+          )
+    ],
+    child: Container(
       alignment: Alignment.center,
       child: [
         const DiaryScreen(),
@@ -37,6 +50,6 @@ class _MainScreenContainerState extends State<MainScreenContainer> {
         const FootprintScreen(),
         const MoreScreen()
       ][currentPageIndex],
-    );
+    ));
   }
 }
