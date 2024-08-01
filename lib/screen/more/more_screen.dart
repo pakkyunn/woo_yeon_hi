@@ -110,7 +110,7 @@ class _MoreScreenState extends State<MoreScreen> {
                                           fontFamily:
                                               FontFamily.mapleStoryBold)),
                                   InkWell(
-                                      onTap: () {
+                                      onTap: () async {
                                         Navigator.push(
                                                 context,
                                                 MaterialPageRoute(

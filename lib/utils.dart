@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:mailer/mailer.dart';
 import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/provider/login_register_provider.dart';
 import 'package:mailer/mailer.dart';

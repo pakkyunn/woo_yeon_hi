@@ -20,19 +20,19 @@ class LedgerDao{
 
   // 가계부 데이터를 Firestore에 저장하기
   Future<void> saveLedger(Ledger ledger) async {
-    await FirebaseFirestore.instance.collection('Ledger').add(ledger.toMap());
+    await FirebaseFirestore.instance.collection('LedgerData').add(ledger.toMap());
   }
 
   // 가계부 데이터를 Firestore에서 가져오기
   Future<List<Ledger>> getLedgerData() async {
-    var querySnapShot = await FirebaseFirestore.instance.collection('Ledger').get();
+    var querySnapShot = await FirebaseFirestore.instance.collection('LedgerData').get();
     return querySnapShot.docs.map((doc) => Ledger.fromMap(doc.data() as Map<String, dynamic>)).toList();
   }
 
   // 가계부 상세 데이터 가져오기
   Future<List<Ledger>> readLedger(String ledgerDate) async {
     var querySnapShot = await FirebaseFirestore.instance
-        .collection('Ledger')
+        .collection('LedgerData')
         .where('ledger_date', isGreaterThanOrEqualTo: ledgerDate, isLessThan: '${ledgerDate}T23:59:59.999')
         .where('ledger_state', isEqualTo: LedgerState.STATE_NORMAL.state)
         .get();
@@ -42,13 +42,13 @@ class LedgerDao{
   // 가계부 데이터 수정하기
   Future<List<Ledger>> updateLedger(Ledger ledger) async{
     var querySnapShot = await FirebaseFirestore.instance
-        .collection('Ledger')
+        .collection('LedgerData')
         .where('ledger_idx', isEqualTo: ledger.ledgerIdx)
         .get();
 
     var document = querySnapShot.docs.first.id;
     await FirebaseFirestore.instance
-        .collection('Ledger')
+        .collection('LedgerData')
         .doc(document)
         .update(ledger.toMap());
     return querySnapShot.docs.map((doc) => Ledger.fromMap(doc.data() as Map<String, dynamic>)).toList();
@@ -57,7 +57,7 @@ class LedgerDao{
   // 가계부 데이터 삭제 (상태 값 업데이트)
   Future<List<Ledger>> updateLedgerState(Ledger ledger) async{
     var querySnapShot = await FirebaseFirestore.instance
-        .collection('Ledger')
+        .collection('LedgerData')
         .where('ledger_idx', isEqualTo: ledger.ledgerIdx)
         .get();
     var document = querySnapShot.docs.first;
@@ -69,7 +69,7 @@ class LedgerDao{
   // 연도와 월 조건으로 현재 월 데이터 가져오기
   Future<List<Ledger>> getMonthlyLedgerData(DateTime focusedDay) async {
     String yearMonth = '${focusedDay.year.toString().padLeft(4, '0')}-${focusedDay.month.toString().padLeft(2, '0')}';
-    var querySnapshot = await FirebaseFirestore.instance.collection('Ledger')
+    var querySnapshot = await FirebaseFirestore.instance.collection('LedgerData')
         .where('ledger_date', isGreaterThanOrEqualTo: '$yearMonth-01T00:00:00.000')
         .where('ledger_date', isLessThan: '$yearMonth-32T00:00:00.000')
         .get();
@@ -80,7 +80,7 @@ class LedgerDao{
   Future<List<Ledger>> getPreviousMonthLedgerData(DateTime focusedDay) async {
     DateTime previousMonth = DateTime(focusedDay.year, focusedDay.month - 1, 1);
     String yearMonth = '${previousMonth.year.toString().padLeft(4, '0')}-${previousMonth.month.toString().padLeft(2, '0')}';
-    var querySnapshot = await FirebaseFirestore.instance.collection('Ledger')
+    var querySnapshot = await FirebaseFirestore.instance.collection('LedgerData')
         .where('ledger_date', isGreaterThanOrEqualTo: '$yearMonth-01T00:00:00.000')
         .where('ledger_date', isLessThan: '$yearMonth-32T00:00:00.000')
         .get();

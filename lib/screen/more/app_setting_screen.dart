@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/svg.dart';
@@ -5,10 +6,11 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/widget/more/app_setting_top_app_bar.dart';
+import 'package:app_settings/app_settings.dart';
 
+import '../../provider/login_register_provider.dart';
 import '../../dao/user_dao.dart';
 import '../../dialogs.dart';
-import '../../provider/login_register_provider.dart';
 import '../../style/color.dart';
 import '../../style/text_style.dart';
 import '../login/login_screen.dart';
@@ -67,11 +69,16 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
                                     trackOutlineWidth:
                                         const MaterialStatePropertyAll(1),
                                     onChanged: (bool value) async {
+                                      value
+                                      ? await _checkAndRequestNotificationPermission(context)
+                                        ? showPinkSnackBar(context, '앱 알림이 설정되었습니다.')
+                                        : setState(() {
+                                          value = false;
+                                        })
+                                      : showPinkSnackBar(context, '앱 알림이 해제되었습니다.');
+
                                       provider.setNotificationAllow(value);
                                       await updateSpecificUserData(provider.userIdx, 'notification_allow', value);
-                                      value
-                                      ? showPinkSnackBar(context, '앱 알림이 설정되었습니다.')
-                                      : showPinkSnackBar(context, '앱 알림이 해제되었습니다.');
                                     }),
                               ],
                             ),
@@ -180,6 +187,100 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
     });
   }
 
+  Future<bool> _checkAndRequestNotificationPermission(BuildContext context) async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    NotificationSettings settings = await messaging.getNotificationSettings();
+
+    if (settings.authorizationStatus == AuthorizationStatus.notDetermined) {
+      NotificationSettings newSettings = await messaging.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+
+      if (newSettings.authorizationStatus == AuthorizationStatus.authorized) {
+        return true;
+      } else
+      if (newSettings.authorizationStatus == AuthorizationStatus.denied) {
+        return false;
+      }
+    } else if (settings.authorizationStatus == AuthorizationStatus.denied) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return Dialog(
+              surfaceTintColor: ColorFamily.white,
+              backgroundColor: ColorFamily.white,
+              child: Wrap(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 30, 0, 20),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Column(
+                          children: [
+                            Text(
+                              '알림 권한 필요',
+                              style: TextStyleFamily.dialogTitleTextStyle,
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Text(
+                              '설정에서 알림 권한을 허용해주세요.',
+                              style: TextStyleFamily.normalTextStyle,
+                            )
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            TextButton(
+                                style: ButtonStyle(
+                                    overlayColor: MaterialStateProperty.all(
+                                        ColorFamily.gray)),
+                                onPressed: () => Navigator.pop(context, false),
+                                child: const Text(
+                                  "취소",
+                                  style: TextStyleFamily.dialogButtonTextStyle,
+                                )),
+                            TextButton(
+                                style: ButtonStyle(
+                                    overlayColor: MaterialStateProperty.all(
+                                        ColorFamily.gray)),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  AppSettings.openAppSettings(type: AppSettingsType.notification);
+                                },
+                                child: const Text(
+                                  "설정 열기",
+                                  style:
+                                  TextStyleFamily.dialogButtonTextStyle_pink,
+                                ))
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+      );
+      return false;
+  }
+    // If permission is already authorized, return true
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      return true;
+    }
+    // Default case to handle any other authorization status
+    return false;
+  }
+
   void _logOut(BuildContext context) async {
     switch (Provider.of<UserProvider>(context, listen: false).loginType) {
       case 1:
@@ -205,4 +306,6 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
             (Route<dynamic> route) => false);
     showBlackToast("로그아웃 되었습니다.");
   }
+
 }
+
