@@ -18,6 +18,7 @@ import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/routes/routes_generator.dart';
 import 'package:woo_yeon_hi/screen/login/login_screen.dart';
 import 'package:woo_yeon_hi/utils.dart';
+import 'package:home_widget/home_widget.dart';
 
 import 'dao/more_dao.dart';
 import 'firebase_options.dart';
@@ -36,6 +37,8 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  await HomeWidget.registerBackgroundCallback(backgroundCallback);
 
   initializeDateFormatting().then((_) async {
     final userData = await fetchUserData();
@@ -62,6 +65,20 @@ Future<void> main() async {
           userState: userData['userState'],
         )));
   });
+}
+
+Future<void> backgroundCallback(Uri? uri) async {
+  if (uri?.host == 'updatecounter') {
+    int _counter = 0;
+    await HomeWidget.getWidgetData<int>('_counter', defaultValue: 0)
+        .then((int? value) {
+      _counter = value ?? 0;
+      _counter++;
+    });
+    await HomeWidget.saveWidgetData<int>('_counter', _counter);
+    await HomeWidget.updateWidget(
+        name: 'AppWidgetProvider', iOSName: 'AppWidgetProvider');
+  }
 }
 
 class WooYeonHi extends StatefulWidget {
@@ -103,7 +120,9 @@ class WooYeonHi extends StatefulWidget {
   State<WooYeonHi> createState() => _WooYeonHiState();
 }
 
+
 class _WooYeonHiState extends State<WooYeonHi> {
+
   @override
   build(BuildContext context) {
 
@@ -152,3 +171,5 @@ class _WooYeonHiState extends State<WooYeonHi> {
         ));
   }
 }
+
+

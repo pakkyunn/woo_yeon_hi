@@ -1,4 +1,4 @@
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -26,7 +26,7 @@ class _LedgerCarouselSliderState extends State<LedgerCarouselSlider> {
             children: [
               Container(
                 height: 145,
-                child: CarouselSlider.builder(
+                child: FlutterCarousel.builder(
                   options: CarouselOptions(
                     height: 140.0,
                     // 보여줄 슬라이더의 비율

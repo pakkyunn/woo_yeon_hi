@@ -3,9 +3,9 @@
   "packages": [
     {
       "name": "_fe_analyzer_shared",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/_fe_analyzer_shared-67.0.0",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/_fe_analyzer_shared-72.0.0",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.3"
     },
     {
       "name": "_flutterfire_internals",
@@ -14,10 +14,16 @@
       "languageVersion": "3.2"
     },
     {
-      "name": "analyzer",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/analyzer-6.4.1",
+      "name": "_macros",
+      "rootUri": "file:///C:/FlutterProject/flutter-sdk/bin/cache/dart-sdk/pkg/_macros",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "analyzer",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/analyzer-6.7.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
     },
     {
       "name": "animated_background",
@@ -81,9 +87,9 @@
     },
     {
       "name": "build_daemon",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/build_daemon-4.0.1",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/build_daemon-4.0.2",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.4"
     },
     {
       "name": "build_resolvers",
@@ -93,15 +99,15 @@
     },
     {
       "name": "build_runner",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/build_runner-2.4.9",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/build_runner-2.4.12",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.5"
     },
     {
       "name": "build_runner_core",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/build_runner_core-7.3.0",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/build_runner_core-7.3.2",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.5"
     },
     {
       "name": "built_collection",
@@ -120,12 +126,6 @@
       "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/card_swiper-3.0.1",
       "packageUri": "lib/",
       "languageVersion": "2.15"
-    },
-    {
-      "name": "carousel_slider",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/carousel_slider-4.2.1",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
     },
     {
       "name": "characters",
@@ -183,7 +183,7 @@
     },
     {
       "name": "cross_file",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/cross_file-0.3.4+1",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/cross_file-0.3.4+2",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
@@ -219,9 +219,15 @@
     },
     {
       "name": "dio",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/dio-5.4.3+1",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/dio-5.5.0+1",
       "packageUri": "lib/",
-      "languageVersion": "2.15"
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "dio_web_adapter",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/dio_web_adapter-1.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
     },
     {
       "name": "encrypt",
@@ -273,9 +279,9 @@
     },
     {
       "name": "file_selector_windows",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/file_selector_windows-0.9.3+1",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/file_selector_windows-0.9.3+2",
       "packageUri": "lib/",
-      "languageVersion": "2.19"
+      "languageVersion": "3.2"
     },
     {
       "name": "firebase_core",
@@ -285,13 +291,13 @@
     },
     {
       "name": "firebase_core_platform_interface",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_core_platform_interface-5.1.0",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_core_platform_interface-5.2.0",
       "packageUri": "lib/",
-      "languageVersion": "2.18"
+      "languageVersion": "3.2"
     },
     {
       "name": "firebase_core_web",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_core_web-2.17.2",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_core_web-2.17.4",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -345,7 +351,7 @@
     },
     {
       "name": "flutter_carousel_widget",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_carousel_widget-2.2.0",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_carousel_widget-2.3.0",
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
@@ -393,7 +399,7 @@
     },
     {
       "name": "flutter_native_splash",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_native_splash-2.4.0",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_native_splash-2.4.1",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
@@ -405,9 +411,9 @@
     },
     {
       "name": "flutter_plugin_android_lifecycle",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.19",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.21",
       "packageUri": "lib/",
-      "languageVersion": "3.2"
+      "languageVersion": "3.4"
     },
     {
       "name": "flutter_secure_storage",
@@ -447,7 +453,7 @@
     },
     {
       "name": "flutter_slidable",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_slidable-3.1.0",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_slidable-3.1.1",
       "packageUri": "lib/",
       "languageVersion": "2.17"
     },
@@ -519,7 +525,7 @@
     },
     {
       "name": "google_identity_services_web",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/google_identity_services_web-0.3.1+1",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/google_identity_services_web-0.3.1+4",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
@@ -531,9 +537,9 @@
     },
     {
       "name": "google_sign_in_android",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_android-6.1.23",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_android-6.1.28",
       "packageUri": "lib/",
-      "languageVersion": "3.2"
+      "languageVersion": "3.4"
     },
     {
       "name": "google_sign_in_ios",
@@ -549,7 +555,7 @@
     },
     {
       "name": "google_sign_in_web",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_web-0.12.4",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_web-0.12.4+2",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
@@ -561,9 +567,15 @@
     },
     {
       "name": "graphs",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/graphs-2.3.1",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/graphs-2.3.2",
       "packageUri": "lib/",
-      "languageVersion": "2.18"
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "home_widget",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/home_widget-0.6.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "html",
@@ -573,7 +585,7 @@
     },
     {
       "name": "http",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/http-1.2.1",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/http-1.2.2",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
@@ -603,13 +615,13 @@
     },
     {
       "name": "image_picker_android",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/image_picker_android-0.8.12+1",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/image_picker_android-0.8.12+11",
       "packageUri": "lib/",
-      "languageVersion": "3.3"
+      "languageVersion": "3.4"
     },
     {
       "name": "image_picker_for_web",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/image_picker_for_web-3.0.4",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/image_picker_for_web-3.0.5",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
@@ -681,57 +693,57 @@
     },
     {
       "name": "kakao_flutter_sdk",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk-1.9.2",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk-1.9.5",
       "packageUri": "lib/",
-      "languageVersion": "2.18"
+      "languageVersion": "3.3"
     },
     {
       "name": "kakao_flutter_sdk_auth",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk_auth-1.9.2",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk_auth-1.9.5",
       "packageUri": "lib/",
-      "languageVersion": "2.18"
+      "languageVersion": "3.3"
     },
     {
       "name": "kakao_flutter_sdk_common",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk_common-1.9.2",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk_common-1.9.5",
       "packageUri": "lib/",
-      "languageVersion": "2.18"
+      "languageVersion": "3.3"
     },
     {
       "name": "kakao_flutter_sdk_friend",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk_friend-1.9.2",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk_friend-1.9.5",
       "packageUri": "lib/",
-      "languageVersion": "2.18"
+      "languageVersion": "3.3"
     },
     {
       "name": "kakao_flutter_sdk_navi",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk_navi-1.9.2",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk_navi-1.9.5",
       "packageUri": "lib/",
-      "languageVersion": "2.18"
+      "languageVersion": "3.3"
     },
     {
       "name": "kakao_flutter_sdk_share",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk_share-1.9.2",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk_share-1.9.5",
       "packageUri": "lib/",
-      "languageVersion": "2.18"
+      "languageVersion": "3.3"
     },
     {
       "name": "kakao_flutter_sdk_talk",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk_talk-1.9.2",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk_talk-1.9.5",
       "packageUri": "lib/",
-      "languageVersion": "2.18"
+      "languageVersion": "3.3"
     },
     {
       "name": "kakao_flutter_sdk_template",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk_template-1.9.2",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk_template-1.9.5",
       "packageUri": "lib/",
-      "languageVersion": "2.18"
+      "languageVersion": "3.3"
     },
     {
       "name": "kakao_flutter_sdk_user",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk_user-1.9.2",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/kakao_flutter_sdk_user-1.9.5",
       "packageUri": "lib/",
-      "languageVersion": "2.18"
+      "languageVersion": "3.3"
     },
     {
       "name": "latlong2",
@@ -741,13 +753,13 @@
     },
     {
       "name": "leak_tracker",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/leak_tracker-10.0.4",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/leak_tracker-10.0.5",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "leak_tracker_flutter_testing",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/leak_tracker_flutter_testing-3.0.3",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/leak_tracker_flutter_testing-3.0.5",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -771,19 +783,19 @@
     },
     {
       "name": "local_auth",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/local_auth-2.2.0",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/local_auth-2.3.0",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "local_auth_android",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/local_auth_android-1.0.38",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/local_auth_android-1.0.43",
       "packageUri": "lib/",
-      "languageVersion": "3.2"
+      "languageVersion": "3.4"
     },
     {
       "name": "local_auth_darwin",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/local_auth_darwin-1.3.1",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/local_auth_darwin-1.4.0",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -795,9 +807,9 @@
     },
     {
       "name": "local_auth_windows",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/local_auth_windows-1.0.10",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/local_auth_windows-1.0.11",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.2"
     },
     {
       "name": "logging",
@@ -806,8 +818,14 @@
       "languageVersion": "2.19"
     },
     {
+      "name": "macros",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/macros-0.1.2-main.4",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
       "name": "mailer",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/mailer-6.1.1",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/mailer-6.1.2",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -819,7 +837,7 @@
     },
     {
       "name": "material_color_utilities",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/material_color_utilities-0.8.0",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/material_color_utilities-0.11.1",
       "packageUri": "lib/",
       "languageVersion": "2.17"
     },
@@ -831,7 +849,7 @@
     },
     {
       "name": "meta",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/meta-1.12.0",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/meta-1.15.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -879,15 +897,15 @@
     },
     {
       "name": "path_provider",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider-2.1.3",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider-2.1.4",
       "packageUri": "lib/",
-      "languageVersion": "3.1"
+      "languageVersion": "3.2"
     },
     {
       "name": "path_provider_android",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_android-2.2.4",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_android-2.2.9",
       "packageUri": "lib/",
-      "languageVersion": "3.2"
+      "languageVersion": "3.4"
     },
     {
       "name": "path_provider_foundation",
@@ -909,9 +927,9 @@
     },
     {
       "name": "path_provider_windows",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_windows-2.2.1",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_windows-2.3.0",
       "packageUri": "lib/",
-      "languageVersion": "2.19"
+      "languageVersion": "3.2"
     },
     {
       "name": "pedantic",
@@ -927,7 +945,7 @@
     },
     {
       "name": "permission_handler_android",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/permission_handler_android-12.0.7",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/permission_handler_android-12.0.8",
       "packageUri": "lib/",
       "languageVersion": "2.15"
     },
@@ -939,13 +957,13 @@
     },
     {
       "name": "permission_handler_html",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/permission_handler_html-0.1.1",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/permission_handler_html-0.1.2",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "permission_handler_platform_interface",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/permission_handler_platform_interface-4.2.1",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/permission_handler_platform_interface-4.2.2",
       "packageUri": "lib/",
       "languageVersion": "2.14"
     },
@@ -1023,7 +1041,7 @@
     },
     {
       "name": "retrofit_generator",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/retrofit_generator-8.1.0",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/retrofit_generator-8.1.2",
       "packageUri": "lib/",
       "languageVersion": "2.19"
     },
@@ -1053,45 +1071,45 @@
     },
     {
       "name": "shared_preferences",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences-2.2.3",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences-2.3.1",
       "packageUri": "lib/",
-      "languageVersion": "3.1"
+      "languageVersion": "3.3"
     },
     {
       "name": "shared_preferences_android",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_android-2.2.2",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_android-2.3.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "shared_preferences_foundation",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_foundation-2.5.0",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
-      "name": "shared_preferences_foundation",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_foundation-2.3.5",
-      "packageUri": "lib/",
-      "languageVersion": "3.0"
-    },
-    {
       "name": "shared_preferences_linux",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_linux-2.3.2",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_linux-2.4.0",
       "packageUri": "lib/",
-      "languageVersion": "2.19"
+      "languageVersion": "3.2"
     },
     {
       "name": "shared_preferences_platform_interface",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_platform_interface-2.3.2",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_platform_interface-2.4.1",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.2"
     },
     {
       "name": "shared_preferences_web",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_web-2.3.0",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_web-2.4.1",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
     {
       "name": "shared_preferences_windows",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_windows-2.3.2",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_windows-2.4.0",
       "packageUri": "lib/",
-      "languageVersion": "2.19"
+      "languageVersion": "3.2"
     },
     {
       "name": "shelf",
@@ -1101,9 +1119,9 @@
     },
     {
       "name": "shelf_web_socket",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/shelf_web_socket-1.0.4",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/shelf_web_socket-2.0.0",
       "packageUri": "lib/",
-      "languageVersion": "2.17"
+      "languageVersion": "3.0"
     },
     {
       "name": "simple_gesture_detector",
@@ -1125,7 +1143,7 @@
     },
     {
       "name": "smooth_page_indicator",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/smooth_page_indicator-1.1.0",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/smooth_page_indicator-1.2.0+3",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -1191,9 +1209,9 @@
     },
     {
       "name": "test_api",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/test_api-0.7.0",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/test_api-0.7.2",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.2"
     },
     {
       "name": "timezone",
@@ -1245,19 +1263,19 @@
     },
     {
       "name": "url_launcher_web",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/url_launcher_web-2.3.1",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/url_launcher_web-2.3.3",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
     {
       "name": "url_launcher_windows",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/url_launcher_windows-3.1.1",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/url_launcher_windows-3.1.2",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.2"
     },
     {
       "name": "uuid",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/uuid-4.4.0",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/uuid-4.4.2",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
@@ -1287,7 +1305,7 @@
     },
     {
       "name": "vm_service",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/vm_service-14.2.1",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/vm_service-14.2.4",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
@@ -1304,8 +1322,14 @@
       "languageVersion": "3.3"
     },
     {
+      "name": "web_socket",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/web_socket-0.1.6",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
       "name": "web_socket_channel",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/web_socket_channel-2.4.5",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/web_socket_channel-3.0.1",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
@@ -1317,9 +1341,9 @@
     },
     {
       "name": "webview_flutter_android",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter_android-3.16.3",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter_android-3.16.6",
       "packageUri": "lib/",
-      "languageVersion": "3.2"
+      "languageVersion": "3.4"
     },
     {
       "name": "webview_flutter_platform_interface",
@@ -1329,7 +1353,7 @@
     },
     {
       "name": "webview_flutter_wkwebview",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter_wkwebview-3.13.1",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter_wkwebview-3.14.0",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -1341,9 +1365,9 @@
     },
     {
       "name": "win32",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/win32-5.5.0",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/win32-5.5.3",
       "packageUri": "lib/",
-      "languageVersion": "3.3"
+      "languageVersion": "3.4"
     },
     {
       "name": "wkt_parser",
@@ -1376,10 +1400,10 @@
       "languageVersion": "3.3"
     }
   ],
-  "generated": "2024-08-06T09:11:02.540309Z",
+  "generated": "2024-08-08T06:20:23.525008Z",
   "generator": "pub",
-  "generatorVersion": "3.4.4",
+  "generatorVersion": "3.5.0",
   "flutterRoot": "file:///C:/FlutterProject/flutter-sdk",
-  "flutterVersion": "3.22.3",
+  "flutterVersion": "3.24.0",
   "pubCache": "file:///C:/Users/oscar/AppData/Local/Pub/Cache"
 }

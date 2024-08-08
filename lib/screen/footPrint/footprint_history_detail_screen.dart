@@ -16,7 +16,9 @@ import 'package:woo_yeon_hi/widget/footPrint/footprint_history_detail_top_app_ba
 import '../../style/font.dart';
 
 class FootprintHistoryDetailScreen extends StatefulWidget {
-  FootprintHistoryDetailScreen(this.photoMap, this.index, this.historyList, {super.key});
+  FootprintHistoryDetailScreen(this.photoMap, this.index, this.historyList,
+      {super.key});
+
   PhotoMap photoMap;
   int index;
   List<History> historyList;
@@ -34,7 +36,8 @@ class _FootprintHistoryDetailScreenState
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => FootPrintHistoyDetailProvider(widget.historyList.length),
+      create: (context) =>
+          FootPrintHistoyDetailProvider(widget.historyList.length),
       child: Consumer<FootPrintHistoyDetailProvider>(
         builder: (context, provider, _) {
           // 해당 인덱스로 스크롤을 이동합니다.
@@ -58,7 +61,12 @@ class _FootprintHistoryDetailScreenState
                           key: ValueKey(index),
                           controller: _controller,
                           index: index,
-                          child: makeHistoryDeatil(context, index, widget.photoMap.mapIdx, provider, widget.historyList[index]));
+                          child: makeHistoryDeatil(
+                              context,
+                              index,
+                              widget.photoMap.mapIdx,
+                              provider,
+                              widget.historyList[index]));
                     }),
               ));
         },
@@ -66,8 +74,8 @@ class _FootprintHistoryDetailScreenState
     );
   }
 
-  Widget makeHistoryDeatil(
-      BuildContext context, int index, int mapIdx, FootPrintHistoyDetailProvider provider, History history) {
+  Widget makeHistoryDeatil(BuildContext context, int index, int mapIdx,
+      FootPrintHistoyDetailProvider provider, History history) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: Column(
@@ -97,7 +105,7 @@ class _FootprintHistoryDetailScreenState
                     // 제목, 날짜
                     SizedBox(
                       width:
-                      MediaQuery.of(context).size.width - 40 - 56 - 48 - 10,
+                          MediaQuery.of(context).size.width - 40 - 56 - 48 - 10,
                       child: Column(
                         children: [
                           Row(
@@ -126,7 +134,8 @@ class _FootprintHistoryDetailScreenState
                     onPressed: () {
                       _showModalBottomSheet(context, mapIdx, history);
                     },
-                    icon: SvgPicture.asset('lib/assets/icons/menu_vertical.svg'))
+                    icon:
+                        SvgPicture.asset('lib/assets/icons/menu_vertical.svg'))
               ],
             ),
           ),
@@ -144,27 +153,37 @@ class _FootprintHistoryDetailScreenState
                 child: FlutterCarousel(
                   items: List.generate(
                       history.historyImage.length,
-                          (index) => FutureBuilder(
-                        future: getHistoryImage(history.historyImage[index]),
-                        builder: (context, snapshot){
-                          if(snapshot.hasData == false){
-                            return const Center(child: CircularProgressIndicator(color: ColorFamily.pink,),);
-                          }else if(snapshot.hasError){
-                            return const Center(child: Text("network error", style: TextStyleFamily.normalTextStyle,),);
-                          }else{
-                            return snapshot.data!;
-                          }
-                        },
-                      )),
+                      (index) => FutureBuilder(
+                            future:
+                                getHistoryImage(history.historyImage[index]),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData == false) {
+                                return const Center(
+                                  child: CircularProgressIndicator(
+                                    color: ColorFamily.pink,
+                                  ),
+                                );
+                              } else if (snapshot.hasError) {
+                                return const Center(
+                                  child: Text(
+                                    "network error",
+                                    style: TextStyleFamily.normalTextStyle,
+                                  ),
+                                );
+                              } else {
+                                return snapshot.data!;
+                              }
+                            },
+                          )),
                   options: CarouselOptions(
-                    viewportFraction: 1.0,
-                    showIndicator: true,
-                    floatingIndicator: false,
-                    aspectRatio: 2 / 3,
-                    slideIndicator: const CircularSlideIndicator(
-                        currentIndicatorColor: ColorFamily.pink,
-                        indicatorBackgroundColor: ColorFamily.gray),
-                  ),
+                      viewportFraction: 1.0,
+                      showIndicator: true,
+                      floatingIndicator: false,
+                      aspectRatio: 2 / 3,
+                      slideIndicator: CircularSlideIndicator(
+                          slideIndicatorOptions: SlideIndicatorOptions(
+                              currentIndicatorColor: ColorFamily.pink,
+                              indicatorBackgroundColor: ColorFamily.gray))),
                 )),
           ),
           const SizedBox(
@@ -180,8 +199,9 @@ class _FootprintHistoryDetailScreenState
                   child: Text(
                     history.historyContent,
                     style: TextStyleFamily.normalTextStyle,
-                    overflow:
-                    provider.isMoreList[index] ? TextOverflow.ellipsis : null,
+                    overflow: provider.isMoreList[index]
+                        ? TextOverflow.ellipsis
+                        : null,
                     maxLines: provider.isMoreList[index] ? 2 : null,
                   ),
                 ),
@@ -223,7 +243,8 @@ class _FootprintHistoryDetailScreenState
     );
   }
 
-  void _showModalBottomSheet(BuildContext context, int mapIdx, History history) {
+  void _showModalBottomSheet(
+      BuildContext context, int mapIdx, History history) {
     showModalBottomSheet(
         context: context,
         showDragHandle: true,
@@ -240,7 +261,11 @@ class _FootprintHistoryDetailScreenState
                       // 바텀 시트 다이얼로그 팝
                       Navigator.pop(context);
                       // 수정 페이지로
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>FootprintHistoryModifyScreen(history)));
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  FootprintHistoryModifyScreen(history)));
                     },
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(30, 5, 30, 15),
@@ -249,7 +274,10 @@ class _FootprintHistoryDetailScreenState
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            SvgPicture.asset('lib/assets/icons/edit.svg', height: 20,),
+                            SvgPicture.asset(
+                              'lib/assets/icons/edit.svg',
+                              height: 20,
+                            ),
                             const Text(
                               "수정",
                               style: TextStyleFamily.smallTitleTextStyle,
@@ -348,7 +376,8 @@ class _FootprintHistoryDetailScreenState
                               },
                               child: const Text(
                                 "확인",
-                                style: TextStyleFamily.dialogButtonTextStyle_pink,
+                                style:
+                                    TextStyleFamily.dialogButtonTextStyle_pink,
                               ))
                         ],
                       )
@@ -362,8 +391,6 @@ class _FootprintHistoryDetailScreenState
   }
 }
 
-
-
 TextStyle dateTextStyle = const TextStyle(
     fontFamily: FontFamily.mapleStoryLight,
     fontSize: 12,
@@ -373,7 +400,3 @@ TextStyle contentMoreTextStyle = const TextStyle(
     fontFamily: FontFamily.mapleStoryLight,
     fontSize: 12,
     color: ColorFamily.gray);
-
-
-
-
