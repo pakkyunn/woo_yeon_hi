@@ -38,7 +38,7 @@ class _MainScreenContainerState extends State<MainScreenContainer> {
       });
     });
 
-    _saveAndLoadDdayPrefs(userProvider.loveDday);
+    _saveAndLoadDdayPrefs2(userProvider.loveDday);
 
     return MultiProvider(
         providers: [
@@ -61,28 +61,9 @@ class _MainScreenContainerState extends State<MainScreenContainer> {
   }
 }
 
-Future<void> _saveAndLoadDdayPrefs(String loveDday) async {
-  DateTime loveDdayDate = stringToDate(loveDday);
-
-  final prefs = await SharedPreferences.getInstance();
-
-  // 데이터를 저장하는 비동기 작업
-  bool success = await prefs.setString("loveDday", DateFormat('yyyy-MM-dd').format(loveDdayDate));
-
-  if (success) {
-    print('날짜가 성공적으로 저장되었습니다!');
-
-    // 1초 지연 추가
-    await Future.delayed(Duration(seconds: 1));
-
-    // 저장이 완료된 후 데이터를 읽음
-    String? savedDate = prefs.getString("loveDday");
-    if (savedDate != null) {
-      print('저장된 날짜: $savedDate');
-    } else {
-      print('저장된 날짜가 없습니다.');
-    }
-  } else {
-    print('날짜 저장에 실패했습니다.');
-  }
+Future<void> _saveAndLoadDdayPrefs2(String loveDday) async {
+  const storage = FlutterSecureStorage();
+  await storage.write(
+      key: "loveDday",
+      value: loveDday);
 }

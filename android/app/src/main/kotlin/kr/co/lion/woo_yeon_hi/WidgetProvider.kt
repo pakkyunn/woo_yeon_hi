@@ -23,35 +23,30 @@ import java.util.Date
 import java.util.Locale
 
 
-class DdayWidgetProvider : AppWidgetProvider() {
+class AppWidgetProvider : HomeWidgetProvider() {
 
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray,
+        widgetData: SharedPreferences
     ) {
-        Log.d("DdayWidgetProvider", "onUpdate called")
-
         appWidgetIds.forEach { widgetId ->
             val views = RemoteViews(context.packageName, R.layout.widget_layout).apply {
-                Log.d("DdayWidgetProvider", "Updating widget ID: $widgetId")
+                Log.d("AppWidgetProvider", "onUpdate called")
+                Log.d("AppWidgetProvider", "Updating widget ID: $widgetId")
 
                 // Open App on Widget Click
-                val pendingIntent = HomeWidgetLaunchIntent.getActivity(
-                    context,
-                    MainActivity::class.java
-                )
+                val pendingIntent =
+                    HomeWidgetLaunchIntent.getActivity(context, MainActivity::class.java)
                 setOnClickPendingIntent(R.id.widget_layout, pendingIntent)
 
-
-                // SharedPreferences에서 저장된 날짜를 가져옴
-                val sharedPreferences = context.getSharedPreferences("default", Context.MODE_PRIVATE)
-                val loveDdayString = sharedPreferences.getString("loveDday", null)
+                val loveDdayString = widgetData.getString("loveDday", null)
                 if (loveDdayString != null) {
-                    Log.d("DdayWidgetProvider", "읽어온 날짜: $loveDdayString")
+                    Log.d("AppWidgetProvider", "읽어온 날짜: $loveDdayString")
                     // 날짜를 읽어와서 계산
                 } else {
-                    Log.d("DdayWidgetProvider", "날짜를 읽어오지 못했습니다. 기본값을 설정합니다.")
+                    Log.d("AppWidgetProvider", "날짜를 읽어오지 못했습니다. 기본값을 설정합니다.")
                     // 기본값 또는 다른 로직 처리
                 }
 
@@ -84,19 +79,19 @@ class DdayWidgetProvider : AppWidgetProvider() {
                 val dDayCounterText = "우리가 만난지\n${dDayCounter}일 째"
                 setTextViewText(R.id.dDay_counter, dDayCounterText)
 
-//                // Pending intent to update counter on button click
-//                val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(
-//                    context,
-//                    Uri.parse("myAppWidget://updatecounter")
-//                )
-//                setOnClickPendingIntent(R.id.dDay_counter, backgroundIntent)
+                // Pending intent to update counter on button click
+                val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(
+                    context,
+                    Uri.parse("myAppWidget://updatecounter")
+                )
+                setOnClickPendingIntent(R.id.dDay_counter, backgroundIntent)
             }
             appWidgetManager.updateAppWidget(widgetId, views)
         }
     }
 
     private fun _stringToDate(dateString: String): Date? {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("yyyy. MM. d.", Locale.getDefault())
         return try {
             dateFormat.parse(dateString)
         } catch (e: ParseException) {

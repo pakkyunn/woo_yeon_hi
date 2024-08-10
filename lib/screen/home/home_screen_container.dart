@@ -40,8 +40,6 @@ class _HomeScreenContainerState extends State<HomeScreenContainer> {
   }
 }
 
-
-
 Widget dDay() {
   return Consumer<UserProvider>(
       builder: (context, provider, child) {
@@ -81,7 +79,7 @@ Widget dDay() {
                   SvgPicture.asset('lib/assets/icons/like.svg'),
                   const SizedBox(height: 5),
                   Text(
-                    '${DateTime.now().difference(stringToDate(provider.loveDday)).inDays}일',
+                    '${DateTime.now().difference(stringToDate(provider.loveDday)).inDays+1}일',
                     // '100일',
                     style: const TextStyle(fontFamily: FontFamily.mapleStoryLight),
                   ),

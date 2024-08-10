@@ -17,7 +17,7 @@ class MainActivity: FlutterFragmentActivity() {
     private fun updateAppWidget() {
         val context = this
         val appWidgetManager = AppWidgetManager.getInstance(context)
-        val thisWidget = ComponentName(context, DdayWidgetProvider::class.java)
+        val thisWidget = ComponentName(context, AppWidgetProvider::class.java)
         val allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget)
 
         // 위젯을 강제로 업데이트
