@@ -38,7 +38,7 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  await HomeWidget.registerBackgroundCallback(backgroundCallback);
+  // await HomeWidget.registerBackgroundCallback(backgroundCallback);
 
   initializeDateFormatting().then((_) async {
     final userData = await fetchUserData();
@@ -67,19 +67,19 @@ Future<void> main() async {
   });
 }
 
-Future<void> backgroundCallback(Uri? uri) async {
-  if (uri?.host == 'updatecounter') {
-    int _counter = 0;
-    await HomeWidget.getWidgetData<int>('_counter', defaultValue: 0)
-        .then((int? value) {
-      _counter = value ?? 0;
-      _counter++;
-    });
-    await HomeWidget.saveWidgetData<int>('_counter', _counter);
-    await HomeWidget.updateWidget(
-        name: 'AppWidgetProvider', iOSName: 'AppWidgetProvider');
-  }
-}
+// Future<void> backgroundCallback(Uri? uri) async {
+//   if (uri?.host == 'updatecounter') {
+//     int _counter = 0;
+//     await HomeWidget.getWidgetData<int>('_counter', defaultValue: 0)
+//         .then((int? value) {
+//       _counter = value ?? 0;
+//       _counter++;
+//     });
+//     await HomeWidget.saveWidgetData<int>('_counter', _counter);
+//     await HomeWidget.updateWidget(
+//         name: 'AppWidgetProvider', iOSName: 'AppWidgetProvider');
+//   }
+// }
 
 class WooYeonHi extends StatefulWidget {
   WooYeonHi(

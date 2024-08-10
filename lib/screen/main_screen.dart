@@ -15,14 +15,12 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-
   @override
   void initState() {
     super.initState();
     _initializeNotifications();
     _listenToCollection();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -39,26 +37,29 @@ class _MainScreenState extends State<MainScreen> {
 
   void _initializeNotifications() {
     final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+        FlutterLocalNotificationsPlugin();
 
     const AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@mipmap/ic_launcher');
     const InitializationSettings initializationSettings =
-    InitializationSettings(android: initializationSettingsAndroid);
+        InitializationSettings(android: initializationSettingsAndroid);
     _flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: _onDidReceiveNotificationResponse,
     );
   }
 
-  Future<void> _onDidReceiveNotificationResponse(NotificationResponse response) async {
+  Future<void> _onDidReceiveNotificationResponse(
+      NotificationResponse response) async {
     if (response.payload != null) {
       switch (response.payload) {
         case 'document1':
-          Navigator.of(context).pushNamed('/detail1', arguments: response.payload);
+          Navigator.of(context)
+              .pushNamed('/detail1', arguments: response.payload);
           break;
         case 'document2':
-          Navigator.of(context).pushNamed('/detail2', arguments: response.payload);
+          Navigator.of(context)
+              .pushNamed('/detail2', arguments: response.payload);
           break;
         default:
           Navigator.of(context).pushNamed('/');
@@ -73,7 +74,11 @@ class _MainScreenState extends State<MainScreen> {
     int loverIdx = Provider.of<UserProvider>(context, listen: false).loverIdx;
     bool notificationIsAllowed = true;
 
-    _firestore.collection('DiaryData').where('diary_user_idx', isEqualTo: loverIdx).snapshots().listen((snapshot) {
+    _firestore
+        .collection('DiaryData')
+        .where('diary_user_idx', isEqualTo: loverIdx)
+        .snapshots()
+        .listen((snapshot) {
       if (notificationIsAllowed) {
         for (var change in snapshot.docChanges) {
           if (change.type == DocumentChangeType.added) {
@@ -83,7 +88,11 @@ class _MainScreenState extends State<MainScreen> {
       }
     });
 
-    _firestore.collection('HistoryData').where('history_user_idx', isEqualTo: loverIdx).snapshots().listen((snapshot) {
+    _firestore
+        .collection('HistoryData')
+        .where('history_user_idx', isEqualTo: loverIdx)
+        .snapshots()
+        .listen((snapshot) {
       if (snapshot.docChanges.isNotEmpty && notificationIsAllowed) {
         for (var change in snapshot.docChanges) {
           if (change.type == DocumentChangeType.added) {
@@ -93,7 +102,11 @@ class _MainScreenState extends State<MainScreen> {
       }
     });
 
-    _firestore.collection('LedgerData').where('ledger_user_idx', isEqualTo: loverIdx).snapshots().listen((snapshot) {
+    _firestore
+        .collection('LedgerData')
+        .where('ledger_user_idx', isEqualTo: loverIdx)
+        .snapshots()
+        .listen((snapshot) {
       if (snapshot.docChanges.isNotEmpty && notificationIsAllowed) {
         for (var change in snapshot.docChanges) {
           if (change.type == DocumentChangeType.added) {
@@ -103,7 +116,11 @@ class _MainScreenState extends State<MainScreen> {
       }
     });
 
-    _firestore.collection('PlanData').where('plan_user_idx', isEqualTo: loverIdx).snapshots().listen((snapshot) {
+    _firestore
+        .collection('PlanData')
+        .where('plan_user_idx', isEqualTo: loverIdx)
+        .snapshots()
+        .listen((snapshot) {
       if (snapshot.docChanges.isNotEmpty && notificationIsAllowed) {
         for (var change in snapshot.docChanges) {
           if (change.type == DocumentChangeType.added) {
@@ -113,7 +130,11 @@ class _MainScreenState extends State<MainScreen> {
       }
     });
 
-    _firestore.collection('ScheduleData').where('schedule_user_idx', isEqualTo: loverIdx).snapshots().listen((snapshot) {
+    _firestore
+        .collection('ScheduleData')
+        .where('schedule_user_idx', isEqualTo: loverIdx)
+        .snapshots()
+        .listen((snapshot) {
       if (snapshot.docChanges.isNotEmpty && notificationIsAllowed) {
         for (var change in snapshot.docChanges) {
           if (change.type == DocumentChangeType.added) {
@@ -126,10 +147,10 @@ class _MainScreenState extends State<MainScreen> {
 
   Future<void> _showNotification(String title, String body) async {
     final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+        FlutterLocalNotificationsPlugin();
 
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
-    AndroidNotificationDetails(
+        AndroidNotificationDetails(
       'your_channel_id',
       'your_channel_name',
       importance: Importance.max,
@@ -137,8 +158,9 @@ class _MainScreenState extends State<MainScreen> {
       showWhen: false,
     );
     const NotificationDetails platformChannelSpecifics =
-    NotificationDetails(android: androidPlatformChannelSpecifics);
-    int notificationId = DateTime.now().millisecondsSinceEpoch ~/ 1000; // 고유 ID 생성
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+    int notificationId =
+        DateTime.now().millisecondsSinceEpoch ~/ 1000; // 고유 ID 생성
     await _flutterLocalNotificationsPlugin.show(
       notificationId,
       title,
@@ -155,16 +177,22 @@ class _MainScreenState extends State<MainScreen> {
     // 문서에 'notified' 필드가 없거나 false로 설정되어 있는 경우에만 알림 전송
     if (data['notified'] == null || data['notified'] == false) {
       switch (collectionName) {
-        case 'DiaryData': _showNotification("우연히 알림", "연인이 작성한 일기가 도착했습니다!");
-        case 'HistoryData': _showNotification("우연히 알림", "새로운 히스토리가 생성되었습니다!");
-        case 'LedgerData': _showNotification("우연히 알림", "가계부가 업데이트되었습니다!");
-        case 'PlanData': _showNotification("우연히 알림", "새로운 데이트플랜이 등록되었습니다!");
-        case 'ScheduleData': _showNotification("우연히 알림", "새로운 일정이 등록되었습니다!");
-
+        case 'DiaryData':
+          _showNotification("우연히 알림", "연인이 작성한 일기가 도착했습니다!");
+        case 'HistoryData':
+          _showNotification("우연히 알림", "새로운 히스토리가 생성되었습니다!");
+        case 'LedgerData':
+          _showNotification("우연히 알림", "가계부가 업데이트되었습니다!");
+        case 'PlanData':
+          _showNotification("우연히 알림", "새로운 데이트플랜이 등록되었습니다!");
+        case 'ScheduleData':
+          _showNotification("우연히 알림", "새로운 일정이 등록되었습니다!");
       }
       // 중복알림 방지를 위해, 알림을 보낸 후 'notified' 필드를 true로 업데이트
-      _firestore.collection(collectionName).doc(document.id).update({'notified': true});
+      _firestore
+          .collection(collectionName)
+          .doc(document.id)
+          .update({'notified': true});
     }
   }
-
 }
