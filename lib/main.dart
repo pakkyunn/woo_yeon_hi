@@ -69,9 +69,11 @@ Future<void> main() async {
 
 Future<void> backgroundCallback(Uri? uri) async {
   const storage = FlutterSecureStorage();
-  String? loveDdayString = await storage.read(key: "loveDday")?? null;
+  String today = dateToString(DateTime.now());
+  String? loveDdayString = await storage.read(key: "loveDday")?? today;
 
   await HomeWidget.saveWidgetData<String>('loveDday', loveDdayString);
+  await Future.delayed(const Duration(seconds: 1)); // 1초 지연 추가
   // await HomeWidget.getWidgetData<String>('loveDday', defaultValue: "");
   await HomeWidget.updateWidget(name: 'AppWidgetProvider', iOSName: 'AppWidgetProvider');
 }

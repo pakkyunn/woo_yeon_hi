@@ -38,7 +38,7 @@ class _MainScreenContainerState extends State<MainScreenContainer> {
       });
     });
 
-    _saveAndLoadDdayPrefs2(userProvider.loveDday);
+    _saveDdayPrefs(userProvider.loveDday);
 
     return MultiProvider(
         providers: [
@@ -61,9 +61,7 @@ class _MainScreenContainerState extends State<MainScreenContainer> {
   }
 }
 
-Future<void> _saveAndLoadDdayPrefs2(String loveDday) async {
+Future<void> _saveDdayPrefs(String loveDday) async {
   const storage = FlutterSecureStorage();
-  await storage.write(
-      key: "loveDday",
-      value: loveDday);
+  await storage.write(key: "loveDday", value: loveDday);
 }

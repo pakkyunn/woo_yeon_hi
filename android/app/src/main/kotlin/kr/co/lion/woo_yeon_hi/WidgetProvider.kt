@@ -37,8 +37,7 @@ class AppWidgetProvider : HomeWidgetProvider() {
                 Log.d("AppWidgetProvider", "Updating widget ID: $widgetId")
 
                 // Open App on Widget Click
-                val pendingIntent =
-                    HomeWidgetLaunchIntent.getActivity(context, MainActivity::class.java)
+                val pendingIntent = HomeWidgetLaunchIntent.getActivity(context, MainActivity::class.java)
                 setOnClickPendingIntent(R.id.widget_layout, pendingIntent)
 
                 val loveDdayString = widgetData.getString("loveDday", null)
@@ -54,25 +53,32 @@ class AppWidgetProvider : HomeWidgetProvider() {
 
                 if (loveDdayString != null) {
                     val startDate = _stringToDate(loveDdayString)
-                    val currentDate = Calendar.getInstance().apply {
-                        set(Calendar.HOUR_OF_DAY, 0)
-                        set(Calendar.MINUTE, 0)
-                        set(Calendar.SECOND, 0)
-                        set(Calendar.MILLISECOND, 0)
-                    }
 
-                    val startCalendar = Calendar.getInstance().apply {
-                        time = startDate
-                        set(Calendar.HOUR_OF_DAY, 0)
-                        set(Calendar.MINUTE, 0)
-                        set(Calendar.SECOND, 0)
-                        set(Calendar.MILLISECOND, 0)
-                    }
+                    if (startDate != null) {
+                        val currentDate = Calendar.getInstance().apply {
+                            set(Calendar.HOUR_OF_DAY, 0)
+                            set(Calendar.MINUTE, 0)
+                            set(Calendar.SECOND, 0)
+                            set(Calendar.MILLISECOND, 0)
+                        }
 
-                    // 두 날짜의 차이를 '일' 단위로 계산
-                    val diffInMillis = currentDate.timeInMillis - startCalendar.timeInMillis
-                    dDayCounter = (diffInMillis / (1000 * 60 * 60 * 24)).toInt() + 1
+                        val startCalendar = Calendar.getInstance().apply {
+                            time = startDate
+                            set(Calendar.HOUR_OF_DAY, 0)
+                            set(Calendar.MINUTE, 0)
+                            set(Calendar.SECOND, 0)
+                            set(Calendar.MILLISECOND, 0)
+                        }
+
+                        // 두 날짜의 차이를 '일' 단위로 계산
+                        val diffInMillis = currentDate.timeInMillis - startCalendar.timeInMillis
+                        dDayCounter = (diffInMillis / (1000 * 60 * 60 * 24)).toInt() + 1
+                    } else {
+                        // startDate가 null인 경우 처리
+                        dDayCounter = 0
+                    }
                 } else {
+                    // loveDdayString이 null인 경우 처리
                     dDayCounter = 0
                 }
 
