@@ -82,7 +82,7 @@ class AppWidgetProvider : HomeWidgetProvider() {
                     dDayCounter = 0
                 }
 
-                val dDayCounterText = "우리가 만난지\n${dDayCounter}일 째"
+                val dDayCounterText = "${dDayCounter}일"
                 setTextViewText(R.id.dDay_counter, dDayCounterText)
 
                 // Pending intent to update counter on button click
@@ -92,6 +92,10 @@ class AppWidgetProvider : HomeWidgetProvider() {
                 )
                 setOnClickPendingIntent(R.id.dDay_counter, backgroundIntent)
             }
+            // 아이콘 이미지를 설정
+            views.setImageViewResource(R.id.heart_image, R.drawable.heart_fill)
+
+            // Update widget
             appWidgetManager.updateAppWidget(widgetId, views)
         }
     }

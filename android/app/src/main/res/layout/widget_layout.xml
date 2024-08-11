@@ -1,23 +1,30 @@
 <FrameLayout
     android:id="@+id/widget_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="120dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="70dp"
     android:layout_height="80dp">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#1f303d">
+        android:gravity="center"
+        android:orientation="vertical"
+        android:background="#FCF8F5">
+
+        <ImageView
+            android:id="@+id/heart_image"
+            android:layout_width="20sp"
+            android:layout_height="20sp"
+            android:layout_centerInParent="true"
+            tools:src="@drawable/heart_fill" />
 
         <TextView
             android:id="@+id/dDay_counter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:gravity="center_horizontal"
-            android:padding="12dp"
-            android:text="--"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
-    </RelativeLayout>
+            android:text="-"
+            android:textColor="#FEBE98"
+            android:textSize="16sp"/>
+    </LinearLayout>
 </FrameLayout>
