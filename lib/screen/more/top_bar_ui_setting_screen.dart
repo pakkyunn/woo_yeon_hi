@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -334,18 +335,17 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
                                   inactiveThumbColor: ColorFamily.gray,
                                   inactiveTrackColor: ColorFamily.white,
                                   trackOutlineColor: provider.topBarActivate
-                                      ? MaterialStateProperty.all(
+                                      ? WidgetStateProperty.all(
                                           Colors.transparent)
-                                      : MaterialStateProperty.all(
+                                      : WidgetStateProperty.all(
                                           ColorFamily.gray),
                                   trackOutlineWidth:
-                                      const MaterialStatePropertyAll(1),
+                                      const WidgetStatePropertyAll(1),
                                   onChanged: (bool value) async {
+                                    _showCustomNotification();
                                     provider.setTopBarActivate(value);
-                                    await updateSpecificUserData(
-                                        provider.userIdx,
-                                        'top_bar_activate',
-                                        value);
+                                    await updateSpecificUserData(provider.userIdx,'top_bar_activate', value);
+                                    // value ?_showCustomNotification() :null;
                                   }),
                             ],
                           ),
@@ -357,4 +357,15 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
               );
             });
           }
+}
+
+Future<void> _showCustomNotification() async {
+  const platform = MethodChannel('custom_notification_channel');
+
+  try {
+    final String result = await platform.invokeMethod('showCustomNotification');
+    print(result);
+  } on PlatformException catch (e) {
+    print("Failed to show notification: '${e.message}'.");
+  }
 }
