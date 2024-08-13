@@ -18,6 +18,8 @@ import androidx.core.app.NotificationCompat
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.embedding.engine.FlutterEngine
 import android.graphics.Color
+import android.widget.RemoteViews
+import android.util.Log
 
 class MainActivity: FlutterFragmentActivity() {
     private val CHANNEL = "custom_notification_channel"
@@ -52,8 +54,14 @@ class MainActivity: FlutterFragmentActivity() {
 
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "showCustomNotification") {
-                showCustomNotification()
-                result.success("Notification Shown")
+                val dDayCount = call.argument<Int>("dDayCount")
+                Log.d("Notification", "DaysCount: $dDayCount")
+                if (dDayCount != null) {
+                    showCustomNotification(dDayCount)
+                    result.success("Notification Shown")
+                } else {
+                    result.error("INVALID_ARGUMENTS", "Invalid arguments provided", null)
+                }
             } else {
                 result.notImplemented()
             }
@@ -70,13 +78,13 @@ class MainActivity: FlutterFragmentActivity() {
         appWidgetManager.notifyAppWidgetViewDataChanged(allWidgetIds, R.id.widget_layout)
     }
 
-    private fun showCustomNotification() {
+    private fun showCustomNotification(dDayCount: Int) {
         val channelId = CHANNEL_ID
 //        val channelName = "Custom Notification"
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(channelId, "Custom Notification", NotificationManager.IMPORTANCE_HIGH).apply {
+            val channel = NotificationChannel(channelId, "디데이 상단바", NotificationManager.IMPORTANCE_HIGH).apply {
                 enableLights(true)
                 lightColor = Color.RED
                 enableVibration(true)
@@ -89,15 +97,25 @@ class MainActivity: FlutterFragmentActivity() {
 //        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
+
+        val top_bar_style1_customView = RemoteViews(packageName, R.layout.top_bar_style1_layout)
+        top_bar_style1_customView.setTextViewText(R.id.top_bar_style1_text, "${dDayCount}일")
+        top_bar_style1_customView.setImageViewResource(R.id.top_bar_style1_image, R.drawable.like_4x)
+
+
         val notification = NotificationCompat.Builder(this, channelId)
-            .setContentTitle("309일")
+//            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+            .setStyle(null)
+            .setCustomContentView(top_bar_style1_customView)
+//            .setContentTitle("${dDayCount}일??")
 //            .setContentText("이미지가 포함된 알림 예제입니다.")
-            .setSmallIcon(R.drawable.heart_fill)  // 작은 아이콘
-//            .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.heart_fill))  // 큰 아이콘
-            .setStyle(NotificationCompat.BigPictureStyle()
-//                .bigPicture(BitmapFactory.decodeResource(resources, R.drawable.heart_fill))  // 큰 이미지
+            .setSmallIcon(R.drawable.like)  // 작은 아이콘
+//            .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.like))  // 큰 아이콘
+//            .setStyle(NotificationCompat.BigPictureStyle()
+//                .bigPicture(BitmapFactory.decodeResource(resources, R.drawable.like))  // 큰 이미지
 //                .bigLargeIcon(null as Bitmap?)
-             )
+//                .bigLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.like))
+//             )
             .setContentIntent(pendingIntent)
             .setAutoCancel(false)  // 클릭해도 알림이 자동으로 사라지지 않음
             .setOngoing(true)      // 고정 알림 설정

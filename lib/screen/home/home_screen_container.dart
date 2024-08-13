@@ -80,7 +80,6 @@ Widget dDay() {
                   const SizedBox(height: 5),
                   Text(
                     '${DateTime.now().difference(stringToDate(provider.loveDday)).inDays+1}일',
-                    // '100일',
                     style: const TextStyle(fontFamily: FontFamily.mapleStoryLight),
                   ),
                 ],
