@@ -97,19 +97,38 @@ class MainActivity: FlutterFragmentActivity() {
 //        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
+        // 상단바 스타일 1 커스텀뷰
+        val top_bar_style1_customView = RemoteViews(packageName, R.layout.top_bar_style_1_2_layout)
+        top_bar_style1_customView.setTextViewText(R.id.top_bar_style_1_2_text, "${dDayCount}일")
+        top_bar_style1_customView.setImageViewResource(R.id.top_bar_style_1_2_image, R.drawable.like_4x)
 
-        val top_bar_style1_customView = RemoteViews(packageName, R.layout.top_bar_style1_layout)
-        top_bar_style1_customView.setTextViewText(R.id.top_bar_style1_text, "${dDayCount}일")
-        top_bar_style1_customView.setImageViewResource(R.id.top_bar_style1_image, R.drawable.like_4x)
+        // 상단바 스타일 2 커스텀뷰
+        val top_bar_style2_customView = RemoteViews(packageName, R.layout.top_bar_style_1_2_layout)
+        top_bar_style2_customView.setTextViewText(R.id.top_bar_style_1_2_text, "+ ${dDayCount}")
+        top_bar_style2_customView.setImageViewResource(R.id.top_bar_style_1_2_image, R.drawable.like_4x)
+
+        // 상단바 스타일 3 커스텀뷰
+        val top_bar_style3_customView = RemoteViews(packageName, R.layout.top_bar_style_3_layout)
+        top_bar_style3_customView.setImageViewResource(R.id.top_bar_style_3_image1, R.drawable.profile_circle_4x)
+        top_bar_style3_customView.setImageViewResource(R.id.top_bar_style_3_image2, R.drawable.like_4x)
+        top_bar_style3_customView.setTextViewText(R.id.top_bar_style_3_text, "${dDayCount}일")
+        top_bar_style3_customView.setImageViewResource(R.id.top_bar_style_3_image3, R.drawable.profile_circle_4x)
+
+        // 상단바 스타일 4 커스텀뷰
+        val top_bar_style4_customView = RemoteViews(packageName, R.layout.top_bar_style_4_layout)
+        top_bar_style4_customView.setImageViewResource(R.id.top_bar_style_4_image1, R.drawable.like_4x)
+        top_bar_style4_customView.setImageViewResource(R.id.top_bar_style_4_image2, R.drawable.profile_circle_4x)
+        top_bar_style4_customView.setTextViewText(R.id.top_bar_style_4_text, "${dDayCount}일")
+        top_bar_style4_customView.setImageViewResource(R.id.top_bar_style_4_image3, R.drawable.profile_circle_4x)
 
 
         val notification = NotificationCompat.Builder(this, channelId)
 //            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
             .setStyle(null)
-            .setCustomContentView(top_bar_style1_customView)
+            .setCustomContentView(top_bar_style4_customView)
 //            .setContentTitle("${dDayCount}일??")
 //            .setContentText("이미지가 포함된 알림 예제입니다.")
-            .setSmallIcon(R.drawable.like)  // 작은 아이콘
+            .setSmallIcon(R.drawable.like_4x)  // 작은 아이콘
 //            .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.like))  // 큰 아이콘
 //            .setStyle(NotificationCompat.BigPictureStyle()
 //                .bigPicture(BitmapFactory.decodeResource(resources, R.drawable.like))  // 큰 이미지

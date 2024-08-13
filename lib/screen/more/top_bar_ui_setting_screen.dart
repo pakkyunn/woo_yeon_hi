@@ -101,13 +101,12 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
                                   color: Colors.transparent, width: 1),
                               borderRadius: BorderRadius.circular(20)),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const SizedBox(width: 80),
                           const Text("100일",
                               style: TextStyleFamily.smallTitleTextStyle),
                           Padding(
-                            padding: const EdgeInsets.only(right: 50),
+                            padding: const EdgeInsets.only(left: 8),
                             child: Image.asset(
                                 "lib/assets/images/top_bar_heart_36px.png",
                                 width: 30,
@@ -144,13 +143,12 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
                                   color: Colors.transparent, width: 1),
                               borderRadius: BorderRadius.circular(20)),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const SizedBox(width: 80),
-                          const Text("+100",
+                          const Text("+ 100",
                               style: TextStyleFamily.smallTitleTextStyle),
                           Padding(
-                            padding: const EdgeInsets.only(right: 50),
+                            padding: const EdgeInsets.only(left: 8),
                             child: Image.asset(
                                 "lib/assets/images/top_bar_heart_36px.png",
                                 width: 30,
