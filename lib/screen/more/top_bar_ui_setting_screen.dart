@@ -58,11 +58,21 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
           actions: [
             IconButton(
               onPressed: () async {
-                await updateSpecificUserData(
-                    provider.userIdx, 'top_bar_type', topBarIndex);
-                provider.setTopBarType(topBarIndex);
+                if (topBarIndex == 0) {
+                  _cancelNotification();
+                  await updateSpecificUserData(provider.userIdx, 'top_bar_activate', false);
+                  await updateSpecificUserData(provider.userIdx, 'top_bar_type', topBarIndex);
+                  provider.setTopBarActivate(false);
+                  provider.setTopBarType(topBarIndex);
+                } else {
+                  _showCustomNotification(provider.loveDday, topBarIndex);
+                  await updateSpecificUserData(provider.userIdx, 'top_bar_activate', true);
+                  await updateSpecificUserData(provider.userIdx, 'top_bar_type', topBarIndex);
+                  provider.setTopBarActivate(false);
+                  provider.setTopBarType(topBarIndex);
+                }
                 Navigator.pop(context);
-                showPinkSnackBar(context, "상단바 스타일이 변경되었습니다.");
+                showPinkSnackBar(context, "상단바 설정이 저장되었습니다.");
               },
               icon: SvgPicture.asset('lib/assets/icons/done.svg'),
             )
@@ -100,6 +110,44 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
                               border: Border.all(
                                   color: Colors.transparent, width: 1),
                               borderRadius: BorderRadius.circular(20)),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("상단바 미설정",
+                              style: TextStyle(
+                                  color: ColorFamily.gray,
+                                  fontFamily: FontFamily.mapleStoryLight,
+                                  fontSize: 14))
+                        ],
+                      ),
+                    )),
+              ),
+              const SizedBox(height: 20),
+              Material(
+                elevation: 1,
+                borderRadius: BorderRadius.circular(20),
+                borderOnForeground: true,
+                child: InkWell(
+                    borderRadius: BorderRadius.circular(20),
+                    onTap: () {
+                      setState(() {
+                        topBarIndex = 1;
+                      });
+                    },
+                    child: Container(
+                      width: deviceWidth - 60,
+                      height: deviceHeight * 0.07,
+                      decoration: topBarIndex == 1
+                          ? BoxDecoration(
+                              color: ColorFamily.white,
+                              border:
+                                  Border.all(color: ColorFamily.pink, width: 1),
+                              borderRadius: BorderRadius.circular(20))
+                          : BoxDecoration(
+                              color: ColorFamily.white,
+                              border: Border.all(
+                                  color: Colors.transparent, width: 1),
+                              borderRadius: BorderRadius.circular(20)),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -125,13 +173,13 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
                     borderRadius: BorderRadius.circular(20),
                     onTap: () {
                       setState(() {
-                        topBarIndex = 1;
+                        topBarIndex = 2;
                       });
                     },
                     child: Container(
                       width: deviceWidth - 60,
                       height: deviceHeight * 0.07,
-                      decoration: topBarIndex == 1
+                      decoration: topBarIndex == 2
                           ? BoxDecoration(
                               color: ColorFamily.white,
                               border:
@@ -167,13 +215,13 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
                     borderRadius: BorderRadius.circular(20),
                     onTap: () {
                       setState(() {
-                        topBarIndex = 2;
+                        topBarIndex = 3;
                       });
                     },
                     child: Container(
                       width: deviceWidth - 60,
                       height: deviceHeight * 0.14,
-                      decoration: topBarIndex == 2
+                      decoration: topBarIndex == 3
                           ? BoxDecoration(
                               color: ColorFamily.white,
                               border:
@@ -233,13 +281,13 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
                     borderRadius: BorderRadius.circular(20),
                     onTap: () {
                       setState(() {
-                        topBarIndex = 3;
+                        topBarIndex = 4;
                       });
                     },
                     child: Container(
                       width: deviceWidth - 60,
                       height: deviceHeight * 0.14,
-                      decoration: topBarIndex == 3
+                      decoration: topBarIndex == 4
                           ? BoxDecoration(
                               color: ColorFamily.white,
                               border:
@@ -300,39 +348,38 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
                       ),
                     )),
               ),
-              const SizedBox(height: 30),
-              Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Column(
-                    children: [
-                      const Text("상단바 활성화",
-                          style: TextStyle(
-                              fontFamily: FontFamily.mapleStoryLight,
-                              fontSize: 12,
-                              color: ColorFamily.black)),
-                      Switch(
-                          value: provider.topBarActivate,
-                          activeColor: ColorFamily.white,
-                          activeTrackColor: ColorFamily.pink,
-                          inactiveThumbColor: ColorFamily.gray,
-                          inactiveTrackColor: ColorFamily.white,
-                          trackOutlineColor: provider.topBarActivate
-                              ? WidgetStateProperty.all(Colors.transparent)
-                              : WidgetStateProperty.all(ColorFamily.gray),
-                          trackOutlineWidth: const WidgetStatePropertyAll(1),
-                          onChanged: (bool value) async {
-                            _showCustomNotification(provider.loveDday);
-                            provider.setTopBarActivate(value);
-                            await updateSpecificUserData(
-                                provider.userIdx, 'top_bar_activate', value);
-                            // value ?_showCustomNotification() :null;
-                          }),
-                    ],
-                  ),
-                ),
-              ),
+              // const SizedBox(height: 30),
+              // Padding(
+              //   padding: const EdgeInsets.only(right: 10),
+              //   child: Align(
+              //     alignment: Alignment.centerRight,
+              //     child: Column(
+              //       children: [
+              //         const Text("상단바 활성화",
+              //             style: TextStyle(
+              //                 fontFamily: FontFamily.mapleStoryLight,
+              //                 fontSize: 12,
+              //                 color: ColorFamily.black)),
+              // Switch(
+              //     value: provider.topBarActivate,
+              //     activeColor: ColorFamily.white,
+              //     activeTrackColor: ColorFamily.pink,
+              //     inactiveThumbColor: ColorFamily.gray,
+              //     inactiveTrackColor: ColorFamily.white,
+              //     trackOutlineColor: provider.topBarActivate
+              //         ? WidgetStateProperty.all(Colors.transparent)
+              //         : WidgetStateProperty.all(ColorFamily.gray),
+              //     trackOutlineWidth: const WidgetStatePropertyAll(1),
+              //     onChanged: (bool value) async {
+              //       provider.setTopBarActivate(value);
+              //       await updateSpecificUserData(
+              //           provider.userIdx, 'top_bar_activate', value);
+              //       value ?_showCustomNotification() :null;
+              //     }),
+              //     ],
+              //   ),
+              // ),
+              // ),
             ],
           ),
         ),
@@ -341,18 +388,28 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
   }
 }
 
-Future<void> _showCustomNotification(String loveDday) async {
-  int dDayCount = DateTime.now().difference(stringToDate(loveDday)).inDays+1;
+Future<void> _showCustomNotification(String loveDday, int topBarStyle) async {
+  int dDayCount = DateTime.now().difference(stringToDate(loveDday)).inDays + 1;
   const platform = MethodChannel('custom_notification_channel');
 
   try {
     final Map<String, dynamic> arguments = {
       'dDayCount': dDayCount,
+      'topBarStyle': topBarStyle,
     };
     final String result =
         await platform.invokeMethod('showCustomNotification', arguments);
     print(result);
   } on PlatformException catch (e) {
     print("Failed to show notification: '${e.message}'.");
+  }
+}
+
+Future<void> _cancelNotification() async {
+  const platform = MethodChannel('custom_notification_channel');
+  try {
+    await platform.invokeMethod('cancelNotification');
+  } on PlatformException catch (e) {
+    print("Failed to cancel notification: '${e.message}'.");
   }
 }
