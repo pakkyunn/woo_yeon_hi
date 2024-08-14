@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -183,3 +184,34 @@ Random _rnd = Random();
 
 String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
     length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
+
+//알림 권한 설정
+Future<bool> checkAndRequestNotificationPermission(BuildContext context, Function showDialogFunction) async {
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  NotificationSettings settings = await messaging.getNotificationSettings();
+
+  if (settings.authorizationStatus == AuthorizationStatus.notDetermined) {
+    NotificationSettings newSettings = await messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    if (newSettings.authorizationStatus == AuthorizationStatus.authorized) {
+      return true;
+    } else if (newSettings.authorizationStatus == AuthorizationStatus.denied) {
+      return false;
+    }
+  } else if (settings.authorizationStatus == AuthorizationStatus.denied) {
+    showDialogFunction();
+    return false;
+  }
+
+  // If permission is already authorized, return true
+  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+    return true;
+  }
+
+  // Default case to handle any other authorization status
+  return false;
+}

@@ -1,7 +1,6 @@
-import 'package:flutter/cupertino.dart';
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/dialogs.dart';
@@ -36,8 +35,14 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var deviceWidth = MediaQuery.of(context).size.width;
-    var deviceHeight = MediaQuery.of(context).size.height;
+    var deviceWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
+    var deviceHeight = MediaQuery
+        .of(context)
+        .size
+        .height;
 
     return Consumer<UserProvider>(builder: (context, provider, child) {
       return Scaffold(
@@ -60,19 +65,29 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
               onPressed: () async {
                 if (topBarIndex == 0) {
                   _cancelNotification();
-                  await updateSpecificUserData(provider.userIdx, 'top_bar_activate', false);
-                  await updateSpecificUserData(provider.userIdx, 'top_bar_type', topBarIndex);
+                  await updateSpecificUserData(
+                      provider.userIdx, 'top_bar_activate', false);
+                  await updateSpecificUserData(
+                      provider.userIdx, 'top_bar_type', topBarIndex);
                   provider.setTopBarActivate(false);
                   provider.setTopBarType(topBarIndex);
+                  provider.setTopBarType(topBarIndex);
+                  Navigator.pop(context);
+                  showPinkSnackBar(context, "상단바 설정이 저장되었습니다.");
                 } else {
-                  _showCustomNotification(provider.loveDday, topBarIndex);
-                  await updateSpecificUserData(provider.userIdx, 'top_bar_activate', true);
-                  await updateSpecificUserData(provider.userIdx, 'top_bar_type', topBarIndex);
-                  provider.setTopBarActivate(false);
-                  provider.setTopBarType(topBarIndex);
+                  await checkAndRequestNotificationPermission(context, _showDialog)
+                    ? {_showCustomNotification(provider.loveDday, topBarIndex),
+                      await updateSpecificUserData(
+                          provider.userIdx, 'top_bar_activate', true),
+                      await updateSpecificUserData(
+                          provider.userIdx, 'top_bar_type', topBarIndex),
+                      provider.setTopBarActivate(false),
+                      provider.setTopBarType(topBarIndex),
+                      Navigator.pop(context),
+                      showPinkSnackBar(context, "상단바 설정이 저장되었습니다.")
+                      }
+                    : null;
                 }
-                Navigator.pop(context);
-                showPinkSnackBar(context, "상단바 설정이 저장되었습니다.");
               },
               icon: SvgPicture.asset('lib/assets/icons/done.svg'),
             )
@@ -101,15 +116,15 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
                       height: deviceHeight * 0.07,
                       decoration: topBarIndex == 0
                           ? BoxDecoration(
-                              color: ColorFamily.white,
-                              border:
-                                  Border.all(color: ColorFamily.pink, width: 1),
-                              borderRadius: BorderRadius.circular(20))
+                          color: ColorFamily.white,
+                          border:
+                          Border.all(color: ColorFamily.pink, width: 1),
+                          borderRadius: BorderRadius.circular(20))
                           : BoxDecoration(
-                              color: ColorFamily.white,
-                              border: Border.all(
-                                  color: Colors.transparent, width: 1),
-                              borderRadius: BorderRadius.circular(20)),
+                          color: ColorFamily.white,
+                          border: Border.all(
+                              color: Colors.transparent, width: 1),
+                          borderRadius: BorderRadius.circular(20)),
                       child: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -139,15 +154,15 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
                       height: deviceHeight * 0.07,
                       decoration: topBarIndex == 1
                           ? BoxDecoration(
-                              color: ColorFamily.white,
-                              border:
-                                  Border.all(color: ColorFamily.pink, width: 1),
-                              borderRadius: BorderRadius.circular(20))
+                          color: ColorFamily.white,
+                          border:
+                          Border.all(color: ColorFamily.pink, width: 1),
+                          borderRadius: BorderRadius.circular(20))
                           : BoxDecoration(
-                              color: ColorFamily.white,
-                              border: Border.all(
-                                  color: Colors.transparent, width: 1),
-                              borderRadius: BorderRadius.circular(20)),
+                          color: ColorFamily.white,
+                          border: Border.all(
+                              color: Colors.transparent, width: 1),
+                          borderRadius: BorderRadius.circular(20)),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -181,15 +196,15 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
                       height: deviceHeight * 0.07,
                       decoration: topBarIndex == 2
                           ? BoxDecoration(
-                              color: ColorFamily.white,
-                              border:
-                                  Border.all(color: ColorFamily.pink, width: 1),
-                              borderRadius: BorderRadius.circular(20))
+                          color: ColorFamily.white,
+                          border:
+                          Border.all(color: ColorFamily.pink, width: 1),
+                          borderRadius: BorderRadius.circular(20))
                           : BoxDecoration(
-                              color: ColorFamily.white,
-                              border: Border.all(
-                                  color: Colors.transparent, width: 1),
-                              borderRadius: BorderRadius.circular(20)),
+                          color: ColorFamily.white,
+                          border: Border.all(
+                              color: Colors.transparent, width: 1),
+                          borderRadius: BorderRadius.circular(20)),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -223,15 +238,15 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
                       height: deviceHeight * 0.14,
                       decoration: topBarIndex == 3
                           ? BoxDecoration(
-                              color: ColorFamily.white,
-                              border:
-                                  Border.all(color: ColorFamily.pink, width: 1),
-                              borderRadius: BorderRadius.circular(20))
+                          color: ColorFamily.white,
+                          border:
+                          Border.all(color: ColorFamily.pink, width: 1),
+                          borderRadius: BorderRadius.circular(20))
                           : BoxDecoration(
-                              color: ColorFamily.white,
-                              border: Border.all(
-                                  color: Colors.transparent, width: 1),
-                              borderRadius: BorderRadius.circular(20)),
+                          color: ColorFamily.white,
+                          border: Border.all(
+                              color: Colors.transparent, width: 1),
+                          borderRadius: BorderRadius.circular(20)),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -289,15 +304,15 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
                       height: deviceHeight * 0.14,
                       decoration: topBarIndex == 4
                           ? BoxDecoration(
-                              color: ColorFamily.white,
-                              border:
-                                  Border.all(color: ColorFamily.pink, width: 1),
-                              borderRadius: BorderRadius.circular(20))
+                          color: ColorFamily.white,
+                          border:
+                          Border.all(color: ColorFamily.pink, width: 1),
+                          borderRadius: BorderRadius.circular(20))
                           : BoxDecoration(
-                              color: ColorFamily.white,
-                              border: Border.all(
-                                  color: Colors.transparent, width: 1),
-                              borderRadius: BorderRadius.circular(20)),
+                          color: ColorFamily.white,
+                          border: Border.all(
+                              color: Colors.transparent, width: 1),
+                          borderRadius: BorderRadius.circular(20)),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -348,68 +363,112 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
                       ),
                     )),
               ),
-              // const SizedBox(height: 30),
-              // Padding(
-              //   padding: const EdgeInsets.only(right: 10),
-              //   child: Align(
-              //     alignment: Alignment.centerRight,
-              //     child: Column(
-              //       children: [
-              //         const Text("상단바 활성화",
-              //             style: TextStyle(
-              //                 fontFamily: FontFamily.mapleStoryLight,
-              //                 fontSize: 12,
-              //                 color: ColorFamily.black)),
-              // Switch(
-              //     value: provider.topBarActivate,
-              //     activeColor: ColorFamily.white,
-              //     activeTrackColor: ColorFamily.pink,
-              //     inactiveThumbColor: ColorFamily.gray,
-              //     inactiveTrackColor: ColorFamily.white,
-              //     trackOutlineColor: provider.topBarActivate
-              //         ? WidgetStateProperty.all(Colors.transparent)
-              //         : WidgetStateProperty.all(ColorFamily.gray),
-              //     trackOutlineWidth: const WidgetStatePropertyAll(1),
-              //     onChanged: (bool value) async {
-              //       provider.setTopBarActivate(value);
-              //       await updateSpecificUserData(
-              //           provider.userIdx, 'top_bar_activate', value);
-              //       value ?_showCustomNotification() :null;
-              //     }),
-              //     ],
-              //   ),
-              // ),
-              // ),
             ],
           ),
         ),
       );
     });
   }
-}
 
-Future<void> _showCustomNotification(String loveDday, int topBarStyle) async {
-  int dDayCount = DateTime.now().difference(stringToDate(loveDday)).inDays + 1;
-  const platform = MethodChannel('custom_notification_channel');
+  Future<void> _showCustomNotification(String loveDday, int topBarStyle) async {
+    int dDayCount = DateTime
+        .now()
+        .difference(stringToDate(loveDday))
+        .inDays + 1;
+    const platform = MethodChannel('custom_notification_channel');
 
-  try {
-    final Map<String, dynamic> arguments = {
-      'dDayCount': dDayCount,
-      'topBarStyle': topBarStyle,
-    };
-    final String result =
-        await platform.invokeMethod('showCustomNotification', arguments);
-    print(result);
-  } on PlatformException catch (e) {
-    print("Failed to show notification: '${e.message}'.");
+    try {
+      final Map<String, dynamic> arguments = {
+        'dDayCount': dDayCount,
+        'topBarStyle': topBarStyle,
+      };
+      final String result =
+      await platform.invokeMethod('showCustomNotification', arguments);
+      print(result);
+    } on PlatformException catch (e) {
+      print("Failed to show notification: '${e.message}'.");
+    }
   }
-}
 
-Future<void> _cancelNotification() async {
-  const platform = MethodChannel('custom_notification_channel');
-  try {
-    await platform.invokeMethod('cancelNotification');
-  } on PlatformException catch (e) {
-    print("Failed to cancel notification: '${e.message}'.");
+  Future<void> _cancelNotification() async {
+    const platform = MethodChannel('custom_notification_channel');
+    try {
+      await platform.invokeMethod('cancelNotification');
+    } on PlatformException catch (e) {
+      print("Failed to cancel notification: '${e.message}'.");
+    }
+  }
+
+  void _showDialog(){
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            surfaceTintColor: ColorFamily.white,
+            backgroundColor: ColorFamily.white,
+            child: Wrap(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 30, 0, 20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Column(
+                        children: [
+                          Text(
+                            '알림 권한 필요',
+                            style: TextStyleFamily.dialogTitleTextStyle,
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Text(
+                            '상단바를 사용하기 위해 알림 권한이 필요합니다.',
+                            style: TextStyleFamily.normalTextStyle,
+                          ),
+                          Text(
+                            '설정에서 알림 권한을 허용해주세요.',
+                            style: TextStyleFamily.normalTextStyle,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          TextButton(
+                              style: ButtonStyle(
+                                  overlayColor: MaterialStateProperty.all(
+                                      ColorFamily.gray)),
+                              onPressed: () => Navigator.pop(context, false),
+                              child: const Text(
+                                "취소",
+                                style: TextStyleFamily.dialogButtonTextStyle,
+                              )),
+                          TextButton(
+                              style: ButtonStyle(
+                                  overlayColor: MaterialStateProperty.all(
+                                      ColorFamily.gray)),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                AppSettings.openAppSettings(type: AppSettingsType.notification);
+                              },
+                              child: const Text(
+                                "설정 열기",
+                                style:
+                                TextStyleFamily.dialogButtonTextStyle_pink,
+                              ))
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+    );
   }
 }
