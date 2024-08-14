@@ -483,6 +483,7 @@ class _ConnectCodeScreenState extends State<CodeConnectScreen> {
       await saveLoverIdx(userProvider.userIdx, hostIdx);
       await updateConnectCode(codeInput, userProvider.userIdx);
       userProvider.setLoverIdx(hostIdx);
+      userProvider.setLoveDday(dateToString(DateTime.now()));
       //게스트화면 이동
       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) =>
       const NickNameSettingScreen(isHost: false)), (route) => false);

@@ -68,7 +68,7 @@ class _HomeUiSettingScreenState extends State<HomeUiSettingScreen> {
                         provider.userIdx, 'home_preset_type', presetIndex);
                     provider.setHomePresetType(presetIndex);
                     Navigator.pop(context);
-                    showPinkSnackBar(context, '홈 화면 스타일이 변경되었습니다.');
+                    showPinkSnackBar(context, '홈 화면 설정이 저장되었습니다.');
                   },
                   icon: SvgPicture.asset('lib/assets/icons/done.svg'))
             ],

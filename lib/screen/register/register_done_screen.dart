@@ -204,6 +204,7 @@ Future<void> _registerUserData(BuildContext context, UserProvider provider) asyn
       'home_preset_type': provider.homePresetType,
       'user_state': 0,
       'login_type': provider.loginType,
+      'love_dDay': provider.loveDday,
       'user_profile_image': "lib/assets/images/default_profile.png",
       'top_bar_type': 0,
       'profile_message': "",

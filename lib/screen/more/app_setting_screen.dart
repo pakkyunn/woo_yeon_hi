@@ -13,6 +13,7 @@ import '../../dao/user_dao.dart';
 import '../../dialogs.dart';
 import '../../style/color.dart';
 import '../../style/text_style.dart';
+import '../../utils.dart';
 import '../login/login_screen.dart';
 import 'app_lock_setting_screen.dart';
 
@@ -70,15 +71,14 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
                                         const MaterialStatePropertyAll(1),
                                     onChanged: (bool value) async {
                                       value
-                                      ? await _checkAndRequestNotificationPermission(context)
+                                      ? await checkAndRequestNotificationPermission(context, _showDialog)
                                         ? showPinkSnackBar(context, '앱 알림이 설정되었습니다.')
                                         : setState(() {
                                           value = false;
                                         })
                                       : showPinkSnackBar(context, '앱 알림이 해제되었습니다.');
-
-                                      provider.setNotificationAllow(value);
                                       await updateSpecificUserData(provider.userIdx, 'notification_allow', value);
+                                      provider.setNotificationAllow(value);
                                     }),
                               ],
                             ),
@@ -187,98 +187,73 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
     });
   }
 
-  Future<bool> _checkAndRequestNotificationPermission(BuildContext context) async {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-    NotificationSettings settings = await messaging.getNotificationSettings();
-
-    if (settings.authorizationStatus == AuthorizationStatus.notDetermined) {
-      NotificationSettings newSettings = await messaging.requestPermission(
-        alert: true,
-        badge: true,
-        sound: true,
-      );
-
-      if (newSettings.authorizationStatus == AuthorizationStatus.authorized) {
-        return true;
-      } else
-      if (newSettings.authorizationStatus == AuthorizationStatus.denied) {
-        return false;
-      }
-    } else if (settings.authorizationStatus == AuthorizationStatus.denied) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return Dialog(
-              surfaceTintColor: ColorFamily.white,
-              backgroundColor: ColorFamily.white,
-              child: Wrap(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 30, 0, 20),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Column(
-                          children: [
-                            Text(
-                              '알림 권한 필요',
-                              style: TextStyleFamily.dialogTitleTextStyle,
-                            ),
-                            SizedBox(
-                              height: 15,
-                            ),
-                            Text(
-                              '설정에서 알림 권한을 허용해주세요.',
-                              style: TextStyleFamily.normalTextStyle,
-                            )
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 30,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            TextButton(
-                                style: ButtonStyle(
-                                    overlayColor: MaterialStateProperty.all(
-                                        ColorFamily.gray)),
-                                onPressed: () => Navigator.pop(context, false),
-                                child: const Text(
-                                  "취소",
-                                  style: TextStyleFamily.dialogButtonTextStyle,
-                                )),
-                            TextButton(
-                                style: ButtonStyle(
-                                    overlayColor: MaterialStateProperty.all(
-                                        ColorFamily.gray)),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                  AppSettings.openAppSettings(type: AppSettingsType.notification);
-                                },
-                                child: const Text(
-                                  "설정 열기",
-                                  style:
-                                  TextStyleFamily.dialogButtonTextStyle_pink,
-                                ))
-                          ],
-                        )
-                      ],
-                    ),
+  void _showDialog(){
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            surfaceTintColor: ColorFamily.white,
+            backgroundColor: ColorFamily.white,
+            child: Wrap(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 30, 0, 20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Column(
+                        children: [
+                          Text(
+                            '알림 권한 필요',
+                            style: TextStyleFamily.dialogTitleTextStyle,
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Text(
+                            '설정에서 알림 권한을 허용해주세요.',
+                            style: TextStyleFamily.normalTextStyle,
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          TextButton(
+                              style: ButtonStyle(
+                                  overlayColor: MaterialStateProperty.all(
+                                      ColorFamily.gray)),
+                              onPressed: () => Navigator.pop(context, false),
+                              child: const Text(
+                                "취소",
+                                style: TextStyleFamily.dialogButtonTextStyle,
+                              )),
+                          TextButton(
+                              style: ButtonStyle(
+                                  overlayColor: MaterialStateProperty.all(
+                                      ColorFamily.gray)),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                AppSettings.openAppSettings(type: AppSettingsType.notification);
+                              },
+                              child: const Text(
+                                "설정 열기",
+                                style:
+                                TextStyleFamily.dialogButtonTextStyle_pink,
+                              ))
+                        ],
+                      )
+                    ],
                   ),
-                ],
-              ),
-            );
-          }
-      );
-      return false;
-  }
-    // If permission is already authorized, return true
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      return true;
-    }
-    // Default case to handle any other authorization status
-    return false;
+                ),
+              ],
+            ),
+          );
+        }
+    );
   }
 
   void _logOut(BuildContext context) async {
@@ -306,6 +281,4 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
             (Route<dynamic> route) => false);
     showBlackToast("로그아웃 되었습니다.");
   }
-
 }
-

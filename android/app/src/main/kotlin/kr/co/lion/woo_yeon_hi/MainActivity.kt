@@ -18,13 +18,17 @@ import androidx.core.app.NotificationCompat
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.embedding.engine.FlutterEngine
 import android.graphics.Color
+import android.widget.RemoteViews
+import android.util.Log
 
 class MainActivity: FlutterFragmentActivity() {
     private val CHANNEL = "custom_notification_channel"
+
     companion object {
         const val CHANNEL_ID = "fixed_notification_channel"
         const val NOTIFICATION_ID = 1  // 알림을 식별하기 위한 ID
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -50,12 +54,34 @@ class MainActivity: FlutterFragmentActivity() {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
-            if (call.method == "showCustomNotification") {
-                showCustomNotification()
-                result.success("Notification Shown")
-            } else {
-                result.notImplemented()
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            CHANNEL
+        ).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "showCustomNotification" -> {
+                    val dDayCount = call.argument<Int>("dDayCount")
+                    val topBarStyle = call.argument<Int>("topBarStyle")
+
+                    Log.d("Notification", "dDayCount: $dDayCount")
+                    Log.d("Notification", "topBarStyle: $topBarStyle")
+
+                    if (dDayCount != null && topBarStyle != null) {
+                        showCustomNotification(dDayCount, topBarStyle)
+                        result.success("Notification Shown")
+                    } else {
+                        result.error("INVALID_ARGUMENTS", "Invalid arguments provided", null)
+                    }
+                }
+
+                "cancelNotification" -> {
+                    cancelNotification()
+                    result.success("Notification Cancelled")
+                }
+
+                else -> {
+                    result.notImplemented()
+                }
             }
         }
     }
@@ -70,13 +96,18 @@ class MainActivity: FlutterFragmentActivity() {
         appWidgetManager.notifyAppWidgetViewDataChanged(allWidgetIds, R.id.widget_layout)
     }
 
-    private fun showCustomNotification() {
+    private fun showCustomNotification(dDayCount: Int, topBarStyle: Int) {
         val channelId = CHANNEL_ID
 //        val channelName = "Custom Notification"
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(channelId, "Custom Notification", NotificationManager.IMPORTANCE_HIGH).apply {
+            val channel = NotificationChannel(
+                channelId,
+                "디데이 상단바",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
                 enableLights(true)
                 lightColor = Color.RED
                 enableVibration(true)
@@ -87,24 +118,98 @@ class MainActivity: FlutterFragmentActivity() {
 
         val intent = Intent(this, MainActivity::class.java)
 //        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val pendingIntent =
+            PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+
+        // 상단바 스타일 1 커스텀뷰
+        val top_bar_style1_customView =
+            RemoteViews(packageName, R.layout.top_bar_style_1_2_layout)
+        top_bar_style1_customView.setTextViewText(R.id.top_bar_style_1_2_text, "${dDayCount}일")
+        top_bar_style1_customView.setImageViewResource(
+            R.id.top_bar_style_1_2_image,
+            R.drawable.like_4x
+        )
+
+        // 상단바 스타일 2 커스텀뷰
+        val top_bar_style2_customView =
+            RemoteViews(packageName, R.layout.top_bar_style_1_2_layout)
+        top_bar_style2_customView.setTextViewText(R.id.top_bar_style_1_2_text, "+ ${dDayCount}")
+        top_bar_style2_customView.setImageViewResource(
+            R.id.top_bar_style_1_2_image,
+            R.drawable.like_4x
+        )
+
+        // 상단바 스타일 3 커스텀뷰
+        val top_bar_style3_customView =
+            RemoteViews(packageName, R.layout.top_bar_style_3_layout)
+        top_bar_style3_customView.setImageViewResource(
+            R.id.top_bar_style_3_image1,
+            R.drawable.profile_circle_4x
+        )
+        top_bar_style3_customView.setImageViewResource(
+            R.id.top_bar_style_3_image2,
+            R.drawable.like_4x
+        )
+        top_bar_style3_customView.setTextViewText(R.id.top_bar_style_3_text, "${dDayCount}일")
+        top_bar_style3_customView.setImageViewResource(
+            R.id.top_bar_style_3_image3,
+            R.drawable.profile_circle_4x
+        )
+
+        // 상단바 스타일 4 커스텀뷰
+        val top_bar_style4_customView =
+            RemoteViews(packageName, R.layout.top_bar_style_4_layout)
+        top_bar_style4_customView.setImageViewResource(
+            R.id.top_bar_style_4_image1,
+            R.drawable.like_4x
+        )
+        top_bar_style4_customView.setImageViewResource(
+            R.id.top_bar_style_4_image2,
+            R.drawable.profile_circle_4x
+        )
+        top_bar_style4_customView.setTextViewText(R.id.top_bar_style_4_text, "${dDayCount}일")
+        top_bar_style4_customView.setImageViewResource(
+            R.id.top_bar_style_4_image3,
+            R.drawable.profile_circle_4x
+        )
+
+        // 각 경우에 맞는 커스텀 뷰 선택
+        val customView = when (topBarStyle) {
+            1 -> top_bar_style1_customView
+            2 -> top_bar_style2_customView
+            3 -> top_bar_style3_customView
+            4 -> top_bar_style4_customView
+            else -> top_bar_style1_customView
+        }
 
         val notification = NotificationCompat.Builder(this, channelId)
-            .setContentTitle("224일")
+//            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+            .setStyle(null)
+            .setCustomContentView(customView)
+//            .setContentTitle("${dDayCount}일??")
 //            .setContentText("이미지가 포함된 알림 예제입니다.")
-            .setSmallIcon(R.drawable.heart_fill)  // 작은 아이콘
-//            .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.heart_fill))  // 큰 아이콘
-            .setStyle(NotificationCompat.BigPictureStyle()
-//                .bigPicture(BitmapFactory.decodeResource(resources, R.drawable.heart_fill))  // 큰 이미지
+            .setSmallIcon(R.drawable.like_4x)  // 작은 아이콘
+//            .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.like))  // 큰 아이콘
+//            .setStyle(NotificationCompat.BigPictureStyle()
+//                .bigPicture(BitmapFactory.decodeResource(resources, R.drawable.like))  // 큰 이미지
 //                .bigLargeIcon(null as Bitmap?)
-             )
+//                .bigLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.like))
+//             )
             .setContentIntent(pendingIntent)
-            .setAutoCancel(false)  // 클릭 시 알림 삭제
+            .setAutoCancel(false)  // 클릭해도 알림이 자동으로 사라지지 않음
             .setOngoing(true)      // 고정 알림 설정
-            .setShowWhen(false)    // 알림 시각 노출
+            .setShowWhen(false)
             .setPriority(NotificationCompat.PRIORITY_HIGH)  // 높은 우선순위 설정
             .build()
 
         notificationManager.notify(NOTIFICATION_ID, notification)
+    }
+
+
+    // 고정된 알림을 종료하는 메서드
+    private fun cancelNotification() {
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancel(NOTIFICATION_ID)
     }
 }

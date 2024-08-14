@@ -57,7 +57,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
                               showFilterBottomSheet(provider, user_idx, lover_idx, context: context);
                             },
                             child: SvgPicture.asset(
-                              'lib/assets/icons/Filter_alt_fill.svg',
+                              'lib/assets/icons/filter_alt_fill.svg',
                               width: 24,
                               height: 24,
                             ),
