@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
@@ -49,10 +51,11 @@ class _ProfileEditAlbumState extends State<ProfileEditAlbum> {
       ImageSource imageSource) async {
     final XFile? pickedFile = await picker.pickImage(source: imageSource);
     if (pickedFile != null) {
-      setState(() {
-        // userProvider.setImage(XFile(pickedFile.path));
-        // userProvider.userProfileImage = userProvider.image!.path;
-      });
+        userProvider.setImage(XFile(pickedFile.path));
+        userProvider.setTempImagePath(userProvider.image!.path);
+        userProvider.setTempImage(Image.file(File(pickedFile.path),fit: BoxFit.cover));
+        print('파일경로: ${pickedFile.path}');
+        print('이미지경로: ${userProvider.tempImagePath}');
     }
   }
 
@@ -107,8 +110,8 @@ class _ProfileEditAlbumState extends State<ProfileEditAlbum> {
                     InkWell(
                       splashColor: ColorFamily.gray.withOpacity(0.5),
                       onTap: () {
-                        provider.setUserProfileImage(
-                            "lib/assets/images/default_profile.png");
+                        provider.setTempImagePath("lib/assets/images/default_profile.png");
+                        provider.setTempImage(Image.asset("lib/assets/images/default_profile.png"));
                         setState(() {
                           provider.setImage(null);
                           Navigator.pop(context);

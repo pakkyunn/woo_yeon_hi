@@ -31,11 +31,12 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
   final FocusNode _nickNamefocusNode = FocusNode();
   final FocusNode _profileMessageFocusNode = FocusNode();
 
-  late String tempProfileImage;
+  late String tempProfileImagePath;
   late String tempUserNickname;
   late String tempProfileMessage;
   late String tempUserBirth;
   late DateTime _selectedDate;
+
 
   @override
   void initState() {
@@ -45,7 +46,8 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
 
   Future<void> _tempDataInitiate() async {
     var provider = Provider.of<UserProvider>(context, listen: false);
-    tempProfileImage = provider.userProfileImage;
+    provider.setTempImagePath(provider.profileImagePath);
+    provider.setTempImage(provider.userProfileImage);
     tempUserNickname = provider.userNickname;
     tempProfileMessage = provider.profileMessage;
     tempUserBirth = provider.userBirth;
@@ -71,12 +73,12 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
             if (didPop) {
               return;
             }
-            if (tempProfileImage != provider.userProfileImage ||
+            if (tempProfileImagePath != provider.profileImagePath ||
                 tempUserNickname != provider.userNickname ||
                 tempUserBirth != provider.userBirth ||
                 tempProfileMessage != provider.profileMessage) {
               dialogTitleWithContent(
-                context, "프로필 편집 취소", "변경사항은 저장되지 않습니다.",
+                  context, "프로필 편집 나가기", "변경사항은 저장되지 않습니다.",
                     () {
                   Navigator.pop(context, false);
                   _nickNamefocusNode.unfocus();
@@ -106,12 +108,12 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
               ),
               leading: IconButton(
                 onPressed: () {
-                  if (tempProfileImage != provider.userProfileImage ||
+                  if (tempProfileImagePath != provider.profileImagePath ||
                       tempUserNickname != provider.userNickname ||
                       tempUserBirth != provider.userBirth ||
                       tempProfileMessage != provider.profileMessage) {
                     dialogTitleWithContent(
-                        context, "프로필 편집 취소", "변경사항은 저장되지 않습니다.",
+                        context, "프로필 편집 나가기", "변경사항은 저장되지 않습니다.",
                             () {
                           Navigator.pop(context, false);
                           _nickNamefocusNode.unfocus();
@@ -134,28 +136,26 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
               ),
               actions: [
                 IconButton(
-                  onPressed: () {
+                  onPressed: () async {
                     FocusScope.of(context).unfocus();
                     if (tempUserNickname.isNotEmpty) {
-                      provider.setUserProfile(tempProfileImage,
-                          tempUserNickname, tempUserBirth, tempProfileMessage);
-                      FocusScope.of(context).unfocus();
-                      Future.delayed(const Duration(milliseconds: 100),
-                          () async {
-                        await updateSpecificUserData(provider.userIdx,
-                            'user_profile_image', tempProfileImage);
-                        await updateSpecificUserData(provider.userIdx,
-                            'user_nickname', tempUserNickname);
-                        await updateSpecificUserData(
-                            provider.userIdx, 'user_birth', tempUserBirth);
-                        await updateSpecificUserData(provider.userIdx,
-                            'profile_message', tempProfileMessage);
-                      });
-
-                      Future.delayed(const Duration(milliseconds: 100), () {
+                        FocusScope.of(context).unfocus();
+                        var imageName = "${provider.userIdx}_${DateTime.now()}";
+                        deleteProfileImage(provider.profileImagePath);
+                        if(provider.tempImagePath=="lib/assets/images/default_profile.png"){
+                          updateUserProfileData(provider.userIdx,'user_profile_image','user_nickname', 'user_birth','profile_message',
+                              "lib/assets/images/default_profile.png", tempUserNickname, tempUserBirth, tempProfileMessage);
+                          await provider.setUserProfile(provider.tempImagePath, Image.asset("lib/assets/images/default_profile.png"),
+                              tempUserNickname, tempUserBirth, tempProfileMessage);
+                        } else{
+                          uploadProfileImage(provider.image!, imageName);
+                          updateUserProfileData(provider.userIdx,'user_profile_image','user_nickname', 'user_birth','profile_message',
+                              imageName, tempUserNickname, tempUserBirth, tempProfileMessage);
+                          await provider.setUserProfile(provider.tempImagePath, Image.file(File(provider.tempImagePath)),
+                              tempUserNickname, tempUserBirth, tempProfileMessage);
+                        }
                         Navigator.pop(context);
                         showPinkSnackBar(context, '프로필이 저장되었습니다!');
-                      });
                     } else {
                       FocusScope.of(context).unfocus();
                       showBlackToast("닉네임을 입력해주세요!");
@@ -183,6 +183,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                                 borderRadius: BorderRadius.circular(65),
                                 child: InkWell(
                                   onTap: () {
+       //TODO 기본프로필이 아닌 상태에서 편집을 들어와서 바로 탭할 경우 provider.image와 provider.tempImage가 null임을 고려해서 수정 필요.
                                     provider.image != null
                                         ? showDialog(
                                             context: context,
@@ -191,14 +192,15 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                                                 child: Container(
                                                   width: deviceWidth * 0.8,
                                                   height: deviceHeight * 0.6,
-                                                  decoration: BoxDecoration(
-                                                    image: DecorationImage(
-                                                      image: FileImage(File(
-                                                          provider
-                                                              .image!.path)),
-                                                      fit: BoxFit.contain,
-                                                    ),
-                                                  ),
+                                                  // decoration: BoxDecoration(
+                                                    // image: DecorationImage(
+                                                    //   image: FileImage(File(
+                                                    //       provider
+                                                    //           .tempImagePath)),
+                                                    //   fit: BoxFit.contain,
+                                                    // ),
+                                                  // ),
+                                                  child: provider.tempImage,
                                                 ),
                                               );
                                             })
@@ -208,18 +210,20 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                                   splashColor: Colors.transparent,
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(65),
-                                    child: provider.image != null
-                                        ? Image.file(
-                                            File(provider.image!.path),
-                                            width: deviceWidth * 0.35,
-                                            height: deviceWidth * 0.35,
-                                            fit: BoxFit.cover,
-                                          )
-                                        : Image.asset(
-                                            tempProfileImage,
-                                            width: deviceWidth * 0.35,
-                                            height: deviceWidth * 0.35,
-                                          ),
+                                    child: Container(child: provider.tempImage,width: deviceWidth * 0.35, height: deviceWidth * 0.35),
+                                    // child: provider.image != null
+                                    //     ? Image.file(
+                                    //         File(provider.image!.path),
+                                    //         width: deviceWidth * 0.35,
+                                    //         height: deviceWidth * 0.35,
+                                    //         fit: BoxFit.cover,
+                                    //       )
+                                    //     : Container(child: provider.tempImage,width: deviceWidth * 0.35, height: deviceWidth * 0.35)
+                                    // Image.asset(
+                                    //         provider.tempImagePath,
+                                    //         width: deviceWidth * 0.35,
+                                    //         height: deviceWidth * 0.35,
+                                    //       ),
                                   ),
                                 ),
                               ),

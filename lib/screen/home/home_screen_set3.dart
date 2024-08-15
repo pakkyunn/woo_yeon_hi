@@ -23,7 +23,7 @@ class _HomeScreenState3 extends State<HomeScreenSet3> {
             child: Column(
               children: [
                 const SizedBox(height: 20),
-                dDay(),
+                dDay(context),
                 const SizedBox(height: 20),
                 accountBook(),
                 const SizedBox(height: 20),

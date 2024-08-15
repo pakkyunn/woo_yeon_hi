@@ -78,7 +78,7 @@ class _dDayMakeCustomTopAppBarState extends State<dDayMakeCustomTopAppBar> {
                             height: 15,
                           ),
                           Text(
-                            "지금까지 작성 된 내용은 삭제됩니다.",
+                            "지금까지 작성된 내용은 삭제됩니다.",
                             style: TextStyleFamily.normalTextStyle,
                           )
                         ],

@@ -50,7 +50,7 @@ class _FootprintHistoryEditTopAppBarState
             dialogTitleWithContent(
                 context,
                 "히스토리 작성을 취소하시겠습니까?",
-                "지금까지 작성 된 내용은 삭제됩니다.",
+                "지금까지 작성된 내용은 삭제됩니다.",
                 () => _onCancle_back(context),
                 () => _onConfirm_back(context));
           } else {

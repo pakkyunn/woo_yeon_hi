@@ -40,85 +40,158 @@ class _HomeScreenContainerState extends State<HomeScreenContainer> {
   }
 }
 
-Widget dDay() {
-  return Consumer<UserProvider>(
-      builder: (context, provider, child) {
-        return _cardContainer(
-          Row(
-            children: [
-              const Text("디데이", style: TextStyle(color: ColorFamily.black, fontSize: 20, fontFamily: FontFamily.mapleStoryLight)),
-              SizedBox(
-                width: 40, // 원하는 너비
-                height: 40, // 원하는 높이
-                child: FittedBox(
-                  child: IconButton(
-                    icon: SvgPicture.asset('lib/assets/icons/expand.svg'),
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(
+Widget dDay(BuildContext context) {
+  var deviceWidth = MediaQuery.of(context).size.width;
+  var deviceHeight = MediaQuery.of(context).size.height;
+
+  return Consumer<UserProvider>(builder: (context, provider, child) {
+    return _cardContainer(
+      Row(
+        children: [
+          const Text("디데이",
+              style: TextStyle(
+                  color: ColorFamily.black,
+                  fontSize: 20,
+                  fontFamily: FontFamily.mapleStoryLight)),
+          SizedBox(
+            width: 40, // 원하는 너비
+            height: 40, // 원하는 높이
+            child: FittedBox(
+              child: IconButton(
+                icon: SvgPicture.asset('lib/assets/icons/expand.svg'),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
                           builder: (context) => const dDayScreen()));
-                    },
-                  ),
-                ),
-              )
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                },
+              ),
+            ),
+          )
+        ],
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ClipOval(child: Image.asset('lib/assets/images/test_wooyeon_man.jpg', width: 75, height: 75)),
-                  const SizedBox(height: 5),
-                  const Text("우연남", style: TextStyle(fontSize: 14, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight)),
-                ],
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SvgPicture.asset('lib/assets/icons/like.svg'),
-                  const SizedBox(height: 5),
-                  Text(
-                    '${DateTime.now().difference(stringToDate(provider.loveDday)).inDays+1}일',
-                    style: const TextStyle(fontFamily: FontFamily.mapleStoryLight),
-                  ),
-                ],
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ClipOval(child: Image.asset('lib/assets/images/test_wooyeon_women.jpg', width: 75, height: 75)),
-                  const SizedBox(height: 5),
-                  const Text("우연녀", style: TextStyle(fontSize: 14, color: Colors.black, fontFamily: FontFamily.mapleStoryLight)),
-                ],
+              InkWell(
+                  onTap: () {
+                    provider.profileImagePath ==
+                            "lib/assets/images/default_profile.png"
+                        ? null
+                        : showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Dialog(
+                                child: SizedBox(
+                                    width: deviceWidth * 0.8,
+                                    height: deviceHeight * 0.6,
+                                    child: provider.userProfileImage),
+                              );
+                            });
+                  },
+                  child: ClipOval(
+                      child: Image.asset(
+                          'lib/assets/images/test_wooyeon_man.jpg',
+                          width: 75,
+                          height: 75))),
+              const SizedBox(height: 5),
+              const Text("우연남",
+                  style: TextStyle(
+                      fontSize: 14,
+                      color: ColorFamily.black,
+                      fontFamily: FontFamily.mapleStoryLight)),
+            ],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset('lib/assets/icons/like.svg'),
+              const SizedBox(height: 5),
+              Text(
+                '${DateTime.now().difference(stringToDate(provider.loveDday)).inDays + 1}일',
+                style: const TextStyle(fontFamily: FontFamily.mapleStoryLight),
               ),
             ],
           ),
-          120,
-        );
-      });}
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              InkWell(
+                  onTap: () {
+                    provider.profileImagePath ==
+                            "lib/assets/images/default_profile.png"
+                        ? null
+                        : showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Dialog(
+                                child: SizedBox(
+                                    width: deviceWidth * 0.8,
+                                    height: deviceHeight * 0.6,
+                                    child: provider.userProfileImage),
+                              );
+                            });
+                  },
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(65),
+                      child: Container(
+                          width: deviceWidth * 0.20,
+                          height: deviceWidth * 0.20,
+                          child: provider.userProfileImage))),
+              // ClipOval(child: Image.asset('lib/assets/images/test_wooyeon_women.jpg', width: 75, height: 75)),
+              const SizedBox(height: 5),
+              const Text("내여친",
+                  style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.black,
+                      fontFamily: FontFamily.mapleStoryLight)),
+            ],
+          ),
+        ],
+      ),
+      120,
+    );
+  });
+}
 
 Widget datePlan() {
   final controller = PageController(viewportFraction: 1, keepPage: true);
   final pages = List.generate(
       4,
-          (index) => const Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text("제주도 여행", style: TextStyle(color: Colors.black, fontSize: 14, fontFamily: FontFamily.mapleStoryLight)),
-          Text("2024.6.13(수) - 2024.6.17(월)",
-              style: TextStyle(color: Colors.black, fontSize: 12, fontFamily: FontFamily.mapleStoryLight)),
-          Text("2024.5.17 작성 by 우연녀",
-              textAlign: TextAlign.right,
-              style: TextStyle(color: Colors.black, fontSize: 10, fontFamily: FontFamily.mapleStoryLight)),
-        ],
-      ));
+      (index) => const Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text("제주도 여행",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 14,
+                      fontFamily: FontFamily.mapleStoryLight)),
+              Text("2024.6.13(수) - 2024.6.17(월)",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 12,
+                      fontFamily: FontFamily.mapleStoryLight)),
+              Text("2024.5.17 작성 by 우연녀",
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 10,
+                      fontFamily: FontFamily.mapleStoryLight)),
+            ],
+          ));
 
   return _cardContainer(
     const Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text("데이트 플랜", style: TextStyle(color: Colors.black, fontSize: 20, fontFamily: FontFamily.mapleStoryLight)),
+        Text("데이트 플랜",
+            style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontFamily: FontFamily.mapleStoryLight)),
       ],
     ),
     Padding(
@@ -163,7 +236,11 @@ Widget accountBook() {
     const Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text("가계부", style: TextStyle(color: Colors.black, fontSize: 20, fontFamily: FontFamily.mapleStoryLight)),
+        Text("가계부",
+            style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontFamily: FontFamily.mapleStoryLight)),
       ],
     ),
     Row(
@@ -177,7 +254,11 @@ Widget accountBook() {
             ),
           ),
         ),
-        const Text("10월", style: TextStyle(color: Colors.black, fontSize: 24, fontFamily: FontFamily.mapleStoryLight)),
+        const Text("10월",
+            style: TextStyle(
+                color: Colors.black,
+                fontSize: 24,
+                fontFamily: FontFamily.mapleStoryLight)),
         ClipRRect(
           child: Material(
             child: IconButton(
@@ -187,7 +268,11 @@ Widget accountBook() {
           ),
         ),
         Container(width: 2, height: 70, color: ColorFamily.pink),
-        const Text("526,300원 소비", style: TextStyle(color: Colors.black, fontSize: 20, fontFamily: FontFamily.mapleStoryLight))
+        const Text("526,300원 소비",
+            style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontFamily: FontFamily.mapleStoryLight))
       ],
     ),
     100,
@@ -206,7 +291,11 @@ Widget calendar(BuildContext context) {
   return _cardContainer(
       Row(
         children: [
-          const Text("캘린더", style: TextStyle(color: Colors.black, fontSize: 20, fontFamily: FontFamily.mapleStoryLight)),
+          const Text("캘린더",
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                  fontFamily: FontFamily.mapleStoryLight)),
           SizedBox(
             width: 40, // 원하는 너비
             height: 40, // 원하는 높이
@@ -215,7 +304,10 @@ Widget calendar(BuildContext context) {
                 icon: SvgPicture.asset('lib/assets/icons/expand.svg'),
                 onPressed: () {
                   // 버튼이 눌렸을 때의 액션
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const CalendarScreen()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const CalendarScreen()));
                 },
               ),
             ),
@@ -269,8 +361,14 @@ Widget calendar(BuildContext context) {
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Text("11:50 AM", style: TextStyle(fontSize: 16, fontFamily: FontFamily.mapleStoryLight)),
-                  Text("우연녀와 점심 데이트", style: TextStyle(fontSize: 16, fontFamily: FontFamily.mapleStoryLight)),
+                  Text("11:50 AM",
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontFamily: FontFamily.mapleStoryLight)),
+                  Text("우연녀와 점심 데이트",
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontFamily: FontFamily.mapleStoryLight)),
                 ],
               ),
             ),
@@ -284,8 +382,14 @@ Widget calendar(BuildContext context) {
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Text("13:00 PM", style: TextStyle(fontSize: 16, fontFamily: FontFamily.mapleStoryLight)),
-                  Text("우연녀와 보드카페", style: TextStyle(fontSize: 16, fontFamily: FontFamily.mapleStoryLight)),
+                  Text("13:00 PM",
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontFamily: FontFamily.mapleStoryLight)),
+                  Text("우연녀와 보드카페",
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontFamily: FontFamily.mapleStoryLight)),
                 ],
               ),
             ),
@@ -294,7 +398,6 @@ Widget calendar(BuildContext context) {
       ),
       null);
 }
-
 
 Widget _cardContainer(Widget title, Widget child, double? height) {
   return Column(

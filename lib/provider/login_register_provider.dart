@@ -22,7 +22,8 @@ class UserProvider extends ChangeNotifier {
   int _topBarType = 0;
   String _userBirth = dateToString(DateTime.now());
   String _userNickname = "기본닉네임";
-  String _userProfileImage = "lib/assets/images/default_profile.png";
+  String _profileImagePath = "lib/assets/images/default_profile.png";
+  late Image _userProfileImage;
   int _userState = 2;
 
   String _loverNickname = "";
@@ -30,47 +31,29 @@ class UserProvider extends ChangeNotifier {
   List<int> _lockPassword = [0, 0, 0, 0];
 
   int get userIdx => _userIdx;
-
   String get userAccount => _userAccount;
-
   bool get notificationAllow => _notificationAllow;
-
   int get appLockState => _appLockState;
-
   int get homePresetType => _homePresetType;
-
   int get loginType => _loginType;
-
   String get loveDday => _loveDday;
-
   int get loverIdx => _loverIdx;
-
   String get profileMessage => _profileMessage;
-
   bool get topBarActivate => _topBarActivate;
-
   int get topBarType => _topBarType;
-
   String get userBirth => _userBirth;
-
   String get userNickname => _userNickname;
-
-  String get userProfileImage => _userProfileImage;
-
+  String get profileImagePath => _profileImagePath;
+  Image get userProfileImage => _userProfileImage;
   int get userState => _userState;
-
   String get loverNickname => _loverNickname;
-
   bool get loginSuccess => _loginSuccess;
-
   List<int> get lockPassword => _lockPassword;
-
 
   TextEditingController _codeTextEditController = TextEditingController();
   TextEditingController get codeTextEditController => _codeTextEditController;
 
   XFile? _image;
-
   XFile? get image => _image;
 
   void setImage(XFile? image) {
@@ -133,8 +116,8 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setUserProfileImage(String profileImageRoute) {
-    _userProfileImage = profileImageRoute;
+  void setProfileImagePath(String profileImagePath) {
+    _profileImagePath = profileImagePath;
     notifyListeners();
   }
 
@@ -182,7 +165,8 @@ class UserProvider extends ChangeNotifier {
       int topBarType,
       String userBirth,
       String userNickname,
-      String userProfileImage,
+      String profileImagePath,
+      Image userProfileImage,
       int userState) {
     _userIdx = userIdx;
     _userAccount = userAccount;
@@ -197,13 +181,32 @@ class UserProvider extends ChangeNotifier {
     _topBarType = topBarType;
     _userBirth = userBirth;
     _userNickname = userNickname;
+    _profileImagePath = profileImagePath;
     _userProfileImage = userProfileImage;
     _userState = userState;
   }
 
-  void setUserProfile(String profileImage, String userNickname,
-      String userBirth, String profileMessage) {
-    _userProfileImage = profileImage;
+  String _tempImagePath = "lib/assets/images/default_profile.png";
+  String get tempImagePath => _tempImagePath;
+
+  void setTempImagePath(String tempImagePath) {
+    _tempImagePath = tempImagePath;
+    notifyListeners();
+  }
+
+  late Image _tempImage;
+  Image get tempImage => _tempImage;
+
+  void setTempImage(Image tempImage) {
+    _tempImage = tempImage;
+    notifyListeners();
+  }
+
+
+  Future<void> setUserProfile(String profileImagePath, Image userProfileImage, String userNickname,
+      String userBirth, String profileMessage) async {
+    _profileImagePath = profileImagePath;
+    _userProfileImage = userProfileImage;
     _userNickname = userNickname;
     _userBirth = userBirth;
     _profileMessage = profileMessage;

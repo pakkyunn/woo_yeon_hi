@@ -63,13 +63,14 @@ class _MoreScreenState extends State<MoreScreen> {
                                           child: Container(
                                             width: deviceWidth * 0.8,
                                             height: deviceHeight * 0.6,
-                                            decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                image: FileImage(
-                                                    File(provider.image!.path)),
-                                                fit: BoxFit.contain,
-                                              ),
-                                            ),
+                                            child: provider.tempImage,
+                                            // decoration: BoxDecoration(
+                                            //   image: DecorationImage(
+                                            //     image: FileImage(
+                                            //         File(provider.image!.path)),
+                                            //     fit: BoxFit.contain,
+                                            //   ),
+                                            // ),
                                           ),
                                         );
                                       })
@@ -79,16 +80,20 @@ class _MoreScreenState extends State<MoreScreen> {
                             splashColor: Colors.transparent,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(65),
-                              child: provider.image != null
-                                  ? Image.file(File(provider.image!.path),
-                                      width: deviceWidth * 0.35,
-                                      height: deviceWidth * 0.35,
-                                      fit: BoxFit.cover)
-                                  : Image.asset(
-                                      provider.userProfileImage,
-                                      width: deviceWidth * 0.35,
-                                      height: deviceWidth * 0.35,
-                                    ),
+                              child: SizedBox(
+                                width: deviceWidth * 0.35,
+                                height: deviceWidth * 0.35,
+                                child: provider.userProfileImage)
+                              // child: provider.image != null
+                              //     ? Image.file(File(provider.image!.path),
+                              //         width: deviceWidth * 0.35,
+                              //         height: deviceWidth * 0.35,
+                              //         fit: BoxFit.cover)
+                              //     : Image.asset(
+                              //         provider.profileImagePath,
+                              //         width: deviceWidth * 0.35,
+                              //         height: deviceWidth * 0.35,
+                              //       ),
                             ),
                           ),
                         ),

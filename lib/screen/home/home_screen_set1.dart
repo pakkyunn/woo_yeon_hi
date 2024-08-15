@@ -23,7 +23,7 @@ class _HomeScreenState1 extends State<HomeScreenSet1> {
             child: Column(
               children: [
                 const SizedBox(height: 20),
-                dDay(),
+                dDay(context),
                 const SizedBox(height: 20),
                 calendar(context),
               ],

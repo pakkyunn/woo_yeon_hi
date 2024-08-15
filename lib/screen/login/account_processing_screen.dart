@@ -82,7 +82,7 @@ class _AccountProcessingScreenState extends State<AccountProcessingScreen> {
                 ),
                 child: InkWell(
                     onTap: () {
-                      dialogTitleWithContent(context, "계정 삭제 취소", "보관된 데이터와 앱 설정으로 복구됩니다.", () {
+                      dialogTitleWithContent(context, "계정 삭제 복구", "보관된 데이터와 앱 설정으로 계정이 복구됩니다.", () {
                         Navigator.pop(context, false);
                       }, () async {
                         await updateSpecificUserData(

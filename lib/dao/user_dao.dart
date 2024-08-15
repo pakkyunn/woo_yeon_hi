@@ -71,6 +71,21 @@ Future<void> updateSpecificUserData(
   document.reference.update({updateItem: updateContent});
 }
 
+Future<void> updateUserProfileData(int userIdx, String userProfileImageField, String userNicknameField, String userBirthField, String profileMessageField,
+                                   String userProfileImage, String userNickname,String userBirth,String profileMessage) async {
+  var querySnapshot = await FirebaseFirestore.instance
+      .collection('UserData')
+      .where('user_idx', isEqualTo: userIdx)
+      .get();
+
+  var document = querySnapshot.docs.first;
+  document.reference.update({userProfileImageField: userProfileImage});
+  document.reference.update({userNicknameField: userNickname});
+  document.reference.update({userBirthField: userBirth});
+  document.reference.update({profileMessageField: profileMessage});
+}
+
+
 Future<void> deleteUserData(int userIdx) async {
   QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
       .instance
@@ -100,13 +115,13 @@ Future<void> setUserSequence(int sequence) async {
       .set({'value': sequence});
 }
 
-Future<void> uploadUserProfileImage(XFile imageFile, String imageName) async {
+Future<void> uploadProfileImage(XFile imageFile, String imageName) async {
   await FirebaseStorage.instance
       .ref('image/userProfile/$imageName')
       .putFile(File(imageFile.path));
 }
 
-Future<Image> getProfileImagePath(String path) async {
+Future<Image> getProfileImage(String path) async {
   var imageURL = await FirebaseStorage.instance
       .ref('image/userProfile/$path')
       .getDownloadURL();
@@ -115,4 +130,18 @@ Future<Image> getProfileImagePath(String path) async {
     fit: BoxFit.cover,
   );
   return image;
+}
+
+Future<void> deleteProfileImage(String path) async {
+  try {
+    // 파일의 참조를 가져옴
+    final imageURL = FirebaseStorage.instance.ref('image/userProfile/$path');
+
+    // 파일 삭제
+    await imageURL.delete();
+
+    print("File deleted successfully");
+  } catch (e) {
+    print("Failed to delete file: $e");
+  }
 }

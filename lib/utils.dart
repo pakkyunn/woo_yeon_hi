@@ -126,7 +126,11 @@ Future<Map<String, dynamic>> fetchUserData() async {
   final topBarType = await getSpecificUserData(userIdx, 'top_bar_type') ?? 0;
   final userBirth = await getSpecificUserData(userIdx, 'user_birth') ?? "${DateTime.now()}";
   final userNickname = await getSpecificUserData(userIdx, 'user_nickname') ?? "기본닉네임";
-  final userProfileImage = await getSpecificUserData(userIdx, 'user_profile_image') ?? "lib/assets/images/default_profile.png";
+  var profileImagePath = await getSpecificUserData(userIdx, 'user_profile_image') ?? "lib/assets/images/default_profile.png";
+  final userProfileImage =
+      profileImagePath == "lib/assets/images/default_profile.png"
+          ? Image.asset("lib/assets/images/default_profile.png")
+          : await getProfileImage(profileImagePath);
   final userState = await getSpecificUserData(userIdx, 'user_state') ?? 2;
 
   return {
@@ -143,6 +147,7 @@ Future<Map<String, dynamic>> fetchUserData() async {
     'topBarType': topBarType,
     'userBirth': userBirth,
     'userNickname': userNickname,
+    'profileImagePath': profileImagePath,
     'userProfileImage': userProfileImage,
     'userState': userState,
   };
