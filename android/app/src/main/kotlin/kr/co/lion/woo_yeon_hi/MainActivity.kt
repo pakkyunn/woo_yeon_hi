@@ -20,6 +20,13 @@ import io.flutter.embedding.engine.FlutterEngine
 import android.graphics.Color
 import android.widget.RemoteViews
 import android.util.Log
+import android.widget.ImageView
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Rect
+import android.graphics.RectF
+import android.graphics.PorterDuffXfermode
+import android.graphics.PorterDuff
 
 class MainActivity: FlutterFragmentActivity() {
     private val CHANNEL = "custom_notification_channel"
@@ -60,14 +67,23 @@ class MainActivity: FlutterFragmentActivity() {
         ).setMethodCallHandler { call, result ->
             when (call.method) {
                 "showCustomNotification" -> {
-                    val dDayCount = call.argument<Int>("dDayCount")
-                    val topBarStyle = call.argument<Int>("topBarStyle")
+                    val arguments = call.arguments as Map<String, Any>
 
-                    Log.d("Notification", "dDayCount: $dDayCount")
-                    Log.d("Notification", "topBarStyle: $topBarStyle")
+                    val dDayCount = arguments["dDayCount"] as Int
+                    val topBarStyle = arguments["topBarStyle"] as Int
+                    val myProfileImageBytes = arguments["myProfileImage"] as ByteArray
+                    val loverProfileImageBytes = arguments["loverProfileImage"] as ByteArray
+                    Log.d("데이터 확인1", "myProfileImageBytes: $myProfileImageBytes")
+                    Log.d("데이터 확인1", "loverProfileImageBytes: $loverProfileImageBytes")
+
+                    // 이미지를 Bitmap으로 변환
+                    val myProfileBitmap = BitmapFactory.decodeByteArray(myProfileImageBytes, 0, myProfileImageBytes.size)
+                    val loverProfileBitmap = BitmapFactory.decodeByteArray(loverProfileImageBytes, 0, loverProfileImageBytes.size)
+
+                    result.success("Image received and set.")
 
                     if (dDayCount != null && topBarStyle != null) {
-                        showCustomNotification(dDayCount, topBarStyle)
+                        showCustomNotification(dDayCount, topBarStyle, getCircularBitmap(myProfileBitmap), getCircularBitmap(loverProfileBitmap))
                         result.success("Notification Shown")
                     } else {
                         result.error("INVALID_ARGUMENTS", "Invalid arguments provided", null)
@@ -96,7 +112,7 @@ class MainActivity: FlutterFragmentActivity() {
         appWidgetManager.notifyAppWidgetViewDataChanged(allWidgetIds, R.id.widget_layout)
     }
 
-    private fun showCustomNotification(dDayCount: Int, topBarStyle: Int) {
+    private fun showCustomNotification(dDayCount: Int, topBarStyle: Int, myProfileBitmap: Bitmap, loverProfileBitmap: Bitmap) {
         val channelId = CHANNEL_ID
 //        val channelName = "Custom Notification"
         val notificationManager =
@@ -140,38 +156,28 @@ class MainActivity: FlutterFragmentActivity() {
         )
 
         // 상단바 스타일 3 커스텀뷰
-        val top_bar_style3_customView =
-            RemoteViews(packageName, R.layout.top_bar_style_3_layout)
-        top_bar_style3_customView.setImageViewResource(
-            R.id.top_bar_style_3_image1,
-            R.drawable.profile_circle_4x
-        )
+        val top_bar_style3_customView = RemoteViews(packageName, R.layout.top_bar_style_3_layout)
+
+        top_bar_style3_customView.setImageViewBitmap(R.id.top_bar_style_3_image1, myProfileBitmap)
         top_bar_style3_customView.setImageViewResource(
             R.id.top_bar_style_3_image2,
             R.drawable.like_4x
         )
         top_bar_style3_customView.setTextViewText(R.id.top_bar_style_3_text, "${dDayCount}일")
-        top_bar_style3_customView.setImageViewResource(
-            R.id.top_bar_style_3_image3,
-            R.drawable.profile_circle_4x
-        )
+        top_bar_style3_customView.setImageViewBitmap(R.id.top_bar_style_3_image3, loverProfileBitmap)
+
 
         // 상단바 스타일 4 커스텀뷰
-        val top_bar_style4_customView =
-            RemoteViews(packageName, R.layout.top_bar_style_4_layout)
+        val top_bar_style4_customView = RemoteViews(packageName, R.layout.top_bar_style_4_layout)
+
         top_bar_style4_customView.setImageViewResource(
             R.id.top_bar_style_4_image1,
             R.drawable.like_4x
         )
-        top_bar_style4_customView.setImageViewResource(
-            R.id.top_bar_style_4_image2,
-            R.drawable.profile_circle_4x
-        )
         top_bar_style4_customView.setTextViewText(R.id.top_bar_style_4_text, "${dDayCount}일")
-        top_bar_style4_customView.setImageViewResource(
-            R.id.top_bar_style_4_image3,
-            R.drawable.profile_circle_4x
-        )
+        top_bar_style4_customView.setImageViewBitmap(R.id.top_bar_style_4_image2, myProfileBitmap)
+        top_bar_style4_customView.setImageViewBitmap(R.id.top_bar_style_4_image3, loverProfileBitmap)
+
 
         // 각 경우에 맞는 커스텀 뷰 선택
         val customView = when (topBarStyle) {
@@ -211,5 +217,24 @@ class MainActivity: FlutterFragmentActivity() {
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancel(NOTIFICATION_ID)
+    }
+
+    fun getCircularBitmap(bitmap: Bitmap): Bitmap {
+        val size = Math.min(bitmap.width, bitmap.height)
+        val output = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+
+        val canvas = Canvas(output)
+        val paint = Paint()
+        paint.isAntiAlias = true
+
+        val rect = Rect(0, 0, size, size)
+        val rectF = RectF(rect)
+
+        canvas.drawOval(rectF, paint)
+
+        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+        canvas.drawBitmap(bitmap, rect, rect, paint)
+
+        return output
     }
 }

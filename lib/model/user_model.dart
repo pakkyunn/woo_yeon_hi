@@ -13,7 +13,6 @@ class UserModel {
   int topBarType;
   String profileMessage;
   bool notificationAllow;
-  bool topBarActivate;
   int userState;
   String loveDday;
   int appLockState;
@@ -30,7 +29,6 @@ class UserModel {
     required this.topBarType,
     required this.profileMessage,
     required this.notificationAllow,
-    required this.topBarActivate,
     required this.userState,
     required this.loveDday,
     required this.appLockState
@@ -50,7 +48,6 @@ class UserModel {
         topBarType: data['top_bar_type'],
         profileMessage: data['profile_message'],
         notificationAllow: data['notification_allow'],
-        topBarActivate: data['top_bar_activate'],
         userState: data['user_state'],
         loveDday: data['love_d_day'],
         appLockState: data['app_lock_state']

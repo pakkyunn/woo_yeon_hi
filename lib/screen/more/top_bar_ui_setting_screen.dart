@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:ui' as ui;
+
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -64,29 +67,30 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
             IconButton(
               onPressed: () async {
                 if (topBarIndex == 0) {
-                  _cancelNotification();
+                  cancelNotification();
                   await updateSpecificUserData(
                       provider.userIdx, 'top_bar_activate', false);
                   await updateSpecificUserData(
                       provider.userIdx, 'top_bar_type', topBarIndex);
-                  provider.setTopBarActivate(false);
-                  provider.setTopBarType(topBarIndex);
                   provider.setTopBarType(topBarIndex);
                   Navigator.pop(context);
                   showPinkSnackBar(context, "상단바 설정이 저장되었습니다.");
                 } else {
-                  await checkAndRequestNotificationPermission(context, _showDialog)
-                    ? {_showCustomNotification(provider.loveDday, topBarIndex),
-                      await updateSpecificUserData(
-                          provider.userIdx, 'top_bar_activate', true),
-                      await updateSpecificUserData(
-                          provider.userIdx, 'top_bar_type', topBarIndex),
-                      provider.setTopBarActivate(false),
-                      provider.setTopBarType(topBarIndex),
-                      Navigator.pop(context),
-                      showPinkSnackBar(context, "상단바 설정이 저장되었습니다.")
-                      }
-                    : null;
+                  await checkAndRequestNotificationPermission(
+                      context, _showDialog)
+                      ? {
+                    cancelNotification(),
+                    showCustomNotification(provider.loveDday, topBarIndex,
+                        provider.userProfileImage, provider.userProfileImage),
+                    await updateSpecificUserData(
+                        provider.userIdx, 'top_bar_activate', true),
+                    await updateSpecificUserData(
+                        provider.userIdx, 'top_bar_type', topBarIndex),
+                    provider.setTopBarType(topBarIndex),
+                    Navigator.pop(context),
+                    showPinkSnackBar(context, "상단바 설정이 저장되었습니다.")
+                  }
+                      : null;
                 }
               },
               icon: SvgPicture.asset('lib/assets/icons/done.svg'),
@@ -369,28 +373,47 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
       );
     });
   }
-
-  Future<void> _showCustomNotification(String loveDday, int topBarStyle) async {
-    int dDayCount = DateTime
-        .now()
-        .difference(stringToDate(loveDday))
-        .inDays + 1;
+}
+  Future<void> showCustomNotification(String loveDday, int topBarStyle, Image myProfileImage, Image loverProfileImage) async {
+    int dDayCount = DateTime.now().difference(stringToDate(loveDday)).inDays + 1;
+    final Uint8List? myProfileImageData = await _convertImageToUint8List(myProfileImage);
+    final Uint8List? loverProfileImageData = await _convertImageToUint8List(loverProfileImage);
     const platform = MethodChannel('custom_notification_channel');
 
     try {
       final Map<String, dynamic> arguments = {
         'dDayCount': dDayCount,
         'topBarStyle': topBarStyle,
+        'myProfileImage': myProfileImageData,
+        'loverProfileImage': loverProfileImageData,
       };
-      final String result =
-      await platform.invokeMethod('showCustomNotification', arguments);
+      final String result = await platform.invokeMethod('showCustomNotification', arguments);
       print(result);
     } on PlatformException catch (e) {
       print("Failed to show notification: '${e.message}'.");
     }
   }
 
-  Future<void> _cancelNotification() async {
+  Future<Uint8List?> _convertImageToUint8List(Image profileImage) async {
+    // 1. 이미지 렌더링을 위해 ImageStream 가져오기
+    final Completer<ui.Image> completer = Completer<ui.Image>();
+    profileImage.image.resolve(ImageConfiguration()).addListener(
+      ImageStreamListener((ImageInfo info, bool _) {
+          completer.complete(info.image);
+        })
+    );
+    // 2. ui.Image 객체 얻기
+    final ui.Image uiImage = await completer.future;
+
+    // 3. ui.Image를 ByteData로 변환
+    final ByteData? byteData = await uiImage.toByteData(format: ui.ImageByteFormat.png);
+
+    // 4. ByteData를 Uint8List로 변환
+    return byteData?.buffer.asUint8List();
+  }
+
+
+  Future<void> cancelNotification() async {
     const platform = MethodChannel('custom_notification_channel');
     try {
       await platform.invokeMethod('cancelNotification');
@@ -399,7 +422,7 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
     }
   }
 
-  void _showDialog(){
+  void _showDialog(BuildContext context){
     showDialog(
         context: context,
         builder: (context) {
@@ -471,4 +494,4 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
         }
     );
   }
-}
+

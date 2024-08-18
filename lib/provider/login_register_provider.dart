@@ -18,7 +18,6 @@ class UserProvider extends ChangeNotifier {
   String _loveDday = dateToString(DateTime.now());
   int _loverIdx = 0;
   String _profileMessage = "";
-  bool _topBarActivate = false;
   int _topBarType = 0;
   String _userBirth = dateToString(DateTime.now());
   String _userNickname = "기본닉네임";
@@ -39,7 +38,6 @@ class UserProvider extends ChangeNotifier {
   String get loveDday => _loveDday;
   int get loverIdx => _loverIdx;
   String get profileMessage => _profileMessage;
-  bool get topBarActivate => _topBarActivate;
   int get topBarType => _topBarType;
   String get userBirth => _userBirth;
   String get userNickname => _userNickname;
@@ -146,11 +144,6 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setTopBarActivate(bool activate) {
-    _topBarActivate = activate;
-    notifyListeners();
-  }
-
   void setUserAllData(
       int userIdx,
       String userAccount,
@@ -161,7 +154,6 @@ class UserProvider extends ChangeNotifier {
       int loverIdx,
       bool notificationAllow,
       String profileMessage,
-      bool topBarActivate,
       int topBarType,
       String userBirth,
       String userNickname,
@@ -177,7 +169,6 @@ class UserProvider extends ChangeNotifier {
     _loverIdx = loverIdx;
     _notificationAllow = notificationAllow;
     _profileMessage = profileMessage;
-    _topBarActivate = topBarActivate;
     _topBarType = topBarType;
     _userBirth = userBirth;
     _userNickname = userNickname;

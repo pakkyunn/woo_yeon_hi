@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/screen/more/more_screen.dart';
+import 'package:woo_yeon_hi/screen/more/top_bar_ui_setting_screen.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/style/text_style.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
@@ -141,18 +142,25 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                     if (tempUserNickname.isNotEmpty) {
                         FocusScope.of(context).unfocus();
                         var imageName = "${provider.userIdx}_${DateTime.now()}";
-                        deleteProfileImage(provider.profileImagePath);
+                        deleteProfileImage(provider.profileImagePath); //storage에 저장되어 있던 기존 프로필사진 파일 삭제
+
+                        // 기본 프로필 이미지로 변경하는 경우
                         if(provider.tempImagePath=="lib/assets/images/default_profile.png"){
                           updateUserProfileData(provider.userIdx,'user_profile_image','user_nickname', 'user_birth','profile_message',
                               "lib/assets/images/default_profile.png", tempUserNickname, tempUserBirth, tempProfileMessage);
                           await provider.setUserProfile(provider.tempImagePath, Image.asset("lib/assets/images/default_profile.png"),
                               tempUserNickname, tempUserBirth, tempProfileMessage);
-                        } else{
+                        } else{ // 새로운 프로필사진으로 변경하는 경우
                           uploadProfileImage(provider.image!, imageName);
                           updateUserProfileData(provider.userIdx,'user_profile_image','user_nickname', 'user_birth','profile_message',
                               imageName, tempUserNickname, tempUserBirth, tempProfileMessage);
-                          await provider.setUserProfile(provider.tempImagePath, Image.file(File(provider.tempImagePath)),
+                          await provider.setUserProfile(imageName, Image.file(File(provider.tempImagePath)),
                               tempUserNickname, tempUserBirth, tempProfileMessage);
+                          // 상단바스타일3,4를 사용중인 경우 이미지 업데이트
+                          if(provider.topBarType==3 || provider.topBarType==4){
+                            //TODO 상대프로필사진 가져오는 코드
+                            showCustomNotification(provider.loveDday, provider.topBarType, provider.userProfileImage, provider.userProfileImage);
+                          }
                         }
                         Navigator.pop(context);
                         showPinkSnackBar(context, '프로필이 저장되었습니다!');

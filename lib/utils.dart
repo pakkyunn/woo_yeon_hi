@@ -122,7 +122,6 @@ Future<Map<String, dynamic>> fetchUserData() async {
   final loveDday = await getSpecificUserData(userIdx, 'love_dDay') ?? "${DateTime.now()}";
   final loverIdx = await getSpecificUserData(userIdx, 'lover_idx') ?? 0;
   final profileMessage = await getSpecificUserData(userIdx, 'profile_message') ?? "";
-  final topBarActivate = await getSpecificUserData(userIdx, 'top_bar_activate') ?? false;
   final topBarType = await getSpecificUserData(userIdx, 'top_bar_type') ?? 0;
   final userBirth = await getSpecificUserData(userIdx, 'user_birth') ?? "${DateTime.now()}";
   final userNickname = await getSpecificUserData(userIdx, 'user_nickname') ?? "기본닉네임";
@@ -143,7 +142,6 @@ Future<Map<String, dynamic>> fetchUserData() async {
     'loveDday': loveDday,
     'loverIdx': loverIdx,
     'profileMessage': profileMessage,
-    'topBarActivate': topBarActivate,
     'topBarType': topBarType,
     'userBirth': userBirth,
     'userNickname': userNickname,

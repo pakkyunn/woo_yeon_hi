@@ -60,17 +60,10 @@ class _MoreScreenState extends State<MoreScreen> {
                                       context: context,
                                       builder: (BuildContext context) {
                                         return Dialog(
-                                          child: Container(
+                                          child: SizedBox(
                                             width: deviceWidth * 0.8,
                                             height: deviceHeight * 0.6,
                                             child: provider.tempImage,
-                                            // decoration: BoxDecoration(
-                                            //   image: DecorationImage(
-                                            //     image: FileImage(
-                                            //         File(provider.image!.path)),
-                                            //     fit: BoxFit.contain,
-                                            //   ),
-                                            // ),
                                           ),
                                         );
                                       })

@@ -21,7 +21,6 @@ Future<void> saveUserData(UserModel user) async {
     "top_bar_type": user.topBarType,
     "profile_message": user.profileMessage,
     "notification_allow": user.notificationAllow,
-    "top_bar_activate": user.topBarActivate,
     "user_state": user.userState,
     "love_dDay": user.loveDday,
   });
