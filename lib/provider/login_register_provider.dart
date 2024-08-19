@@ -118,8 +118,23 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setProfileImagePath(String userProfileImagePath) {
+  void setUserProfileImagePath(String userProfileImagePath) {
     _userProfileImagePath = userProfileImagePath;
+    notifyListeners();
+  }
+
+  void setLoverProfileImagePath(String loverProfileImagePath) {
+    _loverProfileImagePath = loverProfileImagePath;
+    notifyListeners();
+  }
+
+  void setUserProfileImage(Image userProfileImage) {
+    _userProfileImage = userProfileImage;
+    notifyListeners();
+  }
+
+  void setLoverProfileImage(Image loverProfileImage) {
+    _loverProfileImage = loverProfileImage;
     notifyListeners();
   }
 
