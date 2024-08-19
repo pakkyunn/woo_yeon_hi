@@ -81,7 +81,7 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
                       ? {
                     cancelNotification(),
                     showCustomNotification(provider.loveDday, topBarIndex,
-                        provider.userProfileImage, provider.userProfileImage),
+                        provider.userProfileImage, provider.loverProfileImage),
                     await updateSpecificUserData(
                         provider.userIdx, 'top_bar_activate', true),
                     await updateSpecificUserData(

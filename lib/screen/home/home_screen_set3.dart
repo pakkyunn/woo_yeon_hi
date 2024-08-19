@@ -22,10 +22,9 @@ class _HomeScreenState3 extends State<HomeScreenSet3> {
             color: const Color(0xffFCF8F5),
             child: Column(
               children: [
-                const SizedBox(height: 20),
                 dDay(context),
                 const SizedBox(height: 20),
-                accountBook(),
+                accountBook(context),
                 const SizedBox(height: 20),
                 calendar(context),
               ],

@@ -55,28 +55,34 @@ class _MoreScreenState extends State<MoreScreen> {
                           borderRadius: BorderRadius.circular(65),
                           child: InkWell(
                             onTap: () {
-                              provider.image != null
-                                  ? showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return Dialog(
-                                          child: SizedBox(
-                                            width: deviceWidth * 0.8,
-                                            height: deviceHeight * 0.6,
-                                            child: provider.tempImage,
-                                          ),
-                                        );
-                                      })
-                                  : null;
+                              provider.loverProfileImagePath ==
+                                  "lib/assets/images/default_profile.png"
+                                  ? null
+                                  : showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return Dialog(
+                                      child: SizedBox(
+                                          width: deviceWidth * 0.8,
+                                          height: deviceHeight * 0.6,
+                                          child: provider.userProfileImage),
+                                    );
+                                  });
                             },
                             borderRadius: BorderRadius.circular(65),
                             splashColor: Colors.transparent,
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(65),
-                              child: SizedBox(
-                                width: deviceWidth * 0.35,
-                                height: deviceWidth * 0.35,
-                                child: provider.userProfileImage)
+                                  borderRadius: BorderRadius.circular(65),
+                                  child: Container(
+                                      width: deviceWidth * 0.35,
+                                      height: deviceWidth * 0.35,
+                                      decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              image: provider
+                                                  .userProfileImage.image,
+                                              // Image 객체의 image 속성을 사용
+                                              fit: BoxFit.cover))))
+
                               // child: provider.image != null
                               //     ? Image.file(File(provider.image!.path),
                               //         width: deviceWidth * 0.35,
@@ -88,7 +94,6 @@ class _MoreScreenState extends State<MoreScreen> {
                               //         height: deviceWidth * 0.35,
                               //       ),
                             ),
-                          ),
                         ),
                         const SizedBox(width: 20),
                         SizedBox(

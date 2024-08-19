@@ -54,8 +54,8 @@ Widget dDay(BuildContext context) {
                   fontSize: 20,
                   fontFamily: FontFamily.mapleStoryLight)),
           SizedBox(
-            width: 40, // 원하는 너비
-            height: 40, // 원하는 높이
+            width: 40,
+            height: 40,
             child: FittedBox(
               child: IconButton(
                 icon: SvgPicture.asset('lib/assets/icons/expand.svg'),
@@ -71,97 +71,116 @@ Widget dDay(BuildContext context) {
         ],
       ),
       Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              InkWell(
-                  onTap: () {
-                    provider.profileImagePath ==
-                            "lib/assets/images/default_profile.png"
-                        ? null
-                        : showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Dialog(
-                                child: SizedBox(
-                                    width: deviceWidth * 0.8,
-                                    height: deviceHeight * 0.6,
-                                    child: provider.userProfileImage),
-                              );
-                            });
-                  },
-                  child: ClipOval(
-                      child: Image.asset(
-                          'lib/assets/images/test_wooyeon_man.jpg',
-                          width: 75,
-                          height: 75))),
-              const SizedBox(height: 5),
-              const Text("우연남",
-                  style: TextStyle(
-                      fontSize: 14,
-                      color: ColorFamily.black,
-                      fontFamily: FontFamily.mapleStoryLight)),
-            ],
+          SizedBox(
+            width: deviceWidth*0.38,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                InkWell(
+                    onTap: () {
+                      provider.userProfileImagePath ==
+                              "lib/assets/images/default_profile.png"
+                          ? null
+                          : showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Dialog(
+                                  child: SizedBox(
+                                      width: deviceWidth * 0.8,
+                                      height: deviceHeight * 0.6,
+                                      child: provider.userProfileImage),
+                                );
+                              });
+                    },
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: Container(
+                            width: deviceWidth * 0.20,
+                            height: deviceWidth * 0.20,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: provider.userProfileImage.image, // Image 객체의 image 속성을 사용
+                                fit: BoxFit.cover) // 이미지를 원 안에 꽉 차게 함
+                            )))),
+                const SizedBox(height: 5),
+                Text(provider.userNickname,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontSize: 14,
+                        color: ColorFamily.black,
+                        fontFamily: FontFamily.mapleStoryLight)),
+              ],
+            ),
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgPicture.asset('lib/assets/icons/like.svg'),
-              const SizedBox(height: 5),
-              Text(
-                '${DateTime.now().difference(stringToDate(provider.loveDday)).inDays + 1}일',
-                style: const TextStyle(fontFamily: FontFamily.mapleStoryLight),
-              ),
-            ],
+          SizedBox(
+            width: deviceWidth*0.14,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SvgPicture.asset('lib/assets/icons/like.svg'),
+                const SizedBox(height: 5),
+                Text(
+                  '${DateTime.now().difference(stringToDate(provider.loveDday)).inDays + 1}일',
+                  style: const TextStyle(fontFamily: FontFamily.mapleStoryLight),
+                ),
+              ],
+            ),
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              InkWell(
-                  onTap: () {
-                    provider.profileImagePath ==
-                            "lib/assets/images/default_profile.png"
-                        ? null
-                        : showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Dialog(
-                                child: SizedBox(
-                                    width: deviceWidth * 0.8,
-                                    height: deviceHeight * 0.6,
-                                    child: provider.userProfileImage),
-                              );
-                            });
-                  },
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(65),
-                      child: Container(
-                          width: deviceWidth * 0.20,
-                          height: deviceWidth * 0.20,
-                          child: provider.userProfileImage))),
-              // ClipOval(child: Image.asset('lib/assets/images/test_wooyeon_women.jpg', width: 75, height: 75)),
-              const SizedBox(height: 5),
-              const Text("내여친",
-                  style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.black,
-                      fontFamily: FontFamily.mapleStoryLight)),
-            ],
+          SizedBox(
+            width: deviceWidth*0.38,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                InkWell(
+                    onTap: () {
+                      provider.loverProfileImagePath ==
+                              "lib/assets/images/default_profile.png"
+                          ? null
+                          : showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Dialog(
+                                  child: SizedBox(
+                                      width: deviceWidth * 0.8,
+                                      height: deviceHeight * 0.6,
+                                      child: provider.loverProfileImage),
+                                );
+                              });
+                    },
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: Container(
+                            width: deviceWidth * 0.20,
+                            height: deviceWidth * 0.20,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: provider.loverProfileImage.image, // Image 객체의 image 속성을 사용
+                                    fit: BoxFit.cover) // 이미지를 원 안에 꽉 차게 함
+                            )))),
+                // ClipOval(child: Image.asset('lib/assets/images/test_wooyeon_women.jpg', width: 75, height: 75)),
+                const SizedBox(height: 5),
+                Text(provider.loverNickname,
+                    style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.black,
+                        fontFamily: FontFamily.mapleStoryLight)),
+              ],
+            ),
           ),
         ],
       ),
-      120,
+      deviceWidth*0.95, deviceHeight*0.15
     );
   });
 }
 
-Widget datePlan() {
+Widget datePlan(BuildContext context) {
+  var deviceWidth = MediaQuery.of(context).size.width;
+  var deviceHeight = MediaQuery.of(context).size.height;
+
   final controller = PageController(viewportFraction: 1, keepPage: true);
-  final pages = List.generate(
-      4,
-      (index) => const Column(
+  final pages = List.generate(4, (index) => const Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text("제주도 여행",
@@ -224,14 +243,18 @@ Widget datePlan() {
               ),
             ),
           ),
+          const SizedBox(height: 10)
         ],
       ),
     ),
-    100,
+      deviceWidth*0.95, deviceHeight*0.15
   );
 }
 
-Widget accountBook() {
+Widget accountBook(BuildContext context) {
+  var deviceWidth = MediaQuery.of(context).size.width;
+  var deviceHeight = MediaQuery.of(context).size.height;
+
   return _cardContainer(
     const Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -275,11 +298,14 @@ Widget accountBook() {
                 fontFamily: FontFamily.mapleStoryLight))
       ],
     ),
-    100,
+      deviceWidth*0.95, deviceHeight*0.15
   );
 }
 
 Widget calendar(BuildContext context) {
+  var deviceWidth = MediaQuery.of(context).size.width;
+  var deviceHeight = MediaQuery.of(context).size.height;
+
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
@@ -396,10 +422,10 @@ Widget calendar(BuildContext context) {
           ],
         ),
       ),
-      null);
+      null, null);
 }
 
-Widget _cardContainer(Widget title, Widget child, double? height) {
+Widget _cardContainer(Widget title, Widget child, double? width, double? height) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [

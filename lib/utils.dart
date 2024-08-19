@@ -124,12 +124,18 @@ Future<Map<String, dynamic>> fetchUserData() async {
   final profileMessage = await getSpecificUserData(userIdx, 'profile_message') ?? "";
   final topBarType = await getSpecificUserData(userIdx, 'top_bar_type') ?? 0;
   final userBirth = await getSpecificUserData(userIdx, 'user_birth') ?? "${DateTime.now()}";
-  final userNickname = await getSpecificUserData(userIdx, 'user_nickname') ?? "기본닉네임";
-  var profileImagePath = await getSpecificUserData(userIdx, 'user_profile_image') ?? "lib/assets/images/default_profile.png";
+  final userNickname = await getSpecificUserData(userIdx, 'user_nickname') ?? "기본별명";
+  final loverNickname = await getSpecificUserData(loverIdx, 'user_nickname') ?? "기본별명";
+  var userProfileImagePath = await getSpecificUserData(userIdx, 'user_profile_image') ?? "lib/assets/images/default_profile.png";
+  var loverProfileImagePath = await getSpecificUserData(loverIdx, 'user_profile_image') ?? "lib/assets/images/default_profile.png";
   final userProfileImage =
-      profileImagePath == "lib/assets/images/default_profile.png"
+  userProfileImagePath == "lib/assets/images/default_profile.png"
           ? Image.asset("lib/assets/images/default_profile.png")
-          : await getProfileImage(profileImagePath);
+          : await getProfileImage(userProfileImagePath);
+  final loverProfileImage =
+  loverProfileImagePath == "lib/assets/images/default_profile.png"
+      ? Image.asset("lib/assets/images/default_profile.png")
+      : await getProfileImage(loverProfileImagePath);
   final userState = await getSpecificUserData(userIdx, 'user_state') ?? 2;
 
   return {
@@ -145,8 +151,11 @@ Future<Map<String, dynamic>> fetchUserData() async {
     'topBarType': topBarType,
     'userBirth': userBirth,
     'userNickname': userNickname,
-    'profileImagePath': profileImagePath,
+    'loverNickname': loverNickname,
+    'userProfileImagePath': userProfileImagePath,
+    'loverProfileImagePath': loverProfileImagePath,
     'userProfileImage': userProfileImage,
+    'loverProfileImage': loverProfileImage,
     'userState': userState,
   };
 }

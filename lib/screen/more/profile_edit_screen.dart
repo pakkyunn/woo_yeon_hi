@@ -29,10 +29,9 @@ class ProfileEditScreen extends StatefulWidget {
 }
 
 class _ProfileEditScreenState extends State<ProfileEditScreen> {
-  final FocusNode _nickNamefocusNode = FocusNode();
+  final FocusNode _nickNameFocusNode = FocusNode();
   final FocusNode _profileMessageFocusNode = FocusNode();
 
-  late String tempProfileImagePath;
   late String tempUserNickname;
   late String tempProfileMessage;
   late String tempUserBirth;
@@ -47,7 +46,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
 
   Future<void> _tempDataInitiate() async {
     var provider = Provider.of<UserProvider>(context, listen: false);
-    provider.setTempImagePath(provider.profileImagePath);
+    provider.setTempImagePath(provider.userProfileImagePath);
     provider.setTempImage(provider.userProfileImage);
     tempUserNickname = provider.userNickname;
     tempProfileMessage = provider.profileMessage;
@@ -57,7 +56,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
 
   @override
   void dispose() {
-    _nickNamefocusNode.dispose();
+    _nickNameFocusNode.dispose();
     _profileMessageFocusNode.dispose();
     super.dispose();
   }
@@ -74,7 +73,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
             if (didPop) {
               return;
             }
-            if (tempProfileImagePath != provider.profileImagePath ||
+            if (provider.tempImagePath != provider.userProfileImagePath ||
                 tempUserNickname != provider.userNickname ||
                 tempUserBirth != provider.userBirth ||
                 tempProfileMessage != provider.profileMessage) {
@@ -82,12 +81,12 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                   context, "프로필 편집 나가기", "변경사항은 저장되지 않습니다.",
                     () {
                   Navigator.pop(context, false);
-                  _nickNamefocusNode.unfocus();
+                  _nickNameFocusNode.unfocus();
                   _profileMessageFocusNode.unfocus();
                   },
                     () {
                   Navigator.pop(context, true);
-                  _nickNamefocusNode.unfocus();
+                  _nickNameFocusNode.unfocus();
                   _profileMessageFocusNode.unfocus();
                   Future.delayed(const Duration(milliseconds: 100), () {
                   Navigator.of(context).pop();
@@ -109,7 +108,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
               ),
               leading: IconButton(
                 onPressed: () {
-                  if (tempProfileImagePath != provider.profileImagePath ||
+                  if (provider.tempImagePath != provider.userProfileImagePath ||
                       tempUserNickname != provider.userNickname ||
                       tempUserBirth != provider.userBirth ||
                       tempProfileMessage != provider.profileMessage) {
@@ -117,12 +116,12 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                         context, "프로필 편집 나가기", "변경사항은 저장되지 않습니다.",
                             () {
                           Navigator.pop(context, false);
-                          _nickNamefocusNode.unfocus();
+                          _nickNameFocusNode.unfocus();
                           _profileMessageFocusNode.unfocus();
                         },
                             () {
                           Navigator.pop(context, true);
-                          _nickNamefocusNode.unfocus();
+                          _nickNameFocusNode.unfocus();
                           _profileMessageFocusNode.unfocus();
                           Future.delayed(const Duration(milliseconds: 100), () {
                             Navigator.of(context).pop();
@@ -139,18 +138,23 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                 IconButton(
                   onPressed: () async {
                     FocusScope.of(context).unfocus();
-                    if (tempUserNickname.isNotEmpty) {
+                    if (tempUserNickname.isNotEmpty) { //별명 유효성 검사
                         FocusScope.of(context).unfocus();
                         var imageName = "${provider.userIdx}_${DateTime.now()}";
-                        deleteProfileImage(provider.profileImagePath); //storage에 저장되어 있던 기존 프로필사진 파일 삭제
 
-                        // 기본 프로필 이미지로 변경하는 경우
-                        if(provider.tempImagePath=="lib/assets/images/default_profile.png"){
+                        if(provider.tempImagePath==provider.userProfileImagePath){ //프로필 사진을 변경하지 않은 경우
+                          updateUserProfileData(provider.userIdx,'user_profile_image','user_nickname', 'user_birth','profile_message',
+                              provider.tempImagePath, tempUserNickname, tempUserBirth, tempProfileMessage);
+                          await provider.setUserProfile(provider.tempImagePath, provider.tempImage,
+                              tempUserNickname, tempUserBirth, tempProfileMessage);
+                        } else if(provider.tempImagePath=="lib/assets/images/default_profile.png"){ // 기본 프로필 이미지로 변경하는 경우
+                          deleteProfileImage(provider.userProfileImagePath); //storage에 저장되어 있던 기존 프로필사진 파일 삭제
                           updateUserProfileData(provider.userIdx,'user_profile_image','user_nickname', 'user_birth','profile_message',
                               "lib/assets/images/default_profile.png", tempUserNickname, tempUserBirth, tempProfileMessage);
                           await provider.setUserProfile(provider.tempImagePath, Image.asset("lib/assets/images/default_profile.png"),
                               tempUserNickname, tempUserBirth, tempProfileMessage);
-                        } else{ // 새로운 프로필사진으로 변경하는 경우
+                        } else { // 새로운 프로필 사진으로 변경하는 경우
+                          deleteProfileImage(provider.userProfileImagePath); //storage에 저장되어 있던 기존 프로필사진 파일 삭제
                           uploadProfileImage(provider.image!, imageName);
                           updateUserProfileData(provider.userIdx,'user_profile_image','user_nickname', 'user_birth','profile_message',
                               imageName, tempUserNickname, tempUserBirth, tempProfileMessage);
@@ -158,15 +162,14 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                               tempUserNickname, tempUserBirth, tempProfileMessage);
                           // 상단바스타일3,4를 사용중인 경우 이미지 업데이트
                           if(provider.topBarType==3 || provider.topBarType==4){
-                            //TODO 상대프로필사진 가져오는 코드
-                            showCustomNotification(provider.loveDday, provider.topBarType, provider.userProfileImage, provider.userProfileImage);
+                            showCustomNotification(provider.loveDday, provider.topBarType, provider.userProfileImage, provider.loverProfileImage);
                           }
                         }
                         Navigator.pop(context);
                         showPinkSnackBar(context, '프로필이 저장되었습니다!');
                     } else {
                       FocusScope.of(context).unfocus();
-                      showBlackToast("닉네임을 입력해주세요!");
+                      showBlackToast("별명을 입력해주세요!");
                     }
                   },
                   icon: SvgPicture.asset('lib/assets/icons/done.svg'),
@@ -191,34 +194,23 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                                 borderRadius: BorderRadius.circular(65),
                                 child: InkWell(
                                   onTap: () {
-       //TODO 기본프로필이 아닌 상태에서 편집을 들어와서 바로 탭할 경우 provider.image와 provider.tempImage가 null임을 고려해서 수정 필요.
-                                    provider.image != null
-                                        ? showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return Dialog(
-                                                child: Container(
-                                                  width: deviceWidth * 0.8,
-                                                  height: deviceHeight * 0.6,
-                                                  // decoration: BoxDecoration(
-                                                    // image: DecorationImage(
-                                                    //   image: FileImage(File(
-                                                    //       provider
-                                                    //           .tempImagePath)),
-                                                    //   fit: BoxFit.contain,
-                                                    // ),
-                                                  // ),
-                                                  child: provider.tempImage,
-                                                ),
-                                              );
-                                            })
-                                        : null;
+                                    showPhotoBottomSheet(context);
                                   },
                                   borderRadius: BorderRadius.circular(65),
                                   splashColor: Colors.transparent,
                                   child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(65),
-                                    child: Container(child: provider.tempImage,width: deviceWidth * 0.35, height: deviceWidth * 0.35),
+                                      borderRadius: BorderRadius.circular(65),
+                                      child: Container(
+                                          width: deviceWidth * 0.35,
+                                          height: deviceWidth * 0.35,
+                                          decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                  image: provider.tempImage.image, // Image 객체의 image 속성을 사용
+                                                  fit: BoxFit.cover)
+                                          )))
+                                  // ClipRRect(
+                                  //   borderRadius: BorderRadius.circular(65),
+                                  //   child: Container(child: provider.tempImage,width: deviceWidth * 0.35, height: deviceWidth * 0.35),
                                     // child: provider.image != null
                                     //     ? Image.file(
                                     //         File(provider.image!.path),
@@ -232,7 +224,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                                     //         width: deviceWidth * 0.35,
                                     //         height: deviceWidth * 0.35,
                                     //       ),
-                                  ),
+                                  // ),
                                 ),
                               ),
                               Positioned(
@@ -250,7 +242,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            "닉네임",
+                            "별명",
                             style: TextStyleFamily.normalTextStyle,
                           ),
                         ),
@@ -267,7 +259,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                             padding: const EdgeInsets.only(left: 15),
                             child: TextFormField(
                               autofocus: false,
-                              focusNode: _nickNamefocusNode,
+                              focusNode: _nickNameFocusNode,
                               maxLength: 10,
                               initialValue: tempUserNickname,
                               onChanged: (value) {
@@ -340,11 +332,11 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                                     _selectedDate = date;
                                     tempUserBirth = dateToString(_selectedDate);
                                   });
-                                  _nickNamefocusNode.unfocus();
+                                  _nickNameFocusNode.unfocus();
                                   _profileMessageFocusNode.unfocus();
                                 },
                                 onCancel: () {
-                                  _nickNamefocusNode.unfocus();
+                                  _nickNameFocusNode.unfocus();
                                   _profileMessageFocusNode.unfocus();
                                 },
                               );

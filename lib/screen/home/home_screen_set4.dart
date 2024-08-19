@@ -22,12 +22,11 @@ class _HomeScreenState extends State<HomeScreenSet4> {
             color: const Color(0xffFCF8F5),
             child: Column(
               children: [
-                const SizedBox(height: 20),
                 dDay(context),
                 const SizedBox(height: 20),
-                datePlan(),
+                datePlan(context),
                 const SizedBox(height: 20),
-                accountBook(),
+                accountBook(context),
                 const SizedBox(height: 20),
                 calendar(context),
               ],

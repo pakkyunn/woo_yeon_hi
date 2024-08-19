@@ -20,12 +20,14 @@ class UserProvider extends ChangeNotifier {
   String _profileMessage = "";
   int _topBarType = 0;
   String _userBirth = dateToString(DateTime.now());
-  String _userNickname = "기본닉네임";
-  String _profileImagePath = "lib/assets/images/default_profile.png";
+  String _userNickname = "기본별명";
+  String _loverNickname = "기본별명";
+  String _userProfileImagePath = "lib/assets/images/default_profile.png";
+  String _loverProfileImagePath = "lib/assets/images/default_profile.png";
   late Image _userProfileImage;
+  late Image _loverProfileImage;
   int _userState = 2;
 
-  String _loverNickname = "";
   bool _loginSuccess = false;
   List<int> _lockPassword = [0, 0, 0, 0];
 
@@ -41,10 +43,12 @@ class UserProvider extends ChangeNotifier {
   int get topBarType => _topBarType;
   String get userBirth => _userBirth;
   String get userNickname => _userNickname;
-  String get profileImagePath => _profileImagePath;
-  Image get userProfileImage => _userProfileImage;
-  int get userState => _userState;
   String get loverNickname => _loverNickname;
+  String get userProfileImagePath => _userProfileImagePath;
+  String get loverProfileImagePath => _loverProfileImagePath;
+  Image get userProfileImage => _userProfileImage;
+  Image get loverProfileImage => _loverProfileImage;
+  int get userState => _userState;
   bool get loginSuccess => _loginSuccess;
   List<int> get lockPassword => _lockPassword;
 
@@ -114,8 +118,8 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setProfileImagePath(String profileImagePath) {
-    _profileImagePath = profileImagePath;
+  void setProfileImagePath(String userProfileImagePath) {
+    _userProfileImagePath = userProfileImagePath;
     notifyListeners();
   }
 
@@ -157,8 +161,11 @@ class UserProvider extends ChangeNotifier {
       int topBarType,
       String userBirth,
       String userNickname,
-      String profileImagePath,
+      String loverNickname,
+      String userProfileImagePath,
+      String loverProfileImagePath,
       Image userProfileImage,
+      Image loverProfileImage,
       int userState) {
     _userIdx = userIdx;
     _userAccount = userAccount;
@@ -172,8 +179,11 @@ class UserProvider extends ChangeNotifier {
     _topBarType = topBarType;
     _userBirth = userBirth;
     _userNickname = userNickname;
-    _profileImagePath = profileImagePath;
+    _loverNickname = loverNickname;
+    _userProfileImagePath = userProfileImagePath;
+    _loverProfileImagePath = loverProfileImagePath;
     _userProfileImage = userProfileImage;
+    _loverProfileImage = loverProfileImage;
     _userState = userState;
   }
 
@@ -194,9 +204,9 @@ class UserProvider extends ChangeNotifier {
   }
 
 
-  Future<void> setUserProfile(String profileImagePath, Image userProfileImage, String userNickname,
+  Future<void> setUserProfile(String userProfileImagePath, Image userProfileImage, String userNickname,
       String userBirth, String profileMessage) async {
-    _profileImagePath = profileImagePath;
+    _userProfileImagePath = userProfileImagePath;
     _userProfileImage = userProfileImage;
     _userNickname = userNickname;
     _userBirth = userBirth;

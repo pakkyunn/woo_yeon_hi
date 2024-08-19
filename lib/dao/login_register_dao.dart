@@ -73,7 +73,7 @@ Future<void> saveUserInfo(String userAccount, int userIdx, int loginType) async 
     await FirebaseFirestore.instance.collection('UserData').add({
       'user_idx': userIdx,
       'user_account': userAccount,
-      'user_nickname': "기본닉네임",
+      'user_nickname': "기본별명",
       'login_type':loginType,
     });
   } catch (e) {

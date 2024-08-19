@@ -16,7 +16,6 @@ class ProfileEditAlbum extends StatefulWidget {
 }
 
 class _ProfileEditAlbumState extends State<ProfileEditAlbum> {
-  final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +26,7 @@ class _ProfileEditAlbumState extends State<ProfileEditAlbum> {
         splashColor: ColorFamily.cream,
         borderRadius: BorderRadius.circular(100),
         onTap: () {
-          _showModalBottomSheet(context);
+          showPhotoBottomSheet(context);
         },
         child: Container(
           height: 36,
@@ -46,20 +45,22 @@ class _ProfileEditAlbumState extends State<ProfileEditAlbum> {
       ),
     );
   }
-
+}
   Future<void> getImage(UserProvider userProvider,
       ImageSource imageSource) async {
+    final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
     final XFile? pickedFile = await picker.pickImage(source: imageSource);
     if (pickedFile != null) {
-        userProvider.setImage(XFile(pickedFile.path));
-        userProvider.setTempImagePath(userProvider.image!.path);
-        userProvider.setTempImage(Image.file(File(pickedFile.path),fit: BoxFit.cover));
-        print('파일경로: ${pickedFile.path}');
-        print('이미지경로: ${userProvider.tempImagePath}');
+      userProvider.setImage(XFile(pickedFile.path));
+      userProvider.setTempImagePath(userProvider.image!.path);
+      userProvider.setTempImage(
+          Image.file(File(pickedFile.path), fit: BoxFit.cover));
+      print('파일경로: ${pickedFile.path}');
+      print('이미지경로: ${userProvider.tempImagePath}');
     }
   }
 
-  void _showModalBottomSheet(BuildContext context) {
+  void showPhotoBottomSheet(BuildContext context) {
     showModalBottomSheet(
         context: context,
         showDragHandle: true,
@@ -112,19 +113,14 @@ class _ProfileEditAlbumState extends State<ProfileEditAlbum> {
                       onTap: () {
                         provider.setTempImagePath("lib/assets/images/default_profile.png");
                         provider.setTempImage(Image.asset("lib/assets/images/default_profile.png"));
-                        setState(() {
-                          provider.setImage(null);
-                          Navigator.pop(context);
-                          FocusScope.of(context).unfocus();
-                        });
+                        provider.setImage(null);
+                        Navigator.pop(context);
+                        FocusScope.of(context).unfocus();
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 30),
                         height: 70,
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width,
+                        width: MediaQuery.of(context).size.width,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -149,4 +145,4 @@ class _ProfileEditAlbumState extends State<ProfileEditAlbum> {
           });
         });
   }
-}
+
