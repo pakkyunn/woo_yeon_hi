@@ -34,6 +34,7 @@ class _FootprintDatePlanSearchBarState extends State<FootprintDatePlanSearchBar>
     return Consumer<FootPrintDatePlanSlidableProvider>(
       builder: (context, provider, child) {
         return FloatingSearchBar(
+          showCursor: true,
           backgroundColor: ColorFamily.white,
           hint: '장소 검색',
           hintStyle: TextStyleFamily.hintTextStyle,

@@ -140,6 +140,12 @@
       "languageVersion": "2.19"
     },
     {
+      "name": "cli_util",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/cli_util-0.4.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "clock",
       "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/clock-1.1.1",
       "packageUri": "lib/",
@@ -372,6 +378,12 @@
       "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_dotenv-5.1.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
+    },
+    {
+      "name": "flutter_launcher_icons",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_launcher_icons-0.13.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
     },
     {
       "name": "flutter_lints",
@@ -1400,7 +1412,7 @@
       "languageVersion": "3.3"
     }
   ],
-  "generated": "2024-08-10T16:21:34.971143Z",
+  "generated": "2024-08-27T07:52:28.409062Z",
   "generator": "pub",
   "generatorVersion": "3.5.0",
   "flutterRoot": "file:///C:/FlutterProject/flutter-sdk",

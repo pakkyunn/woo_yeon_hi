@@ -112,6 +112,13 @@ void signOut(BuildContext context) async {
 
 Future<Map<String, dynamic>> fetchUserData() async {
   const storage = FlutterSecureStorage();
+  /// 계정 테스트용
+  // await storage.write(
+  //     key: "userAccount",
+  //     value: "pakkyunn@gmail.com");
+  // await storage.write(
+  //     key: "userIdx",
+  //     value: "50");
   final userIdx = stringToInt((await storage.read(key: "userIdx")) ?? "");
   // final userAccount = await getSpecificUserData(userIdx, 'user_account') ?? "";
   final userAccount = (await storage.read(key: "userAccount")) ?? "";
@@ -215,7 +222,7 @@ Future<bool> checkAndRequestNotificationPermission(BuildContext context, Functio
       return false;
     }
   } else if (settings.authorizationStatus == AuthorizationStatus.denied) {
-    showDialogFunction();
+    showDialogFunction(context);
     return false;
   }
 

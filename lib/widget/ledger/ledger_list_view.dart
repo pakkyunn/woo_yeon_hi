@@ -77,75 +77,72 @@ class _LedgerListViewState extends State<LedgerListView> {
 
   // 리스트뷰 항목 하나를 구성
   Widget makeListItem(Ledger ledger){
-    return Container(
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  SvgPicture.asset(getIconPath(ledger.ledgerCategory), width: 24, height: 24),
-                  const SizedBox(width: 10),
-                  Text(ledger.ledgerTitle, style: const TextStyle(fontSize: 14, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight)),
-                ],
-              ),
-              Row(
-                children: [
-                  InkWell(
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        // 핸들 바
-                        showDragHandle: true,
-                        backgroundColor: ColorFamily.white,
-                        builder: (BuildContext context) {
-                          return LedgerModalBottomSheet(ledger, widget.provider);
-                        },
-                      );
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      child: SvgPicture.asset('lib/assets/icons/horizontal_more.svg'),
-                    ),
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                SvgPicture.asset(getIconPath(ledger.ledgerCategory), width: 24, height: 24),
+                const SizedBox(width: 10),
+                Text(ledger.ledgerTitle, style: const TextStyle(fontSize: 14, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight)),
+              ],
+            ),
+            Row(
+              children: [
+                InkWell(
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      showDragHandle: true,
+                      backgroundColor: ColorFamily.white,
+                      builder: (BuildContext context) {
+                        return LedgerModalBottomSheet(ledger, widget.provider);
+                      },
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    child: SvgPicture.asset('lib/assets/icons/horizontal_more.svg'),
                   ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 15),
+                ),
+              ],
+            ),
+          ],
+        ),
+        const SizedBox(height: 15),
 
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('일시', style: TextStyle(fontSize: 14, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight)),
-              Text(formatLedgerDate(ledger.ledgerDate), style: const TextStyle(fontSize: 14, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight)),
-            ],
-          ),
-          const SizedBox(height: 15),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text('일시', style: TextStyle(fontSize: 14, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight)),
+            Text(formatLedgerDate(ledger.ledgerDate), style: const TextStyle(fontSize: 14, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight)),
+          ],
+        ),
+        const SizedBox(height: 15),
 
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('금액', style: TextStyle(fontSize: 14, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight)),
-              Text('${ledger.ledgerType.type == 0 ? '-' : '+'}${formatNumber(ledger.ledgerAmount)}원', style: const TextStyle(fontSize: 14, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight)),
-            ],
-          ),
-          const SizedBox(height: 15),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text('금액', style: TextStyle(fontSize: 14, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight)),
+            Text('${ledger.ledgerType.type == 0 ? '-' : '+'}${formatNumber(ledger.ledgerAmount)}원', style: const TextStyle(fontSize: 14, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight)),
+          ],
+        ),
+        const SizedBox(height: 15),
 
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('메모', style: TextStyle(fontSize: 14, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight)),
-              Text(ledger.ledgerMemo, style: const TextStyle(fontSize: 14, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight)),
-            ],
-          ),
-          const SizedBox(height: 15),
-          // 구분 선
-          const Divider(color: ColorFamily.gray, thickness: 0.5),
-          const SizedBox(height: 20),
-        ],
-      ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text('메모', style: TextStyle(fontSize: 14, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight)),
+            Text(ledger.ledgerMemo, style: const TextStyle(fontSize: 14, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight)),
+          ],
+        ),
+        const SizedBox(height: 15),
+        // 구분 선
+        const Divider(color: ColorFamily.gray, thickness: 0.5),
+        const SizedBox(height: 20),
+      ],
     );
   }
 }

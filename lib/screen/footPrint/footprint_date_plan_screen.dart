@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/dao/plan_dao.dart';
 import 'package:woo_yeon_hi/model/enums.dart';
 import 'package:woo_yeon_hi/provider/footprint_provider.dart';
+import 'package:woo_yeon_hi/provider/login_register_provider.dart';
 import 'package:woo_yeon_hi/screen/footPrint/footprint_date_plan_write_screen.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/style/font.dart';
@@ -20,10 +21,10 @@ class FootprintDatePlanScreen extends StatefulWidget {
 }
 
 class _FootprintDatePlanScreenState extends State<FootprintDatePlanScreen> {
-  int userIdx = 0;
 
   Future<bool> _asyncData(FootPrintSlidableProvider provider) async {
-    List<Plan> result = await getPlanData(userIdx);
+    var userProvider = Provider.of<UserProvider>(context, listen: false);
+    List<Plan> result = await getPlanData(userProvider.userIdx);
     provider.addPlanList(result);
     return true;
   }
@@ -155,12 +156,12 @@ class _FootprintDatePlanScreenState extends State<FootprintDatePlanScreen> {
                         },
                         child: Row(
                           children: [
-                            // 좌측에 초록색 박스
-                            SizedBox(
-                              width: 4,
-                              height: 75,
-                              child: Container(color: ColorFamily.green),
-                            ),
+                            // // 좌측에 초록색 박스
+                            // SizedBox(
+                            //   width: 4,
+                            //   height: 75,
+                            //   child: Container(color: ColorFamily.green),
+                            // ),
                             Expanded(
                               child: Container(
                                 padding: const EdgeInsets.all(8),

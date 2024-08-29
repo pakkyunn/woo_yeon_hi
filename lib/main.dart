@@ -17,6 +17,7 @@ import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/routes/routes_generator.dart';
 import 'package:woo_yeon_hi/screen/login/login_screen.dart';
+import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/utils.dart';
 import 'package:home_widget/home_widget.dart';
 
@@ -156,14 +157,15 @@ class _WooYeonHiState extends State<WooYeonHi> {
                 brightness: Brightness.light,
                 primary: Colors.white,
                 onPrimary: Colors.black,
-                secondary: Colors.white,
-                onSecondary: Colors.black,
+                secondary: Colors.black,
+                onSecondary: ColorFamily.black,
                 error: Colors.red,
                 onError: Colors.white,
-                background: Colors.white,
-                onBackground: Colors.black,
                 surface: Colors.white,
                 onSurface: Colors.black,
+              ),
+              bottomSheetTheme: const BottomSheetThemeData(
+                dragHandleColor: ColorFamily.gray, // 드래그 핸들 색상 설정
               ),
               useMaterial3: true),
           home: widget.userIdx == 0 // 미등록 계정

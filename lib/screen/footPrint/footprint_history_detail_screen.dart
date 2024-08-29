@@ -61,7 +61,7 @@ class _FootprintHistoryDetailScreenState
                           key: ValueKey(index),
                           controller: _controller,
                           index: index,
-                          child: makeHistoryDeatil(
+                          child: makeHistoryDetail(
                               context,
                               index,
                               widget.photoMap.mapIdx,
@@ -74,7 +74,7 @@ class _FootprintHistoryDetailScreenState
     );
   }
 
-  Widget makeHistoryDeatil(BuildContext context, int index, int mapIdx,
+  Widget makeHistoryDetail(BuildContext context, int index, int mapIdx,
       FootPrintHistoyDetailProvider provider, History history) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),

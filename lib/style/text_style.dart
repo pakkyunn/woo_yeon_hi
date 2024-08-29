@@ -28,6 +28,13 @@ class TextStyleFamily{
       color: ColorFamily.black
   );
 
+  /// 탭바 텍스트 스타일. size 13, black
+  static const TextStyle tabBarTextStyle = TextStyle(
+      fontFamily: FontFamily.mapleStoryLight,
+      fontSize: 13,
+      color: ColorFamily.black
+  );
+
   /// 텍스트 필드 힌트 텍스트 스타일. size 14, gray
   static const TextStyle hintTextStyle = TextStyle(
     fontFamily: FontFamily.mapleStoryLight,

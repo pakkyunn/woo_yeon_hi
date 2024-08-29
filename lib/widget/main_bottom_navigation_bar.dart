@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -18,13 +19,20 @@ class _MainBottomNavigationBarState extends State<MainBottomNavigationBar> {
   Widget build(BuildContext context) {
     var tabPageIndexProvider = Provider.of<TabPageIndexProvider>(context, listen: false);
 
+    // 시스템 내비게이션 바의 배경색 설정
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      systemNavigationBarColor: ColorFamily.white, // 시스템 내비게이션의 배경색
+      systemNavigationBarIconBrightness: Brightness.dark, // 시스템 내비게이션의 아이콘 색상
+    ));
+
     return TabBar(
       indicatorColor: Colors.transparent,
       overlayColor: MaterialStateProperty.all<Color>(Colors.transparent),
       unselectedLabelColor: ColorFamily.black,
       labelColor: ColorFamily.pink,
-      labelStyle: TextStyleFamily.normalTextStyle,
-      unselectedLabelStyle: TextStyleFamily.normalTextStyle,
+      labelStyle: TextStyleFamily.tabBarTextStyle,
+      unselectedLabelStyle: TextStyleFamily.tabBarTextStyle,
+      dividerHeight: 0,
       tabs: [
         Tab(
           text: "교환일기",

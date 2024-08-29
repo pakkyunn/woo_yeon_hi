@@ -258,6 +258,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                           child: Padding(
                             padding: const EdgeInsets.only(left: 15),
                             child: TextFormField(
+                              cursorColor: ColorFamily.black,
                               autofocus: false,
                               focusNode: _nickNameFocusNode,
                               maxLength: 10,
@@ -376,6 +377,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                           child: Padding(
                             padding: const EdgeInsets.only(left: 15),
                             child: TextFormField(
+                              cursorColor: ColorFamily.black,
                               focusNode: _profileMessageFocusNode,
                               initialValue: tempProfileMessage,
                               onChanged: (value) {

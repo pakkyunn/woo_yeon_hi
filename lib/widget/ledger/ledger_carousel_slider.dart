@@ -24,7 +24,7 @@ class _LedgerCarouselSliderState extends State<LedgerCarouselSlider> {
         builder: (context, provider, child) {
           return Stack(
             children: [
-              Container(
+              SizedBox(
                 height: 145,
                 child: FlutterCarousel.builder(
                   options: CarouselOptions(

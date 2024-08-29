@@ -4,12 +4,16 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:woo_yeon_hi/provider/ledger_provider.dart';
 import 'package:woo_yeon_hi/screen/home/home_screen_set1.dart';
 import 'package:woo_yeon_hi/screen/home/home_screen_set2.dart';
 import 'package:woo_yeon_hi/screen/home/home_screen_set3.dart';
 import 'package:woo_yeon_hi/screen/home/home_screen_set4.dart';
 
+import '../../dao/plan_dao.dart';
 import '../../dao/user_dao.dart';
+import '../../model/plan_model.dart';
+import '../../provider/footprint_provider.dart';
 import '../../provider/login_register_provider.dart';
 import '../../style/color.dart';
 import '../../style/font.dart';
@@ -179,7 +183,15 @@ Widget datePlan(BuildContext context) {
   var deviceWidth = MediaQuery.of(context).size.width;
   var deviceHeight = MediaQuery.of(context).size.height;
 
+  Future<bool> _asyncData(FootPrintSlidableProvider provider) async {
+    var userProvider = Provider.of<UserProvider>(context, listen: false);
+    List<Plan> result = await getPlanData(userProvider.userIdx);
+    provider.addPlanList(result);
+    return true;
+  }
+  var datePlanProvider = Provider.of<FootPrintSlidableProvider>(context);
   final controller = PageController(viewportFraction: 1, keepPage: true);
+
   final pages = List.generate(4, (index) => const Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -203,16 +215,11 @@ Widget datePlan(BuildContext context) {
           ));
 
   return _cardContainer(
-    const Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text("데이트 플랜",
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-                fontFamily: FontFamily.mapleStoryLight)),
-      ],
-    ),
+      const Text("데이트 플랜",
+          style: TextStyle(
+              color: Colors.black,
+              fontSize: 20,
+              fontFamily: FontFamily.mapleStoryLight)),
     Padding(
       padding: const EdgeInsets.only(top: 16, left: 20, right: 20, bottom: 0),
       child: Column(
@@ -222,7 +229,24 @@ Widget datePlan(BuildContext context) {
               controller: controller,
               itemCount: pages.length,
               itemBuilder: (_, index) {
-                return pages[index % pages.length];
+                return FutureBuilder(
+                  future: _asyncData(datePlanProvider),
+                  builder: (context, snapshot){
+                    if(snapshot.hasData == false){
+                      return const Expanded(
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: ColorFamily.pink,
+                          ),
+                        ),
+                      );
+                    }else if(snapshot.hasError){
+                      return const Text("오류 발생", style: TextStyleFamily.normalTextStyle,);
+                    }else{
+                      return pages[index % pages.length];
+                    }
+                  },
+                );
               },
             ),
           ),
@@ -255,56 +279,94 @@ Widget accountBook(BuildContext context) {
   var deviceWidth = MediaQuery.of(context).size.width;
   var deviceHeight = MediaQuery.of(context).size.height;
 
-  return _cardContainer(
-    const Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text("가계부",
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-                fontFamily: FontFamily.mapleStoryLight)),
-      ],
-    ),
-    Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        ClipRRect(
-          child: Material(
-            child: IconButton(
-              onPressed: () {},
-              icon: SvgPicture.asset('lib/assets/icons/arrow_left.svg'),
+  Future<bool> _asyncData(LedgerProvider provider) async {
+  //TODO 가계부 정보 가져오기
+    return true;
+  }
+  var ledgerProvider = Provider.of<LedgerProvider>(context);
+
+  return FutureBuilder(
+    future: _asyncData(ledgerProvider),
+    builder: (context, snapshot){
+      if(snapshot.hasData == false){
+        return const Expanded(
+          child: Center(
+            child: CircularProgressIndicator(
+              color: ColorFamily.pink,
             ),
           ),
-        ),
-        const Text("10월",
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 24,
-                fontFamily: FontFamily.mapleStoryLight)),
-        ClipRRect(
-          child: Material(
-            child: IconButton(
-              onPressed: () {},
-              icon: SvgPicture.asset('lib/assets/icons/arrow_right.svg'),
+        );
+      }else if(snapshot.hasError){
+        return const Text("오류 발생", style: TextStyleFamily.normalTextStyle,);
+      }else{
+        return _cardContainer(
+            const Text("가계부",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontFamily: FontFamily.mapleStoryLight)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ClipRRect(
+                  child: Material(
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: SvgPicture.asset('lib/assets/icons/arrow_left.svg'),
+                    ),
+                  ),
+                ),
+                const Text("10월",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 24,
+                        fontFamily: FontFamily.mapleStoryLight)),
+                ClipRRect(
+                  child: Material(
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: SvgPicture.asset('lib/assets/icons/arrow_right.svg'),
+                    ),
+                  ),
+                ),
+                Container(width: 2, height: 70, color: ColorFamily.pink),
+                const Text("526,300원 소비",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontFamily: FontFamily.mapleStoryLight))
+              ],
             ),
-          ),
-        ),
-        Container(width: 2, height: 70, color: ColorFamily.pink),
-        const Text("526,300원 소비",
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-                fontFamily: FontFamily.mapleStoryLight))
-      ],
-    ),
-      deviceWidth*0.95, deviceHeight*0.15
+            deviceWidth*0.95, deviceHeight*0.15
+        );
+      }
+    },
   );
 }
-
+///ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 Widget calendar(BuildContext context) {
-  var deviceWidth = MediaQuery.of(context).size.width;
-  var deviceHeight = MediaQuery.of(context).size.height;
+  var deviceWidth = MediaQuery
+      .of(context)
+      .size
+      .width;
+  var deviceHeight = MediaQuery
+      .of(context)
+      .size
+      .height;
+
+  // Future<bool> _asyncData(CalendarProvider provider) async {
+  //   //TODO 일정 정보 가져오기
+  //   return false;
+  // }
+  // var calendarProvider = Provider.of<CalendarProvider>(context);
+
+  Future<bool> _asyncData(FootPrintSlidableProvider provider) async {
+    var userProvider = Provider.of<UserProvider>(context, listen: false);
+    List<Plan> result = await getPlanData(userProvider.userIdx);
+    provider.addPlanList(result);
+    return true;
+  }
+  var datePlanProvider = Provider.of<FootPrintSlidableProvider>(context);
 
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
@@ -319,17 +381,16 @@ Widget calendar(BuildContext context) {
         children: [
           const Text("캘린더",
               style: TextStyle(
-                  color: Colors.black,
+                  color: ColorFamily.black,
                   fontSize: 20,
                   fontFamily: FontFamily.mapleStoryLight)),
           SizedBox(
-            width: 40, // 원하는 너비
-            height: 40, // 원하는 높이
+            width: 40,
+            height: 40,
             child: FittedBox(
               child: IconButton(
                 icon: SvgPicture.asset('lib/assets/icons/expand.svg'),
                 onPressed: () {
-                  // 버튼이 눌렸을 때의 액션
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -340,90 +401,199 @@ Widget calendar(BuildContext context) {
           )
         ],
       ),
-      Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            TableCalendar(
-              locale: 'ko_KR',
-              headerStyle: const HeaderStyle(
-                titleCentered: true,
-                titleTextStyle: TextStyleFamily.appBarTitleBoldTextStyle,
-                formatButtonVisible: false,
-              ),
-              firstDay: kFirstDay,
-              lastDay: kLastDay,
-              focusedDay: _focusedDay,
-              calendarFormat: _calendarFormat,
-              selectedDayPredicate: (day) {
-                return isSameDay(_selectedDay, day);
-              },
-              onDaySelected: (selectedDay, focusedDay) {
-                if (!isSameDay(_selectedDay, selectedDay)) {
-                  // setState(() {
-                  //   _selectedDay = selectedDay;
-                  //   _focusedDay = focusedDay;
-                  // });
-                }
-              },
-              onFormatChanged: (format) {
-                if (_calendarFormat != format) {
-                  // setState(() {
-                  //   _calendarFormat = format;
-                  // });
-                }
-              },
-              onPageChanged: (focusedDay) {
-                _focusedDay = focusedDay;
-              },
-            ),
-            const SizedBox(height: 10),
-            Container(
-              height: 50,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(15)),
-                color: ColorFamily.beige,
-              ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text("11:50 AM",
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontFamily: FontFamily.mapleStoryLight)),
-                  Text("우연녀와 점심 데이트",
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontFamily: FontFamily.mapleStoryLight)),
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+              padding: const EdgeInsets.all(20),
+              width: deviceWidth * 0.95,
+              decoration: BoxDecoration(
+                color: ColorFamily.white,
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.25),
+                    blurRadius: 1,
+                    offset: const Offset(0, 1),
+                  ),
                 ],
               ),
-            ),
-            const SizedBox(height: 10),
-            Container(
-              height: 50,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(15)),
-                color: ColorFamily.beige,
-              ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+              child: Column(
                 children: [
-                  Text("13:00 PM",
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontFamily: FontFamily.mapleStoryLight)),
-                  Text("우연녀와 보드카페",
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontFamily: FontFamily.mapleStoryLight)),
+                  TableCalendar(
+                    locale: 'ko_KR',
+                    headerStyle: const HeaderStyle(
+                        titleCentered: true,
+                        titleTextStyle: TextStyleFamily.appBarTitleBoldTextStyle,
+                        formatButtonVisible: false),
+                    firstDay: kFirstDay,
+                    lastDay: kLastDay,
+                    focusedDay: _focusedDay,
+                    calendarFormat: _calendarFormat,
+                    selectedDayPredicate: (day) {
+                      return isSameDay(_selectedDay, day);},
+                    onDaySelected: (selectedDay, focusedDay) {
+                      if (!isSameDay(_selectedDay, selectedDay)) {
+                        // setState(() {
+                        //   _selectedDay = selectedDay;
+                        //   _focusedDay = focusedDay;
+                        // });
+                      }
+                    },
+                    onFormatChanged: (format) {
+                      if (_calendarFormat != format) {
+                        // setState(() {
+                        //   _calendarFormat = format;
+                        // });
+                      }
+                    },
+                    onPageChanged: (focusedDay) {
+                      _focusedDay = focusedDay;
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  calendarFutureBuilderWidget(context)
                 ],
-              ),
-            ),
-          ],
-        ),
+              )
+          )
+        ],
       ),
-      null, null);
+
+      deviceWidth*0.95, null);
+
+
+
+  Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      Row(
+        children: [
+          const Text("캘린더",
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                  fontFamily: FontFamily.mapleStoryLight)),
+          SizedBox(
+            width: 40,
+            height: 40,
+            child: FittedBox(
+              child: IconButton(
+                icon: SvgPicture.asset('lib/assets/icons/expand.svg'),
+                onPressed: () {
+                  // 버튼이 눌렸을 때의 액션
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (
+                              context) => const CalendarScreen()));
+                },
+              ),
+            ),
+          )
+        ],
+      ),
+      const SizedBox(height: 8),
+      Container(
+          padding: const EdgeInsets.all(20),
+          width: deviceWidth * 0.95,
+          decoration: BoxDecoration(
+            color: ColorFamily.white,
+            borderRadius: BorderRadius.circular(15),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.25),
+                blurRadius: 1,
+                offset: const Offset(0, 1),
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              TableCalendar(
+                locale: 'ko_KR',
+                headerStyle: const HeaderStyle(
+                    titleCentered: true,
+                    titleTextStyle: TextStyleFamily.appBarTitleBoldTextStyle,
+                    formatButtonVisible: false),
+                firstDay: kFirstDay,
+                lastDay: kLastDay,
+                focusedDay: _focusedDay,
+                calendarFormat: _calendarFormat,
+                selectedDayPredicate: (day) {
+                  return isSameDay(_selectedDay, day);},
+                onDaySelected: (selectedDay, focusedDay) {
+                  if (!isSameDay(_selectedDay, selectedDay)) {
+                    // setState(() {
+                    //   _selectedDay = selectedDay;
+                    //   _focusedDay = focusedDay;
+                    // });
+                  }
+                },
+                onFormatChanged: (format) {
+                  if (_calendarFormat != format) {
+                    // setState(() {
+                    //   _calendarFormat = format;
+                    // });
+                  }
+                },
+                onPageChanged: (focusedDay) {
+                  _focusedDay = focusedDay;
+                },
+              ),
+              const SizedBox(height: 10),
+            ],
+          )
+      )
+    ],
+  );
 }
+
+Widget calendarFutureBuilderWidget(BuildContext context){
+  // Future<bool> _asyncData(CalendarProvider provider) async {
+  //   //TODO 일정 정보 가져오기
+  //   return false;
+  // }
+  // var calendarProvider = Provider.of<CalendarProvider>(context);
+
+  Future<bool> _asyncData(FootPrintSlidableProvider provider) async {
+    var userProvider = Provider.of<UserProvider>(context, listen: false);
+    List<Plan> result = await getPlanData(userProvider.userIdx);
+    provider.addPlanList(result);
+    return true;
+  }
+  var datePlanProvider = Provider.of<FootPrintSlidableProvider>(context);
+
+  return FutureBuilder(
+      future: _asyncData(datePlanProvider),
+      builder: (context, snapshot){
+        if(snapshot.hasData == false){
+          return const Expanded(
+            child: Center(
+              child: CircularProgressIndicator(
+                  color: ColorFamily.pink),
+            ),
+          );
+        }else if(snapshot.hasError){
+          return const Text("오류 발생", style: TextStyleFamily.normalTextStyle,);
+        }else{
+          return Container(
+              height: 50,
+              decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                  color: ColorFamily.beige),
+              child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Text("13:00 PM", style: TextStyle(fontSize: 16, fontFamily: FontFamily.mapleStoryLight)),
+                    Text("우연녀와 보드카페", style: TextStyle(fontSize: 16, fontFamily: FontFamily.mapleStoryLight)),
+                  ]
+              )
+          );
+        }
+      }
+  );
+}
+
 
 Widget _cardContainer(Widget title, Widget child, double? width, double? height) {
   return Column(

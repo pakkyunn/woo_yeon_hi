@@ -81,6 +81,7 @@ dependencies:
   googleapis_auth: ^1.6.0
   home_widget: ^0.6.0
   shared_preferences: ^2.3.1
+  flutter_launcher_icons: ^0.13.1
 
 
 
@@ -146,3 +147,13 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "lib/assets/images/woo_yeon_hi_icon.png"
+  #    아이콘 각각 반영 시
+  #    image_path_ios: "assets/images/icon.png"
+  #    image_path_android: "assets/images/round-icon.png"
+  remove_alpha_ios: true
+  min_sdk_android: 21

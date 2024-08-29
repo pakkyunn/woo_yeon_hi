@@ -17,40 +17,66 @@ class FootprintDatePlanDetailScreen extends StatefulWidget {
 }
 
 class _FootprintDatePlanDetailScreenState extends State<FootprintDatePlanDetailScreen> {
+
+  Future<bool> _asyncData(FootPrintSlidableProvider provider) async {
+    //TODO 데이트플랜 상세데이터 가져오기
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: FootprintDatePlanTopAppBar(
-        title: '데이트 플랜 리스트',
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 15),
-            child: SvgPicture.asset('lib/assets/icons/done.svg'),
-          )
-        ],
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: SvgPicture.asset('lib/assets/icons/arrow_back.svg'),
-        ),
-      ),
-      backgroundColor: ColorFamily.cream,
-      body: ListView.builder(
-        itemCount: widget.provider.planList.length,
-        itemBuilder: (context, index) {
-          print(widget.provider.planedList.toString());
-          final item = widget.provider.planList[index];
-          return Column(
-            children: [
-              makeListView(item, index),
-              Divider(),
-            ],
-          );
-        },
-      )
+    var datePlanProvider = Provider.of<FootPrintSlidableProvider>(context);
 
-    );
+    return FutureBuilder(
+      future: _asyncData(datePlanProvider),
+      builder: (context, snapshot) {
+        if (snapshot.hasData == false) {
+          return const Expanded(
+            child: Center(
+              child: CircularProgressIndicator(
+                color: ColorFamily.pink,
+              ),
+            ),
+          );
+        } else if (snapshot.hasError) {
+          return const Text("오류 발생", style: TextStyleFamily.normalTextStyle,);
+        } else {
+          //현재 데이트플랜 상세프로바이더 만들어져 있지 않아서 임시로 다른 프로바이더 적용
+          return Consumer<FootPrintSlidableProvider>(builder: (context, provider, child) {
+            return Scaffold(
+                appBar: FootprintDatePlanTopAppBar(
+                  title: '데이트 플랜 리스트',
+                  actions: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 15),
+                      child: SvgPicture.asset('lib/assets/icons/done.svg'),
+                    )
+                  ],
+                  leading: IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: SvgPicture.asset('lib/assets/icons/arrow_back.svg'),
+                  ),
+                ),
+                backgroundColor: ColorFamily.cream,
+                body: ListView.builder(
+                  itemCount: widget.provider.planList.length,
+                  itemBuilder: (context, index) {
+                    print(widget.provider.planedList.toString());
+                    final item = widget.provider.planList[index];
+                    return Column(
+                      children: [
+                        makeListView(item, index),
+                        Divider(),
+                      ],
+                    );
+                  },
+                )
+            );
+          });
+        }
+      });
   }
 
   Widget makeListView(Map<String, dynamic> item, int index){
