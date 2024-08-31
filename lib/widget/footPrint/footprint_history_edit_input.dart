@@ -166,7 +166,7 @@ class _FootprintHistoryEditInputState extends State<FootprintHistoryEditInput> {
                   contentPadding: EdgeInsets.zero,
                   border: InputBorder.none,
                   hintStyle: TextStyleFamily.hintTextStyle,
-                  hintText: "내용을 입력해주세요."),
+                  hintText: "내용을 입력해주세요"),
             )
           ],
         ),
@@ -199,68 +199,74 @@ class _FootprintHistoryEditInputState extends State<FootprintHistoryEditInput> {
                   child: Stack(
                     children: [
                       TableCalendar(
-                        firstDay: DateTime.utc(2024, 3, 16),
-                        lastDay: DateTime.utc(2024, 8, 14),
+                        // main 에서 받음
+                        locale: 'ko_KR',
+                        // 최소 날짜
+                        firstDay: DateTime.utc(2000, 1, 1),
+                        // 최대 날짜
+                        lastDay: DateTime.utc(2999, 12, 31),
+                        // 현재 선택
                         focusedDay: _focusedDay,
-                        locale: 'ko_kr',
-                        rowHeight: 50,
+                        daysOfWeekHeight: MediaQuery.of(context).size.height*0.055,
+                        rowHeight: MediaQuery.of(context).size.height*0.055,
+                        availableGestures:
+                        AvailableGestures.horizontalSwipe,
                         headerStyle: const HeaderStyle(
-                          titleCentered: true,
-                          titleTextStyle:
-                              TextStyleFamily.appBarTitleBoldTextStyle,
-                          formatButtonVisible: false,
-                        ),
+                            titleCentered: true,
+                            formatButtonVisible: false,
+                            titleTextStyle: TextStyleFamily
+                                .appBarTitleBoldTextStyle),
                         daysOfWeekStyle: const DaysOfWeekStyle(
-                            weekdayStyle: TextStyleFamily.normalTextStyle,
-                            weekendStyle: TextStyleFamily.normalTextStyle),
+                          weekdayStyle:
+                          TextStyleFamily.normalTextStyle, // 평일
+                          weekendStyle:
+                          TextStyleFamily.normalTextStyle, // 주말
+                        ),
                         calendarBuilders: CalendarBuilders(
+                          // 기본 월의 빌더
                           defaultBuilder: (context, day, focusedDay) {
                             return Container(
-                              alignment: Alignment.topCenter,
-                              padding: const EdgeInsets.only(top: 15),
+                              alignment: Alignment.center,
                               child: Text(
-                                textAlign: TextAlign.center,
                                 DateFormat('d').format(day),
+                                textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: isWeekend(day)
                                         ? Colors.red
                                         : isSaturday(day)
-                                            ? Colors.blueAccent
-                                            : ColorFamily.black,
-                                    fontFamily: FontFamily.mapleStoryLight),
+                                        ? Colors.blueAccent
+                                        : ColorFamily.black,
+                                    fontFamily:
+                                    FontFamily.mapleStoryLight),
                               ),
                             );
                           },
+                          // 다른 월의 빌더
                           outsideBuilder: (context, day, focusedDay) {
                             return Container(
-                              alignment: Alignment.topCenter,
-                              padding: const EdgeInsets.only(top: 15),
-                              child: Text(
-                                textAlign: TextAlign.center,
-                                DateFormat('d').format(day),
-                                style: const TextStyle(
-                                    color: ColorFamily.gray,
-                                    fontFamily: FontFamily.mapleStoryLight),
-                              ),
+                              alignment: Alignment.center,
+                              child: Text(DateFormat('d').format(day),
+                                  textAlign: TextAlign.center,
+                                  style:
+                                  TextStyleFamily.hintTextStyle),
                             );
                           },
-                          disabledBuilder: (context, day, focusedDay) {
+                          // 비활성화된 날짜
+                          disabledBuilder:
+                              (context, day, focusedDay) {
                             return Container(
-                              alignment: Alignment.topCenter,
-                              padding: const EdgeInsets.only(top: 15),
-                              child: Text(
-                                textAlign: TextAlign.center,
-                                DateFormat('d').format(day),
-                                style: const TextStyle(
-                                    color: ColorFamily.gray,
-                                    fontFamily: FontFamily.mapleStoryLight),
-                              ),
+                              alignment: Alignment.center,
+                              child: Text(DateFormat('d').format(day),
+                                  textAlign: TextAlign.center,
+                                  style:
+                                  TextStyleFamily.hintTextStyle),
                             );
                           },
-                          selectedBuilder: (context, day, focusedDay) {
+                          // 선택된 날짜
+                          selectedBuilder:
+                              (context, day, focusedDay) {
                             return Container(
-                              alignment: Alignment.topCenter,
-                              padding: const EdgeInsets.only(top: 10),
+                              alignment: Alignment.center,
                               child: Container(
                                 width: 30,
                                 height: 30,
@@ -270,37 +276,52 @@ class _FootprintHistoryEditInputState extends State<FootprintHistoryEditInput> {
                                 ),
                                 child: Center(
                                   child: Text(
-                                    textAlign: TextAlign.center,
                                     DateFormat('d').format(day),
+                                    textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        color: isWeekend(day)
-                                            ? ColorFamily.white
-                                            : isSaturday(day)
-                                                ? ColorFamily.white
-                                                : ColorFamily.black,
-                                        fontFamily: FontFamily.mapleStoryLight),
+                                      color: isWeekend(day)
+                                          ? ColorFamily.white
+                                          : isSaturday(day)
+                                          ? ColorFamily.white
+                                          : ColorFamily.black,
+                                      fontFamily:
+                                      FontFamily.mapleStoryLight,
+                                    ),
                                   ),
                                 ),
                               ),
                             );
                           },
+                          // 오늘 날짜
                           todayBuilder: (context, day, focusedDay) {
                             return Container(
-                              alignment: Alignment.topCenter,
-                              padding: const EdgeInsets.only(top: 15),
-                              child: Text(
-                                textAlign: TextAlign.center,
-                                DateFormat('d').format(day),
-                                style: const TextStyle(
-                                    color: ColorFamily.pink,
-                                    fontFamily: FontFamily.mapleStoryLight),
+                              alignment: Alignment.center,
+                              child: Container(
+                                width: 30,
+                                height: 30,
+                                decoration: const BoxDecoration(
+                                  color: ColorFamily.black,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    DateFormat('d').format(day),
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                        color: ColorFamily.white,
+                                        fontFamily: FontFamily
+                                            .mapleStoryLight),
+                                  ),
+                                ),
                               ),
                             );
                           },
                         ),
+                        // 선택된 날짜
                         selectedDayPredicate: (day) {
                           return isSameDay(_selectedDay, day);
                         },
+                        // 날짜 선택
                         onDaySelected: (selectedDay, focusedDay) {
                           bottomState(() {
                             setState(() {
@@ -310,10 +331,128 @@ class _FootprintHistoryEditInputState extends State<FootprintHistoryEditInput> {
                             });
                           });
                         },
+                        // 화면이 바뀔때
                         onPageChanged: (focusedDay) {
                           _focusedDay = focusedDay;
                         },
                       ),
+                      // TableCalendar(
+                      //   firstDay: DateTime.utc(2024, 3, 16),
+                      //   lastDay: DateTime.utc(2024, 8, 14),
+                      //   focusedDay: _focusedDay,
+                      //   locale: 'ko_kr',
+                      //   rowHeight: 50,
+                      //   headerStyle: const HeaderStyle(
+                      //     titleCentered: true,
+                      //     titleTextStyle:
+                      //         TextStyleFamily.appBarTitleBoldTextStyle,
+                      //     formatButtonVisible: false,
+                      //   ),
+                      //   daysOfWeekStyle: const DaysOfWeekStyle(
+                      //       weekdayStyle: TextStyleFamily.normalTextStyle,
+                      //       weekendStyle: TextStyleFamily.normalTextStyle),
+                      //   calendarBuilders: CalendarBuilders(
+                      //     defaultBuilder: (context, day, focusedDay) {
+                      //       return Container(
+                      //         alignment: Alignment.topCenter,
+                      //         padding: const EdgeInsets.only(top: 15),
+                      //         child: Text(
+                      //           textAlign: TextAlign.center,
+                      //           DateFormat('d').format(day),
+                      //           style: TextStyle(
+                      //               color: isWeekend(day)
+                      //                   ? Colors.red
+                      //                   : isSaturday(day)
+                      //                       ? Colors.blueAccent
+                      //                       : ColorFamily.black,
+                      //               fontFamily: FontFamily.mapleStoryLight),
+                      //         ),
+                      //       );
+                      //     },
+                      //     outsideBuilder: (context, day, focusedDay) {
+                      //       return Container(
+                      //         alignment: Alignment.topCenter,
+                      //         padding: const EdgeInsets.only(top: 15),
+                      //         child: Text(
+                      //           textAlign: TextAlign.center,
+                      //           DateFormat('d').format(day),
+                      //           style: const TextStyle(
+                      //               color: ColorFamily.gray,
+                      //               fontFamily: FontFamily.mapleStoryLight),
+                      //         ),
+                      //       );
+                      //     },
+                      //     disabledBuilder: (context, day, focusedDay) {
+                      //       return Container(
+                      //         alignment: Alignment.topCenter,
+                      //         padding: const EdgeInsets.only(top: 15),
+                      //         child: Text(
+                      //           textAlign: TextAlign.center,
+                      //           DateFormat('d').format(day),
+                      //           style: const TextStyle(
+                      //               color: ColorFamily.gray,
+                      //               fontFamily: FontFamily.mapleStoryLight),
+                      //         ),
+                      //       );
+                      //     },
+                      //     selectedBuilder: (context, day, focusedDay) {
+                      //       return Container(
+                      //         alignment: Alignment.topCenter,
+                      //         padding: const EdgeInsets.only(top: 10),
+                      //         child: Container(
+                      //           width: 30,
+                      //           height: 30,
+                      //           decoration: const BoxDecoration(
+                      //             color: ColorFamily.pink,
+                      //             shape: BoxShape.circle,
+                      //           ),
+                      //           child: Center(
+                      //             child: Text(
+                      //               textAlign: TextAlign.center,
+                      //               DateFormat('d').format(day),
+                      //               style: TextStyle(
+                      //                   color: isWeekend(day)
+                      //                       ? ColorFamily.white
+                      //                       : isSaturday(day)
+                      //                           ? ColorFamily.white
+                      //                           : ColorFamily.black,
+                      //                   fontFamily: FontFamily.mapleStoryLight),
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       );
+                      //     },
+                      //     todayBuilder: (context, day, focusedDay) {
+                      //       return Container(
+                      //         alignment: Alignment.topCenter,
+                      //         padding: const EdgeInsets.only(top: 15),
+                      //         child: Text(
+                      //           textAlign: TextAlign.center,
+                      //           DateFormat('d').format(day),
+                      //           style: const TextStyle(
+                      //               color: ColorFamily.pink,
+                      //               fontFamily: FontFamily.mapleStoryLight),
+                      //         ),
+                      //       );
+                      //     },
+                      //   ),
+                      //   selectedDayPredicate: (day) {
+                      //     return isSameDay(_selectedDay, day);
+                      //   },
+                      //   onDaySelected: (selectedDay, focusedDay) {
+                      //     bottomState(() {
+                      //       setState(() {
+                      //         _selectedDay = selectedDay;
+                      //         _focusedDay =
+                      //             focusedDay; // update `_focusedDay` here as well
+                      //       });
+                      //     });
+                      //   },
+                      //   onPageChanged: (focusedDay) {
+                      //     _focusedDay = focusedDay;
+                      //   },
+                      // ),
+
                       // 이벤트 버튼들
                       Positioned(
                         left: 0,

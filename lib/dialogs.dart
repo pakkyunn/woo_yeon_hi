@@ -3,27 +3,15 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/style/text_style.dart';
 
-void showToast(String message){
+void showBlackToast(String message){
   Fluttertoast.showToast(
       msg: message, //메세지입력
       toastLength: Toast.LENGTH_SHORT, //메세지를 보여주는 시간(길이)
       gravity: ToastGravity.BOTTOM, //위치지정
       timeInSecForIosWeb: 1, //ios및웹용 시간
-      backgroundColor: ColorFamily.gray,
+      backgroundColor: ColorFamily.black,
       textColor: ColorFamily.white, //글자색
       fontSize: 14.0 //폰트사이즈
-  );
-}
-
-void showBlackToast(String message){
-  Fluttertoast.showToast(
-      msg: message,
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-      timeInSecForIosWeb: 1,
-      backgroundColor: ColorFamily.black,
-      textColor: ColorFamily.white,
-      fontSize: 14.0
   );
 }
 

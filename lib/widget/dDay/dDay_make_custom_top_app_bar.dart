@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:woo_yeon_hi/provider/dDay_provider.dart';
 
+import '../../dialogs.dart';
 import '../../style/color.dart';
 import '../../style/text_style.dart';
 
@@ -41,10 +42,10 @@ class _dDayMakeCustomTopAppBarState extends State<dDayMakeCustomTopAppBar> {
         IconButton(
           onPressed: (){
             if(widget.provider.title.text.isEmpty && widget.provider.content.text.isEmpty){
-              _showToast("내용을 입력해주세요.");
+              showBlackToast("내용을 입력해주세요");
             }
             else{
-              _showToast("등록이 완료되었습니다.");
+              showPinkSnackBar(context, "디데이가 생성되었습니다");
               Navigator.pop(context);
             }
           },
@@ -71,14 +72,14 @@ class _dDayMakeCustomTopAppBarState extends State<dDayMakeCustomTopAppBar> {
                       const Column(
                         children: [
                           Text(
-                            "취소하시겠습니까?",
+                            "디데이 생성을 취소하시겠습니까?",
                             style: TextStyleFamily.dialogTitleTextStyle,
                           ),
                           SizedBox(
                             height: 15,
                           ),
                           Text(
-                            "지금까지 작성된 내용은 삭제됩니다.",
+                            "지금까지 작성된 내용은 삭제됩니다",
                             style: TextStyleFamily.normalTextStyle,
                           )
                         ],
@@ -122,17 +123,5 @@ class _dDayMakeCustomTopAppBarState extends State<dDayMakeCustomTopAppBar> {
             ),
           );
         });
-  }
-
-  void _showToast(String content) {
-    Fluttertoast.showToast(
-        msg: content, //메세지입력
-        toastLength: Toast.LENGTH_SHORT, //메세지를 보여주는 시간(길이)
-        gravity: ToastGravity.BOTTOM, //위치지정
-        timeInSecForIosWeb: 1, //ios및웹용 시간
-        backgroundColor: ColorFamily.gray,
-        textColor: ColorFamily.white, //글자색
-        fontSize: 14.0 //폰트사이즈
-    );
   }
 }

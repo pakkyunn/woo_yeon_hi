@@ -6,6 +6,8 @@ import 'package:woo_yeon_hi/screen/ledger/ledger_edit_screen.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/style/text_style.dart';
 
+import '../../dialogs.dart';
+
 class LedgerModalBottomSheet extends StatefulWidget {
   //const LedgerModalBottomSheet({super.key});
   Ledger ledger;
@@ -81,6 +83,7 @@ class _LedgerModalBottomSheetState extends State<LedgerModalBottomSheet> {
                   _deleteLedger(context);
                   Navigator.pop(context);
                   FocusScope.of(context).unfocus();
+                  showPinkSnackBar(context, "가계부 항목이 삭제되었습니다");
                 });
               },
               child: Container(

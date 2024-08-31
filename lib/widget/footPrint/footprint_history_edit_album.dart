@@ -138,7 +138,7 @@ class _FootprintHistoryEditAlbumState extends State<FootprintHistoryEditAlbum> {
         // 기존 리스트에 이미지가 있는 상황
         var _possibleCount = 10-widget.provider.albumImages.length;
         if(_possibleCount < images.length){
-          showToast("사진 등록은 최대 10장까지 가능합니다.");
+          showBlackToast("사진 등록은 최대 10장까지 가능합니다");
           for(var i = 0; i < _possibleCount; i++){
             widget.provider.addAlbumImage(images[i]!);
           }
@@ -150,7 +150,7 @@ class _FootprintHistoryEditAlbumState extends State<FootprintHistoryEditAlbum> {
         }
       }else{
         if(images.length > 10){
-          showToast("사진 등록은 최대 10장까지 가능합니다.");
+          showBlackToast("사진 등록은 최대 10장까지 가능합니다");
           widget.provider.clearAlbumImages();
           for(var i = 0; i < 10; i++){
             widget.provider.addAlbumImage(images[i]!);

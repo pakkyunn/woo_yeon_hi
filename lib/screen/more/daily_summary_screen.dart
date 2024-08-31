@@ -15,7 +15,6 @@ import '../../model/dDay_model.dart';
 import '../../model/plan_model.dart';
 import '../../provider/footprint_provider.dart';
 import '../../style/font.dart';
-import '../calendar/calendar_detail_screen.dart';
 import '../ledger/ledger_detail_screen.dart';
 
 class DailySummaryScreen extends StatefulWidget {
@@ -321,7 +320,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                             const SizedBox(height: 10),
                             Container(
                                 padding: const EdgeInsets.only(left: 20),
-                                child: const Text("이벤트가 없습니다.",
+                                child: const Text("이벤트가 없습니다",
                                     style: TextStyleFamily
                                         .normalTextStyle) // 데이터가 없을 때
                               //TODO 데이터가 있을 때 child -> 해당 데이터 보여줄 컨테이너(누르면 해당 데이터 페이지로 이동)
@@ -340,13 +339,16 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
     // );
   }
 
-
-  bool isSaturday(DateTime day) {
-    return day.weekday == DateTime.saturday;
+  bool isToday(DateTime date) {
+    return date.day == DateTime.now().day;
   }
 
-  bool isWeekend(DateTime day) {
-    return day.weekday == DateTime.sunday;
+  bool isSaturday(DateTime date) {
+    return date.weekday == DateTime.saturday;
+  }
+
+  bool isWeekend(DateTime date) {
+    return date.weekday == DateTime.sunday;
   }
 
   void _showCalendarBottomSheet() {
@@ -369,19 +371,19 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
           return StatefulBuilder(
               builder: (context, bottomState) {
                 return SizedBox(
-                    width: deviceWidth,
-                    height: deviceHeight,
                     child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Stack(
+                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                      child: Column(
                         children: [
                           TableCalendar(
+                            sixWeekMonthsEnforced: true,
+                            availableGestures: AvailableGestures.horizontalSwipe,
                             firstDay: stringToDate(Provider.of<UserProvider>(context, listen: false).loveDday),
                             lastDay: DateTime.now(),
                             focusedDay: _focusedDay,
                             locale: 'ko_kr',
-                            rowHeight: 50,
                             daysOfWeekHeight:40,
+                            rowHeight: 45,
                             headerStyle: const HeaderStyle(
                               titleCentered: true,
                               titleTextStyle: TextStyleFamily
@@ -392,11 +394,29 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                                 weekdayStyle: TextStyleFamily.normalTextStyle,
                                 weekendStyle: TextStyleFamily.normalTextStyle
                             ),
+
+                            selectedDayPredicate: (day) {
+                              return isSameDay(_selectedDay, day);
+                            },
+
+                            onDaySelected: (selectedDay, focusedDay) {
+                              bottomState(() {
+                                setState(() {
+                                  _selectedDay = selectedDay;
+                                  _focusedDay =
+                                      focusedDay; // update `_focusedDay` here as well
+                                });
+                              });
+                            },
+
+                            onPageChanged: (focusedDay) {
+                              _focusedDay = focusedDay;
+                            },
+
                             calendarBuilders: CalendarBuilders(
                                 defaultBuilder: (context, day, focusedDay) {
                                   return Container(
-                                    alignment: Alignment.topCenter,
-                                    padding: const EdgeInsets.only(top: 15),
+                                    alignment: Alignment.center,
                                     child: Text(
                                       textAlign: TextAlign.center,
                                       DateFormat('d').format(day),
@@ -414,8 +434,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                                 },
                                 outsideBuilder: (context, day, focusedDay) {
                                   return Container(
-                                    alignment: Alignment.topCenter,
-                                    padding: const EdgeInsets.only(top: 15),
+                                    alignment: Alignment.center,
                                     child: Text(
                                       textAlign: TextAlign.center,
                                       DateFormat('d').format(day),
@@ -428,8 +447,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                                 },
                                 disabledBuilder: (context, day, focusedDay) {
                                   return Container(
-                                    alignment: Alignment.topCenter,
-                                    padding: const EdgeInsets.only(top: 15),
+                                    alignment: Alignment.center,
                                     child: Text(
                                       textAlign: TextAlign.center,
                                       DateFormat('d').format(day),
@@ -442,11 +460,10 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                                 },
                                 selectedBuilder: (context, day, focusedDay) {
                                   return Container(
-                                    alignment: Alignment.topCenter,
-                                    padding: const EdgeInsets.only(top: 10),
+                                    alignment: Alignment.center,
                                     child: Container(
-                                      width: 35,
-                                      height: 35,
+                                      width: 40,
+                                      height: 40,
                                       decoration: const BoxDecoration(
                                         color: ColorFamily.pink,
                                         shape: BoxShape.circle,
@@ -457,9 +474,11 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                                           DateFormat('d').format(day),
                                           style: TextStyle(
                                               color: isWeekend(day)
+                                              ? isToday(day)
                                                   ? ColorFamily.white
-                                                  : isSaturday(day)
-                                                  ? ColorFamily.white
+                                                  : Colors.red
+                                              : isSaturday(day)
+                                                  ? isToday(day) ? ColorFamily.white : Colors.blueAccent
                                                   : ColorFamily.black,
                                               fontFamily: FontFamily
                                                   .mapleStoryLight
@@ -471,8 +490,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                                 },
                                 todayBuilder: (context, day, focusedDay) {
                                   return Container(
-                                    alignment: Alignment.topCenter,
-                                    padding: const EdgeInsets.only(top: 15),
+                                    alignment: Alignment.center,
                                     child: Text(
                                       textAlign: TextAlign.center,
                                       DateFormat('d').format(day),
@@ -515,59 +533,50 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                                   );
                                 }
                             ),
-                            selectedDayPredicate: (day) {
-                              return isSameDay(_selectedDay, day);
-                            },
-                            onDaySelected: (selectedDay, focusedDay) {
-                              bottomState(() {
-                                setState(() {
-                                  _selectedDay = selectedDay;
-                                  _focusedDay =
-                                      focusedDay; // update `_focusedDay` here as well
-                                });
-                              });
-                            },
-                            onPageChanged: (focusedDay) {
-                              _focusedDay = focusedDay;
-                            },
                           ),
-                          // 이벤트 버튼들
-                          Positioned(
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            child:
-                                  Material(
-                                  color: ColorFamily.beige,
-                                  elevation: 0.5,
-                                  shadowColor: Colors.black,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.circular(20.0),
-                                  ),
-                                  child: InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          _focusedDay = _selectedDay;
-                                          _summaryDay = _focusedDay;
-                                        });
-                                        Navigator.pop(context);
-                                      },
-                                      borderRadius:
-                                      BorderRadius.circular(20.0),
-                                      child: SizedBox(
-                                          width: deviceWidth - 40,
-                                          height: 40,
-                                          child: const Align(
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              "확인",
-                                              style: TextStyleFamily
-                                                  .normalTextStyle,
-                                            ),
-                                          ))),
-                                ),
-                            ),
+                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SizedBox(
+                                width: (deviceWidth-40)/2-5,
+                                height: 40,
+                                child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: ColorFamily.white,
+                                        surfaceTintColor: ColorFamily.white),
+                                    onPressed: () {
+                                      bottomState(() {
+                                        _focusedDay = DateTime.now();
+                                        _selectedDay = DateTime.now();
+                                      });
+                                    },
+                                    child: const Text(
+                                      "오늘 날짜로",
+                                      style: TextStyleFamily.normalTextStyle,
+                                    )),
+                              ),
+                              SizedBox(
+                                width: (deviceWidth-40)/2-5,
+                                height: 40,
+                                child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: ColorFamily.beige,
+                                        surfaceTintColor: ColorFamily.white),
+                                    onPressed: () {
+                                      setState(() {
+                                        _focusedDay = _selectedDay;
+                                        _summaryDay = _focusedDay;
+                                      });
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text(
+                                      "확인",
+                                      style: TextStyleFamily.normalTextStyle,
+                                    )),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     )

@@ -223,8 +223,7 @@ class _FootprintHistoryModifyInputState extends State<FootprintHistoryModifyInpu
                         calendarBuilders: CalendarBuilders(
                           defaultBuilder: (context, day, focusedDay) {
                             return Container(
-                              alignment: Alignment.topCenter,
-                              padding: const EdgeInsets.only(top: 15),
+                              alignment: Alignment.center,
                               child: Text(
                                 textAlign: TextAlign.center,
                                 DateFormat('d').format(day),
@@ -240,8 +239,7 @@ class _FootprintHistoryModifyInputState extends State<FootprintHistoryModifyInpu
                           },
                           outsideBuilder: (context, day, focusedDay) {
                             return Container(
-                              alignment: Alignment.topCenter,
-                              padding: const EdgeInsets.only(top: 15),
+                              alignment: Alignment.center,
                               child: Text(
                                 textAlign: TextAlign.center,
                                 DateFormat('d').format(day),
@@ -253,8 +251,7 @@ class _FootprintHistoryModifyInputState extends State<FootprintHistoryModifyInpu
                           },
                           disabledBuilder: (context, day, focusedDay) {
                             return Container(
-                              alignment: Alignment.topCenter,
-                              padding: const EdgeInsets.only(top: 15),
+                              alignment: Alignment.center,
                               child: Text(
                                 textAlign: TextAlign.center,
                                 DateFormat('d').format(day),
@@ -266,11 +263,10 @@ class _FootprintHistoryModifyInputState extends State<FootprintHistoryModifyInpu
                           },
                           selectedBuilder: (context, day, focusedDay) {
                             return Container(
-                              alignment: Alignment.topCenter,
-                              padding: const EdgeInsets.only(top: 10),
+                              alignment: Alignment.center,
                               child: Container(
-                                width: 30,
-                                height: 30,
+                                width: 40,
+                                height: 40,
                                 decoration: const BoxDecoration(
                                   color: ColorFamily.pink,
                                   shape: BoxShape.circle,
@@ -293,8 +289,7 @@ class _FootprintHistoryModifyInputState extends State<FootprintHistoryModifyInpu
                           },
                           todayBuilder: (context, day, focusedDay) {
                             return Container(
-                              alignment: Alignment.topCenter,
-                              padding: const EdgeInsets.only(top: 15),
+                              alignment: Alignment.center,
                               child: Text(
                                 textAlign: TextAlign.center,
                                 DateFormat('d').format(day),

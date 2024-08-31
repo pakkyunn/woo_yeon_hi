@@ -361,7 +361,7 @@ class _PasswordCheckScreenState extends State<PasswordCheckScreen> {
     var listEquality = const ListEquality();
     if (!listEquality.equals(checkingPasswordList,
         Provider.of<PasswordProvider>(context, listen: false).password)) {
-      showBlackToast("비밀번호를 다르게 입력하였습니다.");
+      showBlackToast("비밀번호를 다르게 입력하였습니다");
       Future.delayed(const Duration(milliseconds: 100), () {
         _initiatePassword();
       });
@@ -582,7 +582,7 @@ class _PasswordCheckScreenState extends State<PasswordCheckScreen> {
           context,
           MaterialPageRoute(
               builder: (context) => const AppLockSettingScreen()));
-      showPinkSnackBar(context, '앱 잠금이 설정되었습니다.');
+      showPinkSnackBar(context, '앱 잠금이 설정되었습니다');
     });
   }
 }

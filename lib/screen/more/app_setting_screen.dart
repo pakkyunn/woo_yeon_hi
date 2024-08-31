@@ -72,11 +72,11 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
                                     onChanged: (bool value) async {
                                       value
                                       ? await checkAndRequestNotificationPermission(context, _showDialog)
-                                        ? showPinkSnackBar(context, '앱 알림이 설정되었습니다.')
+                                        ? showPinkSnackBar(context, '앱 알림이 설정되었습니다')
                                         : setState(() {
                                           value = false;
                                         })
-                                      : showPinkSnackBar(context, '앱 알림이 해제되었습니다.');
+                                      : showPinkSnackBar(context, '앱 알림이 해제되었습니다');
                                       await updateSpecificUserData(provider.userIdx, 'notification_allow', value);
                                       provider.setNotificationAllow(value);
                                     }),
@@ -279,6 +279,6 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
         MaterialPageRoute(
             builder: (context) => const LoginScreen()),
             (Route<dynamic> route) => false);
-    showBlackToast("로그아웃 되었습니다.");
+    showBlackToast("로그아웃 되었습니다");
   }
 }

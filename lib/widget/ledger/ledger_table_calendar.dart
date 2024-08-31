@@ -8,9 +8,13 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:woo_yeon_hi/model/enums.dart';
 import 'package:woo_yeon_hi/model/ledger_model.dart';
 import 'package:woo_yeon_hi/provider/ledger_provider.dart';
+import 'package:woo_yeon_hi/provider/login_register_provider.dart';
 import 'package:woo_yeon_hi/screen/ledger/ledger_detail_screen.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/style/font.dart';
+import 'package:woo_yeon_hi/utils.dart';
+
+import '../../style/text_style.dart';
 
 class LedgerTableCalendar extends StatefulWidget {
   const LedgerTableCalendar({super.key});
@@ -105,6 +109,23 @@ class _LedgerTableCalendarState extends State<LedgerTableCalendar> {
     return categoryIconMap[category] ?? 'lib/assets/icons/etc_more.svg';
   }
 
+  bool isToday(DateTime date) {
+    return date.day == DateTime.now().day;
+  }
+
+  bool isSaturday(DateTime day) {
+    return day.weekday == DateTime.saturday;
+  }
+
+  bool isWeekend(DateTime day) {
+    return day.weekday == DateTime.sunday;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<LedgerProvider>(context, listen: false).setFocusedDay(DateTime.now());
+  }
   @override
   Widget build(BuildContext context) {
     return Consumer<LedgerProvider>(
@@ -116,9 +137,9 @@ class _LedgerTableCalendarState extends State<LedgerTableCalendar> {
         List<Ledger> selectedDayLedgers = ledgerProvider.ledgers
             .where((ledger) => ledger.ledgerState.state == LedgerState.STATE_NORMAL.state)
             .where((ledger) =>
-            DateTime.parse(ledger.ledgerDate).toLocal().day == ledgerProvider.selectedDay.day &&
-            DateTime.parse(ledger.ledgerDate).toLocal().month == ledgerProvider.selectedDay.month &&
-            DateTime.parse(ledger.ledgerDate).toLocal().year == ledgerProvider.selectedDay.year).toList();
+            DateTime.parse(ledger.ledgerDate).toLocal().day == ledgerProvider.selectedDay?.day &&
+            DateTime.parse(ledger.ledgerDate).toLocal().month == ledgerProvider.selectedDay?.month &&
+            DateTime.parse(ledger.ledgerDate).toLocal().year == ledgerProvider.selectedDay?.year).toList();
         // 캘린더 이벤트에 보이는 데이터를 오름차순(ASC)으로 정렬
         selectedDayLedgers.sort((a, b) => DateTime.parse(a.ledgerDate).compareTo(DateTime.parse(b.ledgerDate)));
 
@@ -128,226 +149,101 @@ class _LedgerTableCalendarState extends State<LedgerTableCalendar> {
         return Column(
           children: [
             calendarCustomHeader(),
-            Container(
-              child: TableCalendar(
-                // 달력의 시작 날짜
-                firstDay: DateTime.utc(2023, 01, 01),
-                // 달력의 마지막 날짜
-                lastDay: DateTime.utc(2024, 12, 31),
-                // 현재 포커스된 날짜
-                //focusedDay: _focusedDay,
-                focusedDay: ledgerProvider.focusedDay,
-                // 특정 날짜의 이벤트를 로드
-                // eventLoader: _getEventsForDay,
-                eventLoader: (day) {
-                  return _showMainEvents[day] ?? [];
-                },
-                // 언어 설정
-                locale: 'ko_KR',
-                // 요일 부분의 높이 조절
-                daysOfWeekHeight: 30,
-                // 날짜 부분의 셀의 높이
-                rowHeight: 80,
-                // 헤더 지우기
-                headerVisible: false,
+            TableCalendar(
+              availableGestures: AvailableGestures.horizontalSwipe,
+              firstDay: stringToDate(Provider.of<UserProvider>(context, listen: false).loveDday),
+              lastDay: DateTime.now(),
+              focusedDay: ledgerProvider.focusedDay,
+              eventLoader: (day) {
+                return _showMainEvents[day] ?? [];
+              },
+              locale: 'ko_KR',
+              daysOfWeekHeight: 40,
+              rowHeight: 80,
+              headerVisible: false,
+              selectedDayPredicate: (day) => isSameDay(ledgerProvider.selectedDay, day),
 
-                // 선택된 날짜 확인 (selectedBuilder)
-                selectedDayPredicate: (day) => isSameDay(ledgerProvider.selectedDay, day),
+              onDaySelected: (selectedDay, focusedDay) {
+                setState(() {
+                  ledgerProvider.setSelectedDay(selectedDay);
+                  ledgerProvider.setFocusedDay(focusedDay);
+                });
+              },
 
-                // 날짜 선택 시 호출되는 함수
-                onDaySelected: (selectedDay, focusedDay) {
-                  setState(() {
-                    // 선택된 날짜 업데이트
-                    ledgerProvider.setSelectedDay(selectedDay);
-                    // 포커스된 날짜 업데이트
-                    ledgerProvider.setFocusedDay(focusedDay);
-                  });
-                },
+              onPageChanged: (focusedDay) {
+                setState(() {
+                  ledgerProvider.setFocusedDay(focusedDay);
+                  ledgerProvider.setSelectedDay(null);
+                  ledgerProvider.updateTextsOnMonthChange(focusedDay); // 상단 배너 데이터 업데이트
+                });
+              },
 
-                // 페이지(월 이동) 스크롤 시 호출되는 함수
-                onPageChanged: (focusedDay) {
-                  setState(() {
-                    ledgerProvider.setSelectedAndFocusedDay(focusedDay);
+              calendarStyle: const CalendarStyle(
+                outsideDaysVisible: true,
+                markersMaxCount: 0,
+              ),
 
-                    // 상단 베너 데이터 업데이트
-                    ledgerProvider.updateTextsOnMonthChange(focusedDay);
-                  });
-                },
-
-                // 가로 스크롤 (위젯 내부 제스처)
-                availableGestures: AvailableGestures.horizontalSwipe,
-
-                calendarStyle: const CalendarStyle(
-                  // 다른 달의 날짜
-                  outsideDaysVisible: true,
-                  // 마커 개수
-                  markersMaxCount: 0,
-                ),
-
-                calendarBuilders: CalendarBuilders(
-                  // 요일 관련
-                  dowBuilder: (context, day) {
-                    if (day.weekday == DateTime.sunday) {
-                      // DateFormat.E(): 요일
-                      // DateFormat.d(): 일자
-                      final text = DateFormat.E('ko').format(day);
-                      return Center(
+              calendarBuilders: CalendarBuilders(
+                // 요일 관련
+                dowBuilder: (context, day) {
+                  if (isWeekend(day)) {
+                    // DateFormat.E(): 요일
+                    // DateFormat.d(): 일자
+                    final text = DateFormat.E('ko').format(day);
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: Center(
                         child: Text(
-                            text, style: TextStyle(fontSize: 15, color: Colors.red.shade300, fontFamily: FontFamily.mapleStoryBold)
+                            text, style: const TextStyle(fontSize: 14, color: Colors.red, fontFamily: FontFamily.mapleStoryBold)
                         ),
-                      );
-                    } else if (day.weekday == DateTime.saturday) {
-                      final text = DateFormat.E('ko').format(day);
-                      return Center(
-                        child: Text(
-                            text, style: TextStyle(fontSize: 15, color: Colors.blue.shade300, fontFamily: FontFamily.mapleStoryBold)
-                        ),
-                      );
-                    }
-                    else{
-                      final text = DateFormat.E('ko').format(day);
-                      return Center(
-                        child: Text(
-                            text, style: TextStyle(fontSize: 15, color: ColorFamily.gray, fontFamily: FontFamily.mapleStoryBold)
-                        ),
-                      );
-                    }
-                  },
-
-                  // 범위에 포함 되어 있지 않은 날짜
-                  disabledBuilder: (context, day, focusedDay) {
-                    return Column(
-                      children: [
-                        const Padding(padding: EdgeInsets.only(top: 10)),
-                        Text('${day.day}', style: const TextStyle(fontSize: 14, color: ColorFamily.gray, fontFamily: FontFamily.mapleStoryLight, overflow: TextOverflow.ellipsis)),
-                      ],
+                      ),
                     );
-                  },
+                  } else if (isSaturday(day)) {
+                    final text = DateFormat.E('ko').format(day);
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: Center(
+                        child: Text(
+                            text, style: const TextStyle(fontSize: 14, color: Colors.blueAccent, fontFamily: FontFamily.mapleStoryBold)
+                        ),
+                      ),
+                    );
+                  }
+                  else{
+                    final text = DateFormat.E('ko').format(day);
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: Center(
+                        child: Text(
+                            text, style: const TextStyle(fontSize: 14, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryBold)
+                        ),
+                      ),
+                    );
+                  }
+                },
 
-                  // 모든 날짜 관련
-                  defaultBuilder: (context, date, focusedDay) {
-                    DateTime day = DateTime(date.year, date.month, date.day);
-                    List<Ledger> dayEvents = _showMainEvents[day] ?? [];
-                    // 지출 총합
-                    //int totalMoney = calculateTotalMoney(dayEvents);
-                    Map<String, int> dayTotalMoney = calculateTotalMoney(dayEvents);
+                // 범위에 포함 되어 있지 않은 날짜
+                disabledBuilder: (context, day, focusedDay) {
+                  return Column(
+                    children: [
+                      Text('${day.day}', style: const TextStyle(fontSize: 14, color: ColorFamily.gray, fontFamily: FontFamily.mapleStoryLight)),
+                    ],
+                  );
+                },
 
-
-                    if (day.weekday == DateTime.sunday) {
-                      return Column(
-                        children: [
-                          const Padding(padding: EdgeInsets.only(top: 10)),
-                          Text('${day.day}', style: TextStyle(fontSize: 14, color: Colors.red.shade300, fontFamily: FontFamily.mapleStoryLight, overflow: TextOverflow.ellipsis)),
-
-                          // 이벤트 목록
-                          //for (var event in events)
-                          Container(
-                            padding: const EdgeInsets.symmetric(vertical: 2),
-                            alignment: Alignment.center,
-                            child: Column(
-                              children: [
-                                if (dayTotalMoney['expenditure'] != 0)
-                                  Text(
-                                    '-${formatNumber(dayTotalMoney['expenditure']!)}',
-                                    style: const TextStyle(fontSize: 10, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                  ),
-                                if (dayTotalMoney['income'] != 0)
-                                  Text(
-                                    '+${formatNumber(dayTotalMoney['income']!)}',
-                                    style: const TextStyle(fontSize: 10, color: ColorFamily.pink, fontFamily: FontFamily.mapleStoryLight),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                  ),
-                              ],
-                            )
-                          ),
-                        ],
-                      );
-                    }
-                    else if(day.weekday == DateTime.saturday){
-                      return Column(
-                        children: [
-                          const Padding(padding: EdgeInsets.only(top: 10)),
-                          Text('${day.day}', style: TextStyle(fontSize: 14, color: Colors.blue.shade300, fontFamily: FontFamily.mapleStoryLight, overflow: TextOverflow.ellipsis)),
-
-                          // 이벤트 목록
-                          //for (var event in events)
-                          Container(
-                            padding: const EdgeInsets.symmetric(vertical: 2),
-                            alignment: Alignment.center,
-                            child: Column(
-                              children: [
-                                if (dayTotalMoney['expenditure'] != 0)
-                                  Text(
-                                    '-${formatNumber(dayTotalMoney['expenditure']!)}',
-                                    style: const TextStyle(fontSize: 10, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                  ),
-                                if (dayTotalMoney['income'] != 0)
-                                  Text(
-                                    '+${formatNumber(dayTotalMoney['income']!)}',
-                                    style: const TextStyle(fontSize: 10, color: ColorFamily.pink, fontFamily: FontFamily.mapleStoryLight),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                  ),
-                              ],
-                            )
-                          ),
-                        ],
-                      );
-                    }
-                    else{
-                      return Column(
-                        children: [
-                          const Padding(padding: EdgeInsets.only(top: 10)),
-                          Text('${day.day}', style: const TextStyle(fontSize: 14,
-                              color: ColorFamily.black,
-                              fontFamily: FontFamily.mapleStoryLight,
-                              overflow: TextOverflow.ellipsis)),
-
-                          // 이벤트 목록
-                          //for (var event in events)
-                          Container(
-                            padding: const EdgeInsets.symmetric(vertical: 2),
-                            alignment: Alignment.center,
-                            child: Column(
-                              children: [
-                                if (dayTotalMoney['expenditure'] != 0)
-                                  Text(
-                                    '-${formatNumber(dayTotalMoney['expenditure']!)}',
-                                    style: const TextStyle(fontSize: 10, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                  ),
-                                if (dayTotalMoney['income'] != 0)
-                                  Text(
-                                    '+${formatNumber(dayTotalMoney['income']!)}',
-                                    style: const TextStyle(fontSize: 10, color: ColorFamily.pink, fontFamily: FontFamily.mapleStoryLight),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                  ),
-                              ],
-                            )
-                          ),
-                        ],
-                      );
-                    }
-                  },
-
-                  // 오늘 날짜 관련
-                  todayBuilder: (context, date, focusedDay) {
-                    DateTime day = DateTime(date.year, date.month, date.day);
-                    List<Ledger> dayEvents = _showMainEvents[day] ?? [];
-                    Map<String, int> dayTotalMoney = calculateTotalMoney(dayEvents);
+                // 모든 날짜 관련
+                defaultBuilder: (context, date, focusedDay) {
+                  DateTime day = DateTime(date.year, date.month, date.day);
+                  List<Ledger> dayEvents = _showMainEvents[day] ?? [];
+                  // 지출 총합
+                  //int totalMoney = calculateTotalMoney(dayEvents);
+                  Map<String, int> dayTotalMoney = calculateTotalMoney(dayEvents);
 
                     return Column(
                       children: [
-                        const Padding(padding: EdgeInsets.only(top: 10)),
-                        Text('${day.day}', style: const TextStyle(fontSize: 14, color: ColorFamily.pink, fontFamily: FontFamily.mapleStoryLight, overflow: TextOverflow.ellipsis)),
-
+                        Text('${day.day}', style: const TextStyle(fontSize: 14,
+                            color: ColorFamily.black,
+                            fontFamily: FontFamily.mapleStoryLight)),
                         // 이벤트 목록
                         Container(
                           padding: const EdgeInsets.symmetric(vertical: 2),
@@ -364,7 +260,7 @@ class _LedgerTableCalendarState extends State<LedgerTableCalendar> {
                               if (dayTotalMoney['income'] != 0)
                                 Text(
                                   '+${formatNumber(dayTotalMoney['income']!)}',
-                                  style: const TextStyle(fontSize: 10, color: ColorFamily.pink, fontFamily: FontFamily.mapleStoryLight),
+                                  style: const TextStyle(fontSize: 10, color: Colors.pink, fontFamily: FontFamily.mapleStoryLight),
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
                                 ),
@@ -373,108 +269,144 @@ class _LedgerTableCalendarState extends State<LedgerTableCalendar> {
                         ),
                       ],
                     );
-                  },
+                },
 
-                  // 선택된 날짜 관련
-                  selectedBuilder: (context, date, focusedDay) {
-                    DateTime day = DateTime(date.year, date.month, date.day);
-                    List<Ledger> dayEvents = _showMainEvents[day] ?? [];
-                    Map<String, int> dayTotalMoney = calculateTotalMoney(dayEvents);
-                    print('dayTotalMoney: ${dayTotalMoney}');
+                // 오늘 날짜 관련
+                todayBuilder: (context, date, focusedDay) {
+                  DateTime day = DateTime(date.year, date.month, date.day);
+                  List<Ledger> dayEvents = _showMainEvents[day] ?? [];
+                  Map<String, int> dayTotalMoney = calculateTotalMoney(dayEvents);
 
-                    // 이벤트 값 확인
-                    print('선택된 이벤트 확인 Date: $day, Events: $dayEvents, TotalMoney: $totalMoney, dayTotalMoney: $dayTotalMoney');
-
-                    return Column(
-                      children: [
-                        const Padding(padding: EdgeInsets.only(top: 10)),
-                        Container(
-                          width: 60,
-                          height: 70,
-                          decoration: const BoxDecoration(
-                              color: Color(0x50FEBE98),
-                              borderRadius: BorderRadius.all(Radius.circular(10))
-                          ),
-                          child: Column(
-                            children: [
-                              Text('${day.day}', style: TextStyle(fontSize: 14,
-                                  color: day.weekday == DateTime.sunday ? Colors.red.shade300 : day.weekday == DateTime.saturday ? Colors.blue.shade300 : ColorFamily.black,
-                                  fontFamily: FontFamily.mapleStoryLight,
-                                  overflow: TextOverflow.ellipsis),
+                  return Column(
+                    children: [
+                      Text('${day.day}', style: const TextStyle(fontSize: 14, color: ColorFamily.pink, fontFamily: FontFamily.mapleStoryBold)),
+                      // 이벤트 목록
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 2),
+                        alignment: Alignment.center,
+                        child: Column(
+                          children: [
+                            if (dayTotalMoney['expenditure'] != 0)
+                              Text(
+                                '-${formatNumber(dayTotalMoney['expenditure']!)}',
+                                style: const TextStyle(fontSize: 10, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
                               ),
-                              // 이벤트 목록
-                              Container(
-                                padding: const EdgeInsets.symmetric(vertical: 2),
-                                alignment: Alignment.center,
-                                child: Column(
-                                  children: [
-                                    if (dayTotalMoney['expenditure'] != 0)
-                                    Text(
-                                      '-${formatNumber(dayTotalMoney['expenditure']!)}',
-                                      style: const TextStyle(fontSize: 10, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight),
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                    ),
-                                    if (dayTotalMoney['income'] != 0)
-                                    Text(
-                                      '+${formatNumber(dayTotalMoney['income']!)}',
-                                      style: const TextStyle(fontSize: 10, color: ColorFamily.pink, fontFamily: FontFamily.mapleStoryLight),
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                    ),
-                                  ],
-                                )
+                            if (dayTotalMoney['income'] != 0)
+                              Text(
+                                '+${formatNumber(dayTotalMoney['income']!)}',
+                                style: const TextStyle(fontSize: 10, color: ColorFamily.pink, fontFamily: FontFamily.mapleStoryLight),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
                               ),
-                            ],
-                          ),
+                          ],
+                        )
+                      ),
+                    ],
+                  );
+                },
+
+                // 선택된 날짜 관련
+                selectedBuilder: (context, date, focusedDay) {
+                  DateTime day = DateTime(date.year, date.month, date.day);
+                  List<Ledger> dayEvents = _showMainEvents[day] ?? [];
+                  Map<String, int> dayTotalMoney = calculateTotalMoney(dayEvents);
+                  print('dayTotalMoney: ${dayTotalMoney}');
+
+                  // 이벤트 값 확인
+                  print('선택된 이벤트 확인 Date: $day, Events: $dayEvents, TotalMoney: $totalMoney, dayTotalMoney: $dayTotalMoney');
+
+                  return Column(
+                    children: [
+                      Container(
+                        width: 60,
+                        height: 70,
+                        decoration: const BoxDecoration(
+                            color: Color(0x50FEBE98),
+                            borderRadius: BorderRadius.all(Radius.circular(10))
                         ),
-                      ],
-                    );
-                  },
-
-                  // 다른 달의 날짜 관련
-                  outsideBuilder: (context, date, focusedDay) {
-                    DateTime day = DateTime(date.year, date.month, date.day);
-                    List<Ledger> dayEvents = _showMainEvents[day] ?? [];
-                    Map<String, int> dayTotalMoney = calculateTotalMoney(dayEvents);
-
-                    return Column(
-                      children: [
-                        const Padding(padding: EdgeInsets.only(top: 10)),
-                        Text('${day.day}', style: const TextStyle(fontSize: 14, color: ColorFamily.gray, fontFamily: FontFamily.mapleStoryLight, overflow: TextOverflow.ellipsis)),
-                        // 이벤트 목록
-                        Container(
-                          padding: const EdgeInsets.symmetric(vertical: 2),
-                          alignment: Alignment.center,
-                          child: Column(
-                            children: [
-                              if (dayTotalMoney['expenditure'] != 0)
-                                Text(
-                                  '-${formatNumber(dayTotalMoney['expenditure']!)}',
-                                  style: const TextStyle(fontSize: 10, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                ),
-                              if (dayTotalMoney['income'] != 0)
-                                Text(
-                                  '+${formatNumber(dayTotalMoney['income']!)}',
-                                  style: const TextStyle(fontSize: 10, color: ColorFamily.pink, fontFamily: FontFamily.mapleStoryLight),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                ),
-                            ],
-                          )
+                        child: Column(
+                          children: [
+                            Text('${day.day}', style: TextStyle(fontSize: 14,
+                                color: isToday(day)? ColorFamily.pink
+                                    : ColorFamily.black,
+                                fontFamily: isToday(day)? FontFamily.mapleStoryBold
+                                    : FontFamily.mapleStoryLight,
+                                overflow: TextOverflow.ellipsis),
+                            ),
+                            // 이벤트 목록
+                            Container(
+                              padding: const EdgeInsets.symmetric(vertical: 2),
+                              alignment: Alignment.center,
+                              child: Column(
+                                children: [
+                                  if (dayTotalMoney['expenditure'] != 0)
+                                  Text(
+                                    '-${formatNumber(dayTotalMoney['expenditure']!)}',
+                                    style: const TextStyle(fontSize: 10, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                  if (dayTotalMoney['income'] != 0)
+                                  Text(
+                                    '+${formatNumber(dayTotalMoney['income']!)}',
+                                    style: const TextStyle(fontSize: 10, color: Colors.pink, fontFamily: FontFamily.mapleStoryLight),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                ],
+                              )
+                            ),
+                          ],
                         ),
-                      ],
-                    );
-                  },
+                      ),
+                    ],
+                  );
+                },
 
-                ),
+                // 다른 달의 날짜 관련
+                outsideBuilder: (context, date, focusedDay) {
+                  DateTime day = DateTime(date.year, date.month, date.day);
+                  List<Ledger> dayEvents = _showMainEvents[day] ?? [];
+                  Map<String, int> dayTotalMoney = calculateTotalMoney(dayEvents);
+
+                  return Column(
+                    children: [
+                      Text('${day.day}', style: const TextStyle(fontSize: 14, color: ColorFamily.gray, fontFamily: FontFamily.mapleStoryLight, overflow: TextOverflow.ellipsis)),
+                      // 이벤트 목록
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 2),
+                        alignment: Alignment.center,
+                        child: Column(
+                          children: [
+                            if (dayTotalMoney['expenditure'] != 0)
+                              Text(
+                                '-${formatNumber(dayTotalMoney['expenditure']!)}',
+                                style: const TextStyle(fontSize: 10, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            if (dayTotalMoney['income'] != 0)
+                              Text(
+                                '+${formatNumber(dayTotalMoney['income']!)}',
+                                style: const TextStyle(fontSize: 10, color: ColorFamily.pink, fontFamily: FontFamily.mapleStoryLight),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                          ],
+                        )
+                      ),
+                    ],
+                  );
+                },
+
               ),
             ),
-
+            const SizedBox(height: 10),
             // 상세 이벤트 항목
             Container(
+              height: 180, //TODO 최대로 표시할 리스트뷰 항목의 개수에 맞추어 높이 지정해둘 것
               child: ListView.builder(
                 // ListTile의 리스트뷰의 높이를 자식 아이템들의 높이에 맞춰 설정
                 shrinkWrap: true,
@@ -484,7 +416,7 @@ class _LedgerTableCalendarState extends State<LedgerTableCalendar> {
                 itemBuilder: (context, index) {
                   final ledger = selectedDayLedgers[index];
                   return Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 5),
                     child: Material(
                       color: ColorFamily.white,
                       elevation: 1,
@@ -526,7 +458,7 @@ class _LedgerTableCalendarState extends State<LedgerTableCalendar> {
   Widget calendarCustomHeader() {
     var ledgerProvider = Provider.of<LedgerProvider>(context, listen: false);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 20, 0, 23),
+      padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

@@ -74,7 +74,7 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
                       provider.userIdx, 'top_bar_type', topBarIndex);
                   provider.setTopBarType(topBarIndex);
                   Navigator.pop(context);
-                  showPinkSnackBar(context, "상단바 설정이 저장되었습니다.");
+                  showPinkSnackBar(context, "상단바 설정이 저장되었습니다");
                 } else {
                   await checkAndRequestNotificationPermission(
                       context, _showDialog)
@@ -88,7 +88,7 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
                         provider.userIdx, 'top_bar_type', topBarIndex),
                     provider.setTopBarType(topBarIndex),
                     Navigator.pop(context),
-                    showPinkSnackBar(context, "상단바 설정이 저장되었습니다.")
+                    showPinkSnackBar(context, "상단바 설정이 저장되었습니다")
                   }
                       : null;
                 }

@@ -165,7 +165,7 @@ class _AppLockSettingScreenState extends State<AppLockSettingScreen> {
                                                       1),
                                               onChanged: (bool value) async {
                                                 provider.appLockState == 0
-                                                    ? {showBlackToast("앱 잠금 설정을 먼저 해주세요."),
+                                                    ? {showBlackToast("앱 잠금 설정을 먼저 해주세요"),
                                                         setState(() {
                                                           value = false;
                                                         })
@@ -181,7 +181,7 @@ class _AppLockSettingScreenState extends State<AppLockSettingScreen> {
                                                                         .userIdx,
                                                                     'app_lock_state',
                                                                     2),
-                                                                showPinkSnackBar(context, '생체인증이 활성화되었습니다.')
+                                                                showPinkSnackBar(context, '생체인증이 활성화되었습니다')
                                                               }
                                                             : setState(() {
                                                                 value = false;
@@ -196,7 +196,7 @@ class _AppLockSettingScreenState extends State<AppLockSettingScreen> {
                                                                     .userIdx,
                                                                 'app_lock_state',
                                                                 1),
-                                                  showPinkSnackBar(context, '생체인증이 비활성화되었습니다.')
+                                                  showPinkSnackBar(context, '생체인증이 비활성화되었습니다')
                                                           };
                                               })
                                         ],

@@ -382,7 +382,7 @@ class _PasswordEnterScreenState extends State<PasswordEnterScreen> {
 
     if (!listEquality.equals(checkingPassword,
         lockPassword)) {
-      showBlackToast("비밀번호가 일치하지 않습니다.");
+      showBlackToast("비밀번호가 일치하지 않습니다");
       Future.delayed(const Duration(milliseconds: 100), () {
         _initiatePassword();
       });

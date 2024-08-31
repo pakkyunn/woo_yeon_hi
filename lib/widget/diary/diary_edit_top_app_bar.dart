@@ -42,7 +42,7 @@ class _DiaryEditTopAppBarState extends State<DiaryEditTopAppBar> {
             dialogTitleWithContent(
               context,
                 "일기 작성을 취소하시겠습니까?",
-                "지금까지 작성된 내용은 삭제됩니다.",
+                "지금까지 작성된 내용은 삭제됩니다",
                 () => _onCancle_back(context),
                 () => _onConfirm_back(context)
             );
@@ -59,12 +59,12 @@ class _DiaryEditTopAppBarState extends State<DiaryEditTopAppBar> {
                 dialogTitleWithContent(
                     context,
                     "일기를 작성하시겠습니까?",
-                    "작성 후 수정 및 삭제를 할 수 없습니다.",
+                    "작성 후 수정 및 삭제를 할 수 없습니다",
                     () => _onCancle_done(context),
-                    () => _onConfirm_done(context, widget.provider));
+                    () {_onConfirm_done(context, widget.provider); showPinkSnackBar(context, "연인에게 일기를 전달하였습니다:)");});
               } else {
                 // 토스트 메시지로 내용 작성 알림
-                showToast("모든 내용을 입력해주세요.");
+                showBlackToast("모든 내용을 입력해주세요");
               }
             },
             icon: SvgPicture.asset('lib/assets/icons/done.svg'))

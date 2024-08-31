@@ -35,7 +35,7 @@ class _RegisterScreen extends State<LoginScreen> {
         loginSuccess = true;
       });
     } else{
-      showBlackToast("구글 계정 로그인에 실패하였습니다.");
+      showBlackToast("구글 계정 로그인에 실패하였습니다");
     }
   }
 
@@ -47,10 +47,10 @@ class _RegisterScreen extends State<LoginScreen> {
         await _fetchKakaoUserInfo();
       } catch (error) {
         print('카카오톡으로 로그인 실패 $error');
-        showBlackToast("카카오톡 로그인에 실패하였습니다.");
+        showBlackToast("카카오톡 로그인에 실패하였습니다");
         if (error is PlatformException && error.code == 'CANCELED') {
           print('사용자가 로그인 취소');
-          showBlackToast("카카오톡 로그인을 취소하였습니다.");
+          showBlackToast("카카오톡 로그인을 취소하였습니다");
           return;
         }
 
@@ -60,7 +60,7 @@ class _RegisterScreen extends State<LoginScreen> {
           await _fetchKakaoUserInfo();
         } catch (error) {
           print('카카오 계정으로 로그인 실패 $error');
-          showBlackToast("카카오 계정 로그인에 실패하였습니다.");
+          showBlackToast("카카오 계정 로그인에 실패하였습니다");
         }
       }
     } else {
@@ -69,7 +69,7 @@ class _RegisterScreen extends State<LoginScreen> {
         await UserApi.instance.loginWithKakaoAccount();
         await _fetchKakaoUserInfo();
       } catch (error) {
-        showBlackToast("카카오 계정 로그인에 실패하였습니다.");
+        showBlackToast("카카오 계정 로그인에 실패하였습니다");
       }
     }
   }
@@ -83,7 +83,7 @@ class _RegisterScreen extends State<LoginScreen> {
       });
     } catch (error) {
       print('사용자 정보 요청 실패 $error');
-      showBlackToast("사용자 정보 요청에 실패하였습니다.");
+      showBlackToast("사용자 정보 요청에 실패하였습니다");
     }
   }
 
@@ -147,7 +147,7 @@ class _RegisterScreen extends State<LoginScreen> {
                                     MaterialPageRoute(
                                         builder: (context) =>
                                         const CodeConnectScreen()));
-                                showBlackToast("구글 계정으로 로그인 되었습니다.");
+                                showBlackToast("구글 계정으로 로그인 되었습니다");
                               }
                           }
                         },
@@ -207,7 +207,7 @@ class _RegisterScreen extends State<LoginScreen> {
                                     MaterialPageRoute(
                                         builder: (context) =>
                                         const CodeConnectScreen()));
-                                showBlackToast("카카오 계정으로 로그인 되었습니다.");
+                                showBlackToast("카카오 계정으로 로그인 되었습니다");
                               }
                           }
                         },

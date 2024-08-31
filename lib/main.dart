@@ -7,6 +7,7 @@ import 'package:woo_yeon_hi/provider/footprint_provider.dart';
 import 'package:woo_yeon_hi/provider/ledger_provider.dart';
 import 'package:woo_yeon_hi/provider/login_register_provider.dart';
 import 'package:woo_yeon_hi/provider/more_provider.dart';
+import 'package:woo_yeon_hi/provider/schedule_provider.dart';
 import 'package:woo_yeon_hi/provider/tab_page_index_provider.dart';
 import 'package:woo_yeon_hi/screen/login/password_enter_screen.dart';
 import 'package:woo_yeon_hi/screen/main_screen.dart';
@@ -137,6 +138,8 @@ class _WooYeonHiState extends State<WooYeonHi> {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => CalendarProvider()),
+          ChangeNotifierProvider(create: (context) => HomeCalendarProvider()),
+          ChangeNotifierProvider(create: (context) => CalendarScreenProvider()),
           ChangeNotifierProvider(create: (context) => PasswordProvider()),
           ChangeNotifierProvider(create: (context) => AuthCodeProvider()),
           ChangeNotifierProvider(create: (context) => TabPageIndexProvider()),
@@ -155,14 +158,14 @@ class _WooYeonHiState extends State<WooYeonHi> {
           theme: ThemeData(
               colorScheme: const ColorScheme(
                 brightness: Brightness.light,
-                primary: Colors.white,
-                onPrimary: Colors.black,
-                secondary: Colors.black,
+                primary: ColorFamily.black,
+                onPrimary: ColorFamily.black,
+                secondary: ColorFamily.black,
                 onSecondary: ColorFamily.black,
                 error: Colors.red,
                 onError: Colors.white,
                 surface: Colors.white,
-                onSurface: Colors.black,
+                onSurface: ColorFamily.black,
               ),
               bottomSheetTheme: const BottomSheetThemeData(
                 dragHandleColor: ColorFamily.gray, // 드래그 핸들 색상 설정

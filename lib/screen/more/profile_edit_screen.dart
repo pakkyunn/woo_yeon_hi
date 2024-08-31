@@ -78,7 +78,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                 tempUserBirth != provider.userBirth ||
                 tempProfileMessage != provider.profileMessage) {
               dialogTitleWithContent(
-                  context, "프로필 편집 나가기", "변경사항은 저장되지 않습니다.",
+                  context, "프로필 편집 나가기", "변경사항은 저장되지 않습니다",
                     () {
                   Navigator.pop(context, false);
                   _nickNameFocusNode.unfocus();
@@ -113,7 +113,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                       tempUserBirth != provider.userBirth ||
                       tempProfileMessage != provider.profileMessage) {
                     dialogTitleWithContent(
-                        context, "프로필 편집 나가기", "변경사항은 저장되지 않습니다.",
+                        context, "프로필 편집 나가기", "변경사항은 저장되지 않습니다",
                             () {
                           Navigator.pop(context, false);
                           _nickNameFocusNode.unfocus();

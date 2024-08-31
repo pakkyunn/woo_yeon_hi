@@ -2,8 +2,8 @@ class Plan {
   int planIdx; // 플랜 번호
   String planTitle; // 플랜 제목
   String planDate; // 플랜 지정 날짜
-  String planWriteDate; // 플랜 작성 날짜
-  int planUserIdx; // 플랜 작성 유저 번호
+  String planWriteDate; // 플랜 생성 날짜
+  int planUserIdx; // 플랜 생성 유저 번호
   List<dynamic> planedArray; // 플랜 항목 배열
   int planState; // 플랜 상태
 

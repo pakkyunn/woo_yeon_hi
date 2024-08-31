@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:woo_yeon_hi/dao/history_dao.dart';
+import 'package:woo_yeon_hi/dialogs.dart';
 import 'package:woo_yeon_hi/model/history_model.dart';
 import 'package:woo_yeon_hi/model/photo_map_model.dart';
 import 'package:woo_yeon_hi/provider/footprint_provider.dart';
@@ -373,6 +374,7 @@ class _FootprintHistoryDetailScreenState
                                 Navigator.pop(context); // 다이얼로그 팝
                                 Navigator.pop(context); // 바텀시트 팝
                                 Navigator.pop(context, "refresh"); // 히스토리 페이지 팝
+                                showPinkSnackBar(context, "히스토리가 삭제되었습니다");
                               },
                               child: const Text(
                                 "확인",

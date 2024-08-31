@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:woo_yeon_hi/dao/schedule_dao.dart';
 import 'package:woo_yeon_hi/screen/calendar/calendar_add_screen.dart';
 import 'package:woo_yeon_hi/style/color.dart';
@@ -50,49 +51,44 @@ class _CalendarScreenState extends State<CalendarScreen> {
         surfaceTintColor: ColorFamily.cream,
         centerTitle: true,
         scrolledUnderElevation: 0,
-        title: const Text(
-          "캘린더",
-          style: TextStyleFamily.appBarTitleBoldTextStyle
-        ),
+        title: _isCalendar
+            ? Text(_getCurrentMonth(), style: TextStyleFamily.appBarTitleBoldTextStyle)
+            : const Text("일정 목록", style: TextStyleFamily.appBarTitleBoldTextStyle),
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
           icon: SvgPicture.asset("lib/assets/icons/arrow_back.svg"),
         ),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(right: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      _isCalendar = !_isCalendar;
-                    });
-                  },
-                  child: _isCalendar
-                    ? SvgPicture.asset("lib/assets/icons/list.svg")
-                    : SvgPicture.asset("lib/assets/icons/calendar.svg"),
-                ),
-                const SizedBox(width: 7),
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => CalendarAddScreen())
-                    );
-                  },
-                  child: SvgPicture.asset("lib/assets/icons/add.svg"),
-                ),
-              ],
-            ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                _isCalendar = !_isCalendar;
+              });
+            },
+            icon:
+            _isCalendar
+                ? SvgPicture.asset("lib/assets/icons/list.svg")
+                : SvgPicture.asset("lib/assets/icons/calendar.svg"),
           ),
-          _isCalendar ? CalendarDate(scheduleData) : CalendarList(scheduleData),
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const CalendarAddScreen()));
+              },
+            icon: SvgPicture.asset('lib/assets/icons/add.svg'),
+          ),
         ],
-      )
+      ),
+      body: _isCalendar ? CalendarDate(scheduleData) : CalendarList(scheduleData),
     );
   }
+
+  String _getCurrentMonth() {
+    DateTime now = DateTime.now();
+    DateFormat formatter = DateFormat('yyyy년 M월');
+    return formatter.format(now);
+  }
+
 }

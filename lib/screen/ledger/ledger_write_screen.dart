@@ -15,6 +15,7 @@ import 'package:woo_yeon_hi/style/text_style.dart';
 import 'package:woo_yeon_hi/widget/ledger/ledger_dialog.dart';
 import 'package:woo_yeon_hi/widget/ledger/ledger_top_app_bar.dart';
 
+import '../../dialogs.dart';
 import '../../model/ledger_model.dart';
 
 class LedgerWriteScreen extends StatefulWidget {
@@ -549,7 +550,7 @@ class _LedgerWriteScreenState extends State<LedgerWriteScreen> {
                                           );
                                           ledgerProvider.addLedger(newLedger);
                                           Navigator.popUntil(context, (route) => route.isFirst);
-
+                                          showPinkSnackBar(context, "가계부 항목이 작성되었습니다");
                                         }else{
                                           if(priceController.text.isEmpty){
                                             // 포커스 이동

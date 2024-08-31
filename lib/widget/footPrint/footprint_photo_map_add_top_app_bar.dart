@@ -24,7 +24,7 @@ class _FootprintPhotoMapAddTopAppBarState
       backgroundColor: ColorFamily.cream,
       centerTitle: true,
       title: const Text(
-        "지도 추가",
+        "지도 생성",
         style: TextStyleFamily.appBarTitleLightTextStyle,
       ),
       leading: IconButton(

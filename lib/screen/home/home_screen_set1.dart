@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/widget/home/home_top_app_bar.dart';
 
 import 'home_screen_container.dart';
@@ -14,12 +15,12 @@ class _HomeScreenState1 extends State<HomeScreenSet1> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ColorFamily.cream,
       appBar: const HomeTopAppBar(),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
-            padding: const EdgeInsets.all(20),
-            color: const Color(0xffFCF8F5),
+            padding: const EdgeInsets.fromLTRB(20,0,20,20),
             child: Column(
               children: [
                 dDay(context),

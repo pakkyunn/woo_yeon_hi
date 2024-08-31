@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:woo_yeon_hi/dialogs.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/style/font.dart';
 import 'package:woo_yeon_hi/style/text_style.dart';
@@ -380,11 +381,12 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
                                               ),
                                               TextButton(
                                                 onPressed: () {
-                                                  // 삭제 처리
+                                                  //TODO 삭제 처리 코드
 
                                                   Navigator.pop(context); // 다이얼로그
                                                   Navigator.pop(context); // 일정 편집화면
                                                   Navigator.pop(context); // 일정 세부사항 화면
+                                                  showPinkSnackBar(context, "일정이 삭제되었습니다");
                                                 },
                                                 child: const Text(
                                                   "확인",

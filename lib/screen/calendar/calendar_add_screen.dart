@@ -164,12 +164,12 @@ class _CalendarAddScreenState extends State<CalendarAddScreen> {
                                       const Column(
                                         children: [
                                           Text(
-                                            "오류가 발생했습니다.",
+                                            "오류가 발생했습니다",
                                             style: TextStyleFamily.dialogTitleTextStyle,
                                           ),
                                           SizedBox(height: 15),
                                           Text(
-                                            "시작일은 종료일의 이전이어야 합니다.",
+                                            "시작일은 종료일의 이전이어야 합니다",
                                             style: TextStyleFamily.hintTextStyle,
                                           )
                                         ],

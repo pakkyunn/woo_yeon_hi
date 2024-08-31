@@ -39,7 +39,7 @@ void showFilterBottomSheet(DiaryProvider provider, int user_idx, int lover_idx, 
               SizedBox(
                 width: MediaQuery.of(context).size.width,
                 child: Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.fromLTRB(20,0,20,30),
                   child: Column(
                     children: [
                       const Row(
@@ -189,11 +189,7 @@ void showFilterBottomSheet(DiaryProvider provider, int user_idx, int lover_idx, 
                             Padding(
                               padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
                               child: SizedBox(
-                                width: (MediaQuery.of(context).size.width -
-                                    40 -
-                                    20 -
-                                    20) /
-                                    2,
+                                width: (MediaQuery.of(context).size.width - 40 - 20 - 20) /2,
                                 child: Padding(
                                   padding: const EdgeInsets.only(bottom: 5),
                                   child: Row(
@@ -373,7 +369,7 @@ void showFilterBottomSheet(DiaryProvider provider, int user_idx, int lover_idx, 
                             ),
                           ]),
                       const SizedBox(
-                        height: 30,
+                        height: 20,
                       ),
                       // 확인 버튼
                       SizedBox(

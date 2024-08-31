@@ -163,7 +163,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                             authCodeProvider.setIsAuthCodeGenerated(true);
                             authCodeProvider.setIsAuthCodeExpired(false);
                             authCodeProvider.setAuthCodeText(_authCode);
-                            showBlackToast("인증코드가 전송되었습니다.");
+                            showBlackToast("인증코드가 전송되었습니다");
                           },
                           child: Container(
                               alignment: Alignment.center,
@@ -264,11 +264,11 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                                       await Future.delayed(
                                           const Duration(milliseconds: 200),
                                           () {
-                                        showBlackToast("앱 잠금을 초기화하였습니다.");
+                                            showBlackToast("앱 잠금을 초기화하였습니다");
                                       })
                                     }
                                   : authCodeProvider.setShowError(true)
-                              : showBlackToast("유효하지 않은 코드입니다.");
+                              : showBlackToast("유효하지 않은 코드입니다");
                         },
                         borderRadius: BorderRadius.circular(20.0),
                         child: const Align(

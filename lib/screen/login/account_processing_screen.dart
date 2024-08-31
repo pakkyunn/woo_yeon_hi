@@ -92,7 +92,7 @@ class _AccountProcessingScreenState extends State<AccountProcessingScreen> {
                         Navigator.pop(context, true);
                         Fluttertoast.showToast(
                             msg:
-                            "계정 복구가 완료되었습니다.\n다시 로그인 해주세요.",
+                            "계정 복구가 완료되었습니다\n다시 로그인 해주세요",
                             toastLength:
                             Toast.LENGTH_LONG,
                             gravity:

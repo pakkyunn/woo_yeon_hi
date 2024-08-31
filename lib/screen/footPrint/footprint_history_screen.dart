@@ -40,6 +40,9 @@ class FootprintHistoryScreenState extends State<FootprintHistoryScreen> {
       backgroundColor: ColorFamily.cream,
       appBar: FootprintHistoryTopAppBar(widget.photoMap),
       floatingActionButton: FloatingActionButton(
+        mini: true,
+        splashColor: Colors.transparent,
+        elevation: 3,
         backgroundColor: ColorFamily.beige,
         shape: const CircleBorder(),
         child: SvgPicture.asset('lib/assets/icons/edit.svg'),

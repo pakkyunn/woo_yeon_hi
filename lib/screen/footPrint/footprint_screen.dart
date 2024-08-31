@@ -42,6 +42,9 @@ class _FootprintScreenState extends State<FootprintScreen> {
         backgroundColor: ColorFamily.cream,
         appBar: const FootprintTopAppBar(),
         floatingActionButton: FloatingActionButton(
+          // mini: true,
+          // splashColor: Colors.transparent,
+          // elevation: 3,
           backgroundColor: ColorFamily.beige,
           shape: const CircleBorder(),
           child: SvgPicture.asset('lib/assets/icons/add.svg'),

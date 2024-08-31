@@ -283,7 +283,7 @@ class _ConnectCodeScreenState extends State<CodeConnectScreen> {
                                                             _isCodeExpired =
                                                                 false;
                                                           });
-                                                          showBlackToast("다시 시도해주세요.");
+                                                          showBlackToast("다시 시도해주세요");
                                                         }
                                                       },
                                                       borderRadius:
@@ -350,7 +350,7 @@ class _ConnectCodeScreenState extends State<CodeConnectScreen> {
                                                                 (route) => false);
                                                             showBlackToast("연결되었습니다!");
                                                           } else {
-                                                            showBlackToast("해당 코드로 연결된 상대가 없습니다.");
+                                                            showBlackToast("해당 코드로 연결된 상대가 없습니다");
                                                           }
                                                         }
                                                       },
@@ -473,7 +473,7 @@ class _ConnectCodeScreenState extends State<CodeConnectScreen> {
 
   Future<void> _codeVerify(UserProvider userProvider, String codeInput, String connectCode, BuildContext context) async {
     if (await getSpecificConnectCodeData(codeInput, 'host_idx') == userProvider.userIdx) {
-      showBlackToast("본인의 코드로 연결할 수 없습니다.");
+      showBlackToast("본인의 코드로 연결할 수 없습니다");
     } else if (await isCodeDataExist(codeInput) == true
         && await isCodeConnected(codeInput) == false
         && DateTime.now().isBefore(DateTime.parse(await getSpecificConnectCodeData(codeInput, 'expired_time')))
@@ -489,6 +489,6 @@ class _ConnectCodeScreenState extends State<CodeConnectScreen> {
       const NickNameSettingScreen(isHost: false)), (route) => false);
       showBlackToast("연결되었습니다!");
     } else {
-      showBlackToast("유효하지 않은 연결코드입니다.");
+      showBlackToast("유효하지 않은 연결코드입니다");
     }
   }

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../dao/diary_dao.dart';
 import '../../provider/diary_provider.dart';
+import '../../provider/login_register_provider.dart';
 import '../../style/color.dart';
 import '../../style/font.dart';
 import '../../style/text_style.dart';
@@ -17,16 +19,243 @@ bool isWeekend(DateTime day) {
   return day.weekday == DateTime.sunday;
 }
 
-void showCalendarBottomSheet(
-    BuildContext context, String flag, DiaryProvider provider) {
+void showCalendarBottomSheet(BuildContext context, String flag, DiaryProvider provider) {
   DateTime? _selectedDay;
   DateTime _focusedDay = DateTime.now();
+  var deviceWidth = MediaQuery.of(context).size.width;
 
   showModalBottomSheet(
       context: context,
       backgroundColor: ColorFamily.white,
       builder: (context) {
         return StatefulBuilder(builder: (context, bottomState) {
+          return SizedBox(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                child: Column(
+                  children: [
+                    TableCalendar(
+                      sixWeekMonthsEnforced: true,
+                      availableGestures: AvailableGestures.horizontalSwipe,
+                      firstDay: stringToDate(Provider.of<UserProvider>(context, listen: false).loveDday),
+                      lastDay: DateTime.now(),
+                      focusedDay: _focusedDay,
+                      locale: 'ko_kr',
+                      rowHeight: 45,
+                      daysOfWeekHeight:40,
+                      headerStyle: const HeaderStyle(
+                        titleCentered: true,
+                        titleTextStyle: TextStyleFamily
+                            .appBarTitleBoldTextStyle,
+                        formatButtonVisible: false,
+                      ),
+                      daysOfWeekStyle: const DaysOfWeekStyle(
+                          weekdayStyle: TextStyleFamily.normalTextStyle,
+                          weekendStyle: TextStyleFamily.normalTextStyle
+                      ),
+                      calendarBuilders: CalendarBuilders(
+                          defaultBuilder: (context, day, focusedDay) {
+                            return Container(
+                              alignment: Alignment.center,
+                              child: Text(
+                                textAlign: TextAlign.center,
+                                DateFormat('d').format(day),
+                                style: TextStyle(
+                                    color: isWeekend(day)
+                                        ? Colors.red
+                                        : isSaturday(day)
+                                        ? Colors.blueAccent
+                                        : ColorFamily.black
+                                    ,
+                                    fontFamily: FontFamily.mapleStoryLight
+                                ),
+                              ),
+                            );
+                          },
+                          outsideBuilder: (context, day, focusedDay) {
+                            return Container(
+                              alignment: Alignment.center,
+                              child: Text(
+                                textAlign: TextAlign.center,
+                                DateFormat('d').format(day),
+                                style: const TextStyle(
+                                    color: ColorFamily.gray,
+                                    fontFamily: FontFamily.mapleStoryLight
+                                ),
+                              ),
+                            );
+                          },
+                          disabledBuilder: (context, day, focusedDay) {
+                            return Container(
+                              alignment: Alignment.center,
+                              child: Text(
+                                textAlign: TextAlign.center,
+                                DateFormat('d').format(day),
+                                style: const TextStyle(
+                                    color: ColorFamily.gray,
+                                    fontFamily: FontFamily.mapleStoryLight
+                                ),
+                              ),
+                            );
+                          },
+                          selectedBuilder: (context, day, focusedDay) {
+                            return Container(
+                              alignment: Alignment.center,
+                              child: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: const BoxDecoration(
+                                  color: ColorFamily.pink,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    textAlign: TextAlign.center,
+                                    DateFormat('d').format(day),
+                                    style: TextStyle(
+                                        color: isWeekend(day)
+                                            ? ColorFamily.white
+                                            : isSaturday(day)
+                                            ? ColorFamily.white
+                                            : ColorFamily.black,
+                                        fontFamily: FontFamily
+                                            .mapleStoryLight
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          todayBuilder: (context, day, focusedDay) {
+                            return Container(
+                              alignment: Alignment.center,
+                              child: Text(
+                                textAlign: TextAlign.center,
+                                DateFormat('d').format(day),
+                                style: const TextStyle(
+                                    color: ColorFamily.pink,
+                                    fontFamily: FontFamily.mapleStoryLight
+                                ),
+                              ),
+                            );
+                          },
+                          markerBuilder: (context, day, events) {
+                            return FutureBuilder(
+                                future: isExistOnDate(day),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData == false) {
+                                    return const SizedBox();
+                                  } else if (snapshot.hasError) {
+                                    return const SizedBox();
+                                  } else {
+                                    if (snapshot.data == true) {
+                                      return Container(
+                                        alignment: Alignment.center,
+                                        padding: const EdgeInsets.only(
+                                            top: 30),
+                                        child: Container(
+                                          width: 6,
+                                          height: 6,
+                                          decoration: BoxDecoration(
+                                              color: (day == _selectedDay)
+                                                  ? ColorFamily.white
+                                                  : ColorFamily.pink,
+                                              shape: BoxShape.circle),
+                                        ),
+                                      );
+                                    } else {
+                                      return const SizedBox();
+                                    }
+                                  }
+                                }
+                            );
+                          }
+                      ),
+                      selectedDayPredicate: (day) {
+                        return isSameDay(_selectedDay, day);
+                      },
+                      onDaySelected: (selectedDay, focusedDay) {
+                          bottomState(() {
+                            _selectedDay = selectedDay;
+                            _focusedDay =
+                                focusedDay; // update `_focusedDay` here as well
+                        });
+                      },
+                      onPageChanged: (focusedDay) {
+                        _focusedDay = focusedDay;
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: (deviceWidth-40)/2-5,
+                          height: 40,
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: ColorFamily.white,
+                                  surfaceTintColor: ColorFamily.white),
+                              onPressed: () {
+                                bottomState(() {
+                                  _focusedDay = DateTime.now();
+                                  _selectedDay = DateTime.now();
+                                });
+                              },
+                              child: const Text(
+                                "오늘 날짜로",
+                                style: TextStyleFamily.normalTextStyle,
+                              )),
+                        ),
+                        SizedBox(
+                          width: (deviceWidth-40)/2-5,
+                          height: 40,
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: ColorFamily.beige,
+                                  surfaceTintColor: ColorFamily.white),
+                              onPressed: () {
+                                if (_selectedDay != null) {
+                                  String formattedDate =
+                                  dateToString(_selectedDay!);
+                                  if (flag == "start") {
+                                    provider.setStartPeriod(formattedDate);
+                                    provider.setStartControllerText(
+                                        formattedDate);
+                                    Navigator.pop(context, "start");
+                                  } else {
+                                    provider.setEndPeriod(formattedDate);
+                                    provider
+                                        .setEndControllerText(formattedDate);
+                                    Navigator.pop(context, "end");
+                                  }
+                                } else {
+                                  String formattedDate =
+                                  dateToString(_focusedDay);
+                                  if (flag == "start") {
+                                    provider.setStartPeriod(formattedDate);
+                                    provider.setStartControllerText(
+                                        formattedDate);
+                                    Navigator.pop(context, "start");
+                                  } else {
+                                    provider.setEndPeriod(formattedDate);
+                                    provider
+                                        .setEndControllerText(formattedDate);
+                                    Navigator.pop(context, "end");
+                                  }
+                                }
+                              },
+                              child: const Text(
+                                "확인",
+                                style: TextStyleFamily.normalTextStyle,
+                              )),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              )
+          );
           return SizedBox(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height * 0.6,
@@ -36,7 +265,7 @@ void showCalendarBottomSheet(
                   children: [
                     TableCalendar(
                       firstDay: DateTime.utc(2024, 3, 16),
-                      lastDay: DateTime.utc(2024, 8, 14),
+                      lastDay: DateTime.now(),
                       focusedDay: _focusedDay,
                       locale: 'ko_kr',
                       rowHeight: 50,
@@ -66,7 +295,8 @@ void showCalendarBottomSheet(
                                 fontFamily: FontFamily.mapleStoryLight),
                           ),
                         );
-                      }, outsideBuilder: (context, day, focusedDay) {
+                      },
+                          outsideBuilder: (context, day, focusedDay) {
                         return Container(
                           alignment: Alignment.topCenter,
                           padding: const EdgeInsets.only(top: 15),

@@ -74,7 +74,7 @@ class _AccountProcessingDialogState extends State<AccountProcessingDialog> {
                                    Navigator.pop(context);
                                    Navigator.pop(context);
                                    Fluttertoast.showToast(
-                                       msg: "계정 복구가 완료되었습니다.\n다시 로그인 해주세요.",
+                                       msg: "계정 복구가 완료되었습니다\n다시 로그인 해주세요",
                                        toastLength: Toast.LENGTH_LONG,
                                        gravity: ToastGravity.BOTTOM,
                                        timeInSecForIosWeb: 3,

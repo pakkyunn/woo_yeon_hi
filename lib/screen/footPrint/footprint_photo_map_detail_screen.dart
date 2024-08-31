@@ -58,6 +58,9 @@ class FootprintPhotoMapDetailScreenState
       backgroundColor: ColorFamily.cream,
       appBar: FootprintPhotoMapDetailTopappBar(globalkey, widget.photoMap),
       floatingActionButton: FloatingActionButton(
+        // mini: true,
+        splashColor: Colors.transparent,
+        elevation: 3,
         backgroundColor: ColorFamily.beige,
         shape: const CircleBorder(),
         child: SvgPicture.asset('lib/assets/icons/edit.svg', colorFilter: const ColorFilter.mode(ColorFamily.black, BlendMode.srcIn),),

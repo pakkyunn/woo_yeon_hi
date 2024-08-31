@@ -218,7 +218,7 @@ class _FootprintPhotoMapScreenState extends State<FootprintPhotoMapScreen> {
                                       Navigator.pop(context); // 다이얼로그 팝
                                       setState(() {});
                                     }else{
-                                      _errorText = "제목을 입력해주세요.";
+                                      _errorText = "제목을 입력해주세요";
                                     }
                                   });
                                 },

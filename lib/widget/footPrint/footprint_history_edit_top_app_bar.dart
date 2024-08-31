@@ -50,7 +50,7 @@ class _FootprintHistoryEditTopAppBarState
             dialogTitleWithContent(
                 context,
                 "히스토리 작성을 취소하시겠습니까?",
-                "지금까지 작성된 내용은 삭제됩니다.",
+                "지금까지 작성된 내용은 삭제됩니다",
                 () => _onCancle_back(context),
                 () => _onConfirm_back(context));
           } else {
@@ -71,9 +71,9 @@ class _FootprintHistoryEditTopAppBarState
                     context,
                     "히스토리를 작성하시겠습니까?",
                     () => _onCancle_done(context),
-                    () => _onConfirm_done(context));
+                    () {_onConfirm_done(context); showPinkSnackBar(context, "히스토리가 작성되었습니다!");});
               } else {
-                showToast("사진 및 모든 내용을 입력해주세요.");
+                showBlackToast("사진 및 모든 내용을 입력해주세요");
               }
             },
             icon: SvgPicture.asset('lib/assets/icons/done.svg'))

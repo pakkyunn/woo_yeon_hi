@@ -249,7 +249,7 @@ class UserProvider extends ChangeNotifier {
       setUserAccount(googleUser.email);
       setLoginSuccess(true);
     } else {
-      showToast("구글 계정 로그인에 실패하였습니다.");
+      showBlackToast("구글 계정 로그인에 실패하였습니다");
     }
   }
 
@@ -262,10 +262,10 @@ class UserProvider extends ChangeNotifier {
         // setUserAccount(카카오계정정보);
       } catch (error) {
         print('카카오톡으로 로그인 실패 $error');
-        showToast("카카오 계정 로그인에 실패하였습니다.");
+        showBlackToast("카카오 계정 로그인에 실패하였습니다");
         if (error is PlatformException && error.code == 'CANCELED') {
           print('사용자가 로그인 취소');
-          showToast("카카오 계정 로그인을 취소하였습니다.");
+          showBlackToast("카카오 계정 로그인을 취소하였습니다");
           return;
         }
 
@@ -276,7 +276,7 @@ class UserProvider extends ChangeNotifier {
           setLoginSuccess(true);
         } catch (error) {
           print('카카오 계정으로 로그인 실패 $error');
-          showToast("카카오 계정 로그인에 실패하였습니다.");
+          showBlackToast("카카오 계정 로그인에 실패하였습니다");
         }
       }
     } else {
@@ -286,7 +286,7 @@ class UserProvider extends ChangeNotifier {
         // setUserAccount(카카오계정정보);
         setLoginSuccess(true);
       } catch (error) {
-        showToast("카카오 계정 로그인에 실패하였습니다.");
+        showBlackToast("카카오 계정 로그인에 실패하였습니다");
       }
     }
   }

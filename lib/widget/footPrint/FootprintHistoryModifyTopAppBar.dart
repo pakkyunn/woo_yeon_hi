@@ -45,7 +45,7 @@ class _FootprintHistoryModifyTopAppBarState extends State<FootprintHistoryModify
             dialogTitleWithContent(
                 context,
                 "히스토리 수정을 취소하시겠습니까?",
-                "지금까지 작성된 내용은 삭제됩니다.",
+                "지금까지 작성된 내용은 삭제됩니다",
                     () => _onCancle_back(context),
                     () => _onConfirm_back(context));
           }else{
@@ -65,7 +65,7 @@ class _FootprintHistoryModifyTopAppBarState extends State<FootprintHistoryModify
                   context,
                   "히스토리를 수정하시겠습니까?",
                       () => _onCancle_done(context),
-                      () => _onConfirm_done(context));
+                      () {_onConfirm_done(context); showPinkSnackBar(context, "히스토리가 수정되었습니다");});
             },
             icon: SvgPicture.asset('lib/assets/icons/done.svg'))
             : const SizedBox()

@@ -22,10 +22,10 @@ class LedgerProvider extends ChangeNotifier{
   }
 
   // table_calendar 파일 에서 사용.
-  DateTime _selectedDay = DateTime.now();
+  DateTime? _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
 
-  DateTime get selectedDay => _selectedDay;
+  DateTime? get selectedDay => _selectedDay;
   DateTime get focusedDay => _focusedDay;
 
   // 포커스 업데이트
@@ -35,7 +35,7 @@ class LedgerProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  void setSelectedDay(DateTime day) {
+  void setSelectedDay(DateTime? day) {
     _selectedDay = day;
     notifyListeners();
   }

@@ -107,7 +107,7 @@ void signOut(BuildContext context) async {
   Provider.of<UserProvider>(context, listen: false).setLoginType(0);
   Provider.of<UserProvider>(context, listen: false).setUserBirth(dateToString(DateTime.now()));
   Provider.of<UserProvider>(context, listen: false).setLoverNickname("");
-  showBlackToast("등록이 취소되었습니다.");
+  showBlackToast("등록이 취소되었습니다");
 }
 
 Future<Map<String, dynamic>> fetchUserData() async {

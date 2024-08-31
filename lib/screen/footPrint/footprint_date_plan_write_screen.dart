@@ -42,7 +42,7 @@ class _FootprintDatePlanWriteScreenState extends State<FootprintDatePlanWriteScr
           return Scaffold(
             // 앱바
             appBar: FootprintDatePlanTopAppBar(
-              title: '데이트 플랜 작성',
+              title: '데이트 플랜 생성',
               leading: IconButton(
                 onPressed: () {
                   Navigator.pop(context);
@@ -325,6 +325,7 @@ void _showMapSelectDialog(BuildContext context, FootPrintDatePlanSlidableProvide
                                   addPlan(plan);
                                   Navigator.pop(context);
                                   Navigator.pop(context);
+                                  showPinkSnackBar(context, "데이트 플랜이 생성되었습니다!");
                                 }
                               },
                               child: const Text(
@@ -345,11 +346,11 @@ void _showMapSelectDialog(BuildContext context, FootPrintDatePlanSlidableProvide
 }
 
 Future<DateTime?> _showDatePicker(BuildContext context, FootPrintDatePlanSlidableProvider provider, String flag){
-  if(flag == "start"){
-    showToast("시작일");
-  }else{
-    showToast("종료일");
-  }
+  // if(flag == "start"){
+  //   showGrayToast("시작일");
+  // }else{
+  //   showGrayToast("종료일");
+  // }
   return picker.DatePicker.showDatePicker(
       context,
       showTitleActions: true,

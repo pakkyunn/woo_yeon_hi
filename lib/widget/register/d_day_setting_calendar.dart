@@ -38,7 +38,6 @@ class _DdaySettingCalendarState extends State<DdaySettingCalendar> {
             firstDay: DateTime.utc(2010, 1, 1),
             lastDay: DateTime.now(),
             focusedDay: provider.focusedDay,
-            rowHeight: 50,
             locale: 'ko_kr',
             currentDay: DateTime.now(),
             availableGestures: AvailableGestures.horizontalSwipe,
@@ -51,15 +50,15 @@ class _DdaySettingCalendarState extends State<DdaySettingCalendar> {
               rightChevronIcon: SvgPicture.asset(
                   'lib/assets/icons/arrow_right.svg'),
             ),
-            daysOfWeekHeight: 40,
+            daysOfWeekHeight: MediaQuery.of(context).size.height*0.055,
+            rowHeight: MediaQuery.of(context).size.height*0.055,
             daysOfWeekStyle: const DaysOfWeekStyle(
                 weekdayStyle: TextStyleFamily.normalTextStyle,
                 weekendStyle: TextStyleFamily.normalTextStyle),
             calendarBuilders: CalendarBuilders(
               defaultBuilder: (context, day, focusedDay) {
                 return Container(
-                  alignment: Alignment.topCenter,
-                  padding: const EdgeInsets.only(top: 15),
+                  alignment: Alignment.center,
                   child: Text(
                     textAlign: TextAlign.center,
                     DateFormat('d').format(day),
@@ -75,8 +74,7 @@ class _DdaySettingCalendarState extends State<DdaySettingCalendar> {
               },
               outsideBuilder: (context, day, focusedDay) {
                 return Container(
-                  alignment: Alignment.topCenter,
-                  padding: const EdgeInsets.only(top: 15),
+                  alignment: Alignment.center,
                   child: Text(
                     textAlign: TextAlign.center,
                     DateFormat('d').format(day),
@@ -88,8 +86,7 @@ class _DdaySettingCalendarState extends State<DdaySettingCalendar> {
               },
               disabledBuilder: (context, day, focusedDay) {
                 return Container(
-                  alignment: Alignment.topCenter,
-                  padding: const EdgeInsets.only(top: 15),
+                  alignment: Alignment.center,
                   child: Text(
                     textAlign: TextAlign.center,
                     DateFormat('d').format(day),
@@ -101,11 +98,10 @@ class _DdaySettingCalendarState extends State<DdaySettingCalendar> {
               },
               selectedBuilder: (context, day, focusedDay) {
                 return Container(
-                  alignment: Alignment.topCenter,
-                  padding: const EdgeInsets.only(top: 10),
+                  alignment: Alignment.center,
                   child: Container(
-                    width: 35,
-                    height: 35,
+                    width: 40,
+                    height: 40,
                     decoration: const BoxDecoration(
                       color: ColorFamily.pink,
                       shape: BoxShape.circle,
@@ -126,7 +122,7 @@ class _DdaySettingCalendarState extends State<DdaySettingCalendar> {
               },
               todayBuilder: (context, day, focusedDay) {
                 return Container(
-                  alignment: Alignment.topCenter,
+                  alignment: Alignment.center,
                   child: Center(
                     child: Text(
                       textAlign: TextAlign.center,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:scroll_date_picker/scroll_date_picker.dart';
 import 'package:woo_yeon_hi/provider/diary_provider.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/style/text_style.dart';
@@ -35,6 +36,9 @@ class _DiaryScreenState extends State<DiaryScreen> {
               backgroundColor: ColorFamily.cream,
               appBar: const DiaryTopAppBar(),
               floatingActionButton: FloatingActionButton(
+                mini: true,
+                splashColor: Colors.transparent,
+                elevation: 3,
                 backgroundColor: ColorFamily.beige,
                 shape: const CircleBorder(),
                 child: SvgPicture.asset('lib/assets/icons/edit.svg'),

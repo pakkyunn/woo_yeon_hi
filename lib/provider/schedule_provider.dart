@@ -22,3 +22,37 @@ class ScheduleProvider extends ChangeNotifier {
   }
 }
 
+class HomeCalendarProvider extends ChangeNotifier {
+  DateTime _selectedDay = DateTime.now();
+  DateTime get selectedDay => _selectedDay;
+
+  DateTime _focusedDay = DateTime.now();
+  DateTime get focusedDay => _focusedDay;
+
+  void setSelectedDay(DateTime selectedDay){
+    _selectedDay = selectedDay;
+    notifyListeners();
+  }
+  void setFocusedDay(DateTime focusedDay){
+    _focusedDay = focusedDay;
+    notifyListeners();
+  }
+}
+
+class CalendarScreenProvider extends ChangeNotifier {
+  DateTime _selectedDay = DateTime.now();
+  DateTime get selectedDay => _selectedDay;
+
+  DateTime _focusedDay = DateTime.now();
+  DateTime get focusedDay => _focusedDay;
+
+  void setSelectedDay(DateTime selectedDay){
+    _selectedDay = selectedDay;
+    notifyListeners();
+  }
+  void setFocusedDay(DateTime focusedDay){
+    _focusedDay = focusedDay;
+    notifyListeners();
+  }
+}
+

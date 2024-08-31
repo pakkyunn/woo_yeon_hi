@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:woo_yeon_hi/dao/photo_map_dao.dart';
+import 'package:woo_yeon_hi/dialogs.dart';
 import 'package:woo_yeon_hi/model/enums.dart';
 import 'package:woo_yeon_hi/model/photo_map_model.dart';
 import 'package:woo_yeon_hi/screen/footPrint/footprint_photo_map_detail_screen.dart';
@@ -173,8 +174,10 @@ class _FootprintPhotoMapAddMapListState
                                       addPhotoMap(photoMap);
                                       _errorText = null;
                                       _controller.clear();
-                                      Navigator.pop(context); // 다이얼로그 팝
-                                      Navigator.push(context, MaterialPageRoute(builder: (context) => FootprintPhotoMapDetailScreen(photoMap)));
+                                      Navigator.pop(context); // 다이얼로그 팝 
+                                      Navigator.pop(context); // 지도 생성화면 팝
+                                      // Navigator.push(context, MaterialPageRoute(builder: (context) => FootprintPhotoMapDetailScreen(photoMap)));
+                                      showPinkSnackBar(context, "새로운 지도가 생성되었습니다");
                                     }
 
                                   });
