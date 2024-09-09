@@ -26,13 +26,13 @@ class _DiaryDetailContentState extends State<DiaryDetailContent> {
       child: Card(
         color: ColorFamily.white,
         surfaceTintColor: ColorFamily.white,
-        elevation: 4,
+        elevation: 2,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             // 제목
             Padding(
-                padding: const EdgeInsets.fromLTRB(20, 30, 20, 0),
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
                 child: TextField(
                   maxLines: 1,
                   keyboardType: TextInputType.text,

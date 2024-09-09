@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/dao/diary_dao.dart';
 import 'package:woo_yeon_hi/model/diary_model.dart';
 import 'package:woo_yeon_hi/model/enums.dart';
+import 'package:woo_yeon_hi/provider/login_register_provider.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/style/text_style.dart';
 
@@ -13,18 +14,18 @@ import '../../dialogs.dart';
 import '../../provider/diary_provider.dart';
 import '../../utils.dart';
 
-class DiaryEditTopAppBar extends StatefulWidget implements PreferredSizeWidget {
-  DiaryEditTopAppBar(this.provider, {super.key});
+class DiaryWriteTopAppBar extends StatefulWidget implements PreferredSizeWidget {
+  DiaryWriteTopAppBar(this.provider, {super.key});
   DiaryEditProvider provider;
 
   @override
-  State<DiaryEditTopAppBar> createState() => _DiaryEditTopAppBarState();
+  State<DiaryWriteTopAppBar> createState() => _DiaryWriteTopAppBarState();
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
-class _DiaryEditTopAppBarState extends State<DiaryEditTopAppBar> {
+class _DiaryWriteTopAppBarState extends State<DiaryWriteTopAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -32,7 +33,7 @@ class _DiaryEditTopAppBarState extends State<DiaryEditTopAppBar> {
       backgroundColor: ColorFamily.cream,
       centerTitle: true,
       title: const Text(
-        "일기작성",
+        "일기 작성",
         style: TextStyleFamily.appBarTitleLightTextStyle,
       ),
       leading: IconButton(
@@ -43,8 +44,8 @@ class _DiaryEditTopAppBarState extends State<DiaryEditTopAppBar> {
               context,
                 "일기 작성을 취소하시겠습니까?",
                 "지금까지 작성된 내용은 삭제됩니다",
-                () => _onCancle_back(context),
-                () => _onConfirm_back(context)
+                () => _onCancleBack(context),
+                () => _onConfirmBack(context)
             );
           } else {
             Navigator.pop(context);
@@ -55,16 +56,22 @@ class _DiaryEditTopAppBarState extends State<DiaryEditTopAppBar> {
       actions: [
         IconButton(
             onPressed: () async {
-              if (widget.provider.checkValid()) {
+              //썸네일이 등록되지 않은 경우
+              if(widget.provider.checkValid()==1) {
+                showBlackToast("썸네일 이미지를 등록해주세요");
+              }
+              //내용이 입력되지 않은 경우
+              else if(widget.provider.checkValid()==2){
+                showBlackToast("제목과 내용을 모두 입력해주세요");
+              }
+              //모든 항목이 정상적으로 입력된 경우
+              else {
                 dialogTitleWithContent(
                     context,
                     "일기를 작성하시겠습니까?",
                     "작성 후 수정 및 삭제를 할 수 없습니다",
-                    () => _onCancle_done(context),
-                    () {_onConfirm_done(context, widget.provider); showPinkSnackBar(context, "연인에게 일기를 전달하였습니다:)");});
-              } else {
-                // 토스트 메시지로 내용 작성 알림
-                showBlackToast("모든 내용을 입력해주세요");
+                    () => _onCancleDone(context),
+                    () {_onConfirmDone(context, widget.provider); showPinkSnackBar(context, "연인에게 일기를 전달하였습니다:)");});
               }
             },
             icon: SvgPicture.asset('lib/assets/icons/done.svg'))
@@ -73,25 +80,25 @@ class _DiaryEditTopAppBarState extends State<DiaryEditTopAppBar> {
   }
 }
 
-void _onCancle_done(BuildContext context) {
+void _onCancleDone(BuildContext context) {
   Navigator.pop(context);
 }
 
-Future<void> _onConfirm_done(BuildContext context, DiaryEditProvider provider) async {
+Future<void> _onConfirmDone(BuildContext context, DiaryEditProvider provider) async {
   Navigator.pop(context); // 다이얼로그 팝
   Navigator.pop(context); // 일기 작성 페이지 팝
 
-  var diary_idx = await getDiarySequence() + 1;
-  var diary_user_idx = 0; // 유저 idx
-  await setDiarySequence(diary_idx);
+  var diaryIdx = await getDiarySequence() + 1;
+  var diaryUserIdx = Provider.of<UserProvider>(context, listen: false).userIdx; // 유저 idx
+  await setDiarySequence(diaryIdx);
   var now = DateTime.now();
-  var today_formatted = dateToString(now);
-  var imageName = "${diary_user_idx}_$now";
+  var todayFormatted = dateToString(now);
+  var imageName = "${diaryUserIdx}_$now";
 
   var diary = Diary(
-      diaryIdx: diary_idx,
-      diaryUserIdx: diary_user_idx, // 임시
-      diaryDate: today_formatted,
+      diaryIdx: diaryIdx,
+      diaryUserIdx: diaryUserIdx, // 임시
+      diaryDate: todayFormatted,
       diaryWeather: provider.weatherType,
       diaryImage: imageName,
       diaryTitle: provider.titleTextEditController.text,
@@ -103,11 +110,11 @@ Future<void> _onConfirm_done(BuildContext context, DiaryEditProvider provider) a
   provider.providerNotify();
 }
 
-void _onCancle_back(BuildContext context){
+void _onCancleBack(BuildContext context){
   Navigator.pop(context);
 }
 
-void _onConfirm_back(BuildContext context){
+void _onConfirmBack(BuildContext context){
   Navigator.pop(context); // 다이얼로그 팝
   Navigator.pop(context); // 일기 작성 페이지 팝
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/dao/diary_dao.dart';
+import 'package:woo_yeon_hi/provider/login_register_provider.dart';
 
 import '../model/diary_model.dart';
 import '../utils.dart';
@@ -19,6 +21,10 @@ class DiaryProvider extends ChangeNotifier{
 
   int? _diaryUserIdx;
   List<Diary> _diaryData = [];
+  Future<List<Diary>>? diaryFuture;
+
+  bool _isLoading = false;
+  String _errorMessage = '';
 
   List<String> get editorType => _editorType;
   String get startPeriod => _startPeriod;
@@ -32,10 +38,19 @@ class DiaryProvider extends ChangeNotifier{
   List<Diary> get diaryData => _diaryData;
   int? get diaryUserIdx => _diaryUserIdx;
 
-  Future<List<Diary>> getDiary(int user_idx) async {
+
+  bool get isLoading => _isLoading;
+  String get errorMessage => _errorMessage;
+  bool get hasError => _errorMessage.isNotEmpty;
+
+
+  Future<List<Diary>> getDiary(BuildContext context) async {
+    print("Fetching diary data..."); // 호출 여부 확인용
+
     _diaryData.clear();
 
-    int? user_idx = _diaryUserIdx;
+    int? user_idx = Provider.of<UserProvider>(context, listen: false).userIdx;
+    int lover_idx = Provider.of<UserProvider>(context, listen: false).loverIdx;
 
     int filter_editor = _isSelected_editor.indexWhere((element) => element);
     int filter_sort = _isSelected_sort.indexWhere((element) => element);
@@ -43,25 +58,43 @@ class DiaryProvider extends ChangeNotifier{
     String filter_start = _startPeriod;
     String filter_end = _endPeriod;
 
-    if(filter_start.isNotEmpty && filter_end.isNotEmpty){
-      DateTime pd1 = stringToDate(_startPeriod);
-      DateTime pd2 = stringToDate(_endPeriod);
-      if (pd1.compareTo(pd2) < 0) {
-        filter_start = _startPeriod;
-        filter_end = _endPeriod;
-      }else{
-        filter_start = _endPeriod;
-        filter_end = _startPeriod;
+    try {
+      if (filter_start.isNotEmpty && filter_end.isNotEmpty) {
+        DateTime pd1 = stringToDate(_startPeriod);
+        DateTime pd2 = stringToDate(_endPeriod);
+        if (pd1.compareTo(pd2) < 0) {
+          filter_start = _startPeriod;
+          filter_end = _endPeriod;
+        } else {
+          filter_start = _endPeriod;
+          filter_end = _startPeriod;
+        }
       }
+
+      var mapList = await getDiaryData(
+          user_idx, lover_idx, filter_editor, filter_sort, filter_start,
+          filter_end);
+
+      for (var mapData in mapList) {
+        _diaryData.add(Diary.fromData(mapData));
+      }
+
+      return _diaryData;
+
+    } catch(error) {
+      _isLoading = false;
+      _errorMessage = '데이터를 불러오는 중 문제가 발생했습니다.';
+      notifyListeners();
+
+      return [];
     }
+  }
 
-    var mapList = await getDiaryData(user_idx, filter_editor, filter_sort, filter_start, filter_end);
-
-    for(var mapData in mapList){
-      _diaryData.add(Diary.fromData(mapData));
-    }
-
-    return _diaryData;
+  Future<void> fetchDiaries(BuildContext context) async {
+    // 데이터 가져오기
+    diaryFuture = getDiary(context);
+    _diaryData = await diaryFuture!;
+    notifyListeners();
   }
 
   void setUserIdx(int? idx){
@@ -140,11 +173,17 @@ class DiaryEditProvider extends ChangeNotifier{
   }
 
   // 제목과 내용, 이미지가 다 작성되었는지 검사합니다.
-  bool checkValid(){
-    if(titleTextEditController.text.isNotEmpty && contentTextEditController.text.isNotEmpty && image != null){
-      return true;
-    }else{
-      return false;
+  int checkValid(){
+    //썸네일 체크
+    if(image == null){
+      return 1;
+    }
+    //내용 체크
+    else if(titleTextEditController.text.isEmpty || contentTextEditController.text.isEmpty){
+      return 2;
+    }
+    else{
+      return 0;
     }
   }
 

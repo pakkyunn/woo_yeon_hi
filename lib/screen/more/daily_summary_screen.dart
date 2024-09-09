@@ -39,14 +39,8 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
     }
     var datePlanProvider = Provider.of<FootPrintSlidableProvider>(context);
 
-    var deviceWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
-    var deviceHeight = MediaQuery
-        .of(context)
-        .size
-        .height;
+    var deviceWidth = MediaQuery.of(context).size.width;
+    var deviceHeight = MediaQuery.of(context).size.height;
 
     /// 로딩관련 기능이 들어간 후, 버벅이는 듯한 느낌이 듦. 데이터를 완전히 연동한 후에 어떤 방식이 나을지 결정.
     // return FutureBuilder(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/dao/diary_dao.dart';
 import 'package:woo_yeon_hi/model/diary_model.dart';
+import 'package:woo_yeon_hi/provider/login_register_provider.dart';
 import 'package:woo_yeon_hi/screen/diary/diary_detail_screen.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/style/text_style.dart';
@@ -14,6 +16,7 @@ class DiaryUncheckedScreen extends StatefulWidget {
 }
 
 class _DiaryUncheckedScreenState extends State<DiaryUncheckedScreen> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,14 +35,15 @@ class _DiaryUncheckedScreenState extends State<DiaryUncheckedScreen> {
             children: [
               SizedBox(
                 width: MediaQuery.of(context).size.width - 40,
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("우연녀", style: TextStyleFamily.appBarTitleBoldTextStyle,),
-                    Text("님이",style: TextStyleFamily.normalTextStyle,)
+                    Text(Provider.of<UserProvider>(context, listen: false).loverNickname, style: TextStyleFamily.appBarTitleBoldTextStyle,),
+                    Text(" 님이",style: TextStyleFamily.normalTextStyle,)
                   ],
                 ),
               ),
+              SizedBox(height: 10),
               const Text("작성한 일기가 도착했습니다!", style: TextStyleFamily.normalTextStyle,),
               const SizedBox(height: 70,),
               Image.asset('lib/assets/images/diary_arrived.gif'),

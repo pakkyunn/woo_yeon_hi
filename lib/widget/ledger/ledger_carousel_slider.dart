@@ -54,7 +54,7 @@ class _LedgerCarouselSliderState extends State<LedgerCarouselSlider> {
                               )
                             ]
                         ),
-                        child: provider.isLoading ? Center(child: CircularProgressIndicator()) : Row(
+                        child: provider.isLoading ? Center(child: CircularProgressIndicator(color: ColorFamily.pink,)) : Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             if(item.containsKey('texts1'))

@@ -15,26 +15,30 @@ class DiaryDetailAlbum extends StatefulWidget {
 class _DiaryDetailAlbumState extends State<DiaryDetailAlbum> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-        width: 110,
-        height: 110,
-        color: ColorFamily.white,
-        child: FutureBuilder(
-          future: getDiaryImage(widget.diary.diaryImage),
-          builder: (context, snapshot) {
-            if (snapshot.hasData == false) {
-              return const SizedBox();
-            } else if (snapshot.hasError) {
-              return const Text(
-                "network error",
-                style: TextStyleFamily.normalTextStyle,
-              );
-            } else {
-              return ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: snapshot.data);
-            }
-          },
+    return SizedBox(
+        width: 120,
+        height: 120,
+        child: Card(
+          color: ColorFamily.white,
+          surfaceTintColor: ColorFamily.white,
+          elevation: 1,
+          child: FutureBuilder(
+            future: getDiaryImage(widget.diary.diaryImage),
+            builder: (context, snapshot) {
+              if (snapshot.hasData == false) {
+                return const SizedBox();
+              } else if (snapshot.hasError) {
+                return const Text(
+                  "network error",
+                  style: TextStyleFamily.normalTextStyle,
+                );
+              } else {
+                return ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: snapshot.data);
+              }
+            },
+          ),
         ));
   }
 }

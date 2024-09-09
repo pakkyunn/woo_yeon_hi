@@ -9,6 +9,8 @@ import '../../utils.dart';
 import 'diary_calendar_bottom_sheet.dart';
 
 void showFilterBottomSheet(DiaryProvider provider, int user_idx, int lover_idx, {required BuildContext context}) {
+  var deviceWidth = MediaQuery.of(context).size.width;
+
   if (provider.filterList.first.isEmpty) {
     provider.setSelected_editor([true, false, false]);
   }
@@ -37,18 +39,42 @@ void showFilterBottomSheet(DiaryProvider provider, int user_idx, int lover_idx, 
           return Wrap(
             children: [
               SizedBox(
-                width: MediaQuery.of(context).size.width,
+                width: deviceWidth,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(20,0,20,30),
                   child: Column(
                     children: [
-                      const Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          const Text(
                             "작성자 유형",
                             style: TextStyleFamily.appBarTitleBoldTextStyle,
                           ),
+                          InkWell(
+                            splashColor: Colors.transparent,
+                            onTap: () {
+                              bottomState(() {
+                                provider.setSelected_editor(
+                                    List.generate(3, (index) => false));
+                                provider.updateSelected_editor(
+                                    0, !provider.isSelected_editor[0]);
+                                provider.setStartControllerText("");
+                                provider.setEndControllerText("");
+                                provider.setSelected_sort(
+                                    List.generate(2, (index) => false));
+                                provider.updateSelected_sort(
+                                    0, !provider.isSelected_sort[0]);
+                              });
+                            },
+                            child: Row(
+                              children: [
+                                const Text("전체 초기화", style: TextStyleFamily.hintTextStyle),
+                                SvgPicture.asset(
+                                    'lib/assets/icons/refresh.svg')
+                              ],
+                            ),
+                          )
                         ],
                       ),
                       const SizedBox(
@@ -93,10 +119,7 @@ void showFilterBottomSheet(DiaryProvider provider, int user_idx, int lover_idx, 
                                           : ColorFamily.gray,
                                     ),
                                     borderRadius: BorderRadius.circular(20)),
-                                width: (MediaQuery.of(context).size.width -
-                                    40 -
-                                    30) /
-                                    3,
+                                width: (deviceWidth - 40 - 30) / 3,
                                 height: 40,
                                 alignment: Alignment.center,
                                 child: Text(
@@ -121,10 +144,7 @@ void showFilterBottomSheet(DiaryProvider provider, int user_idx, int lover_idx, 
                                           : ColorFamily.gray,
                                     ),
                                     borderRadius: BorderRadius.circular(20)),
-                                width: (MediaQuery.of(context).size.width -
-                                    40 -
-                                    30) /
-                                    3,
+                                width: (deviceWidth - 40 - 30) / 3,
                                 height: 40,
                                 alignment: Alignment.center,
                                 child: Text(
@@ -149,10 +169,7 @@ void showFilterBottomSheet(DiaryProvider provider, int user_idx, int lover_idx, 
                                           : ColorFamily.gray,
                                     ),
                                     borderRadius: BorderRadius.circular(20)),
-                                width: (MediaQuery.of(context).size.width -
-                                    40 -
-                                    30) /
-                                    3,
+                                width: (deviceWidth - 40 - 30) / 3,
                                 height: 40,
                                 alignment: Alignment.center,
                                 child: Text(
@@ -189,7 +206,7 @@ void showFilterBottomSheet(DiaryProvider provider, int user_idx, int lover_idx, 
                             Padding(
                               padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
                               child: SizedBox(
-                                width: (MediaQuery.of(context).size.width - 40 - 20 - 20) /2,
+                                width: (deviceWidth - 40 - 20 - 20) / 2,
                                 child: Padding(
                                   padding: const EdgeInsets.only(bottom: 5),
                                   child: Row(
@@ -234,11 +251,7 @@ void showFilterBottomSheet(DiaryProvider provider, int user_idx, int lover_idx, 
                             Padding(
                               padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
                               child: SizedBox(
-                                width: (MediaQuery.of(context).size.width -
-                                    40 -
-                                    20 -
-                                    20) /
-                                    2,
+                                width: (deviceWidth - 40 - 20 - 20) / 2,
                                 child: Padding(
                                   padding: const EdgeInsets.only(bottom: 5),
                                   child: Row(
@@ -322,10 +335,7 @@ void showFilterBottomSheet(DiaryProvider provider, int user_idx, int lover_idx, 
                                           : ColorFamily.gray,
                                     ),
                                     borderRadius: BorderRadius.circular(20)),
-                                width: (MediaQuery.of(context).size.width -
-                                    40 -
-                                    20) /
-                                    2,
+                                width: (deviceWidth - 40 - 20) / 2,
                                 height: 40,
                                 alignment: Alignment.center,
                                 child: Text(
@@ -350,10 +360,7 @@ void showFilterBottomSheet(DiaryProvider provider, int user_idx, int lover_idx, 
                                           : ColorFamily.gray,
                                     ),
                                     borderRadius: BorderRadius.circular(20)),
-                                width: (MediaQuery.of(context).size.width -
-                                    40 -
-                                    20) /
-                                    2,
+                                width: (deviceWidth - 40 - 20) / 2,
                                 height: 40,
                                 alignment: Alignment.center,
                                 child: Text(
@@ -371,9 +378,8 @@ void showFilterBottomSheet(DiaryProvider provider, int user_idx, int lover_idx, 
                       const SizedBox(
                         height: 20,
                       ),
-                      // 확인 버튼
                       SizedBox(
-                        width: MediaQuery.of(context).size.width,
+                        width: deviceWidth - 45,
                         height: 40,
                         child: ElevatedButton(
                             style: ElevatedButton.styleFrom(

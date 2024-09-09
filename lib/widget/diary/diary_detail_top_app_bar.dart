@@ -22,10 +22,10 @@ class _DiaryDetailTopAppBarState extends State<DiaryDetailTopAppBar> {
       surfaceTintColor: ColorFamily.cream,
       backgroundColor: ColorFamily.cream,
       centerTitle: true,
-      title: const Text(
-          "일기",
-        style: TextStyleFamily.appBarTitleLightTextStyle,
-      ),
+      // title: const Text(
+      //     "",
+      //   style: TextStyleFamily.appBarTitleLightTextStyle,
+      // ),
       leading: IconButton(
         onPressed: () {
           Navigator.pop(context);

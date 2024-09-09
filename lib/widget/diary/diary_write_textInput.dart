@@ -7,15 +7,15 @@ import 'package:woo_yeon_hi/style/font.dart';
 import '../../style/color.dart';
 import '../../style/text_style.dart';
 
-class DiaryEditTextInput extends StatefulWidget {
-  DiaryEditTextInput(this.provider, {super.key});
+class DiaryWriteTextInput extends StatefulWidget {
+  DiaryWriteTextInput(this.provider, {super.key});
   DiaryEditProvider provider;
 
   @override
-  State<DiaryEditTextInput> createState() => _DiaryEditTextInputState();
+  State<DiaryWriteTextInput> createState() => _DiaryWriteTextInputState();
 }
 
-class _DiaryEditTextInputState extends State<DiaryEditTextInput> {
+class _DiaryWriteTextInputState extends State<DiaryWriteTextInput> {
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +25,13 @@ class _DiaryEditTextInputState extends State<DiaryEditTextInput> {
       child: Card(
         color: ColorFamily.white,
         surfaceTintColor: ColorFamily.white,
-        elevation: 4,
+        elevation: 2,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             // 제목
             Padding(
-                padding: const EdgeInsets.fromLTRB(20, 30, 20, 0),
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
                 child: TextField(
                   maxLines: 1,
                   keyboardType: TextInputType.text,
@@ -40,7 +40,7 @@ class _DiaryEditTextInputState extends State<DiaryEditTextInput> {
                   cursorColor: ColorFamily.black,
                   onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
                   decoration: const InputDecoration(
-                    hintText: '제목을 입력해주세요.',
+                    hintText: '제목',
                     hintStyle: TextStyleFamily.hintTitleTextStyle,
                     border: InputBorder.none,
                     counter: SizedBox()
@@ -63,7 +63,7 @@ class _DiaryEditTextInputState extends State<DiaryEditTextInput> {
                   scrollPhysics: const NeverScrollableScrollPhysics(),
                   onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
                   decoration: const InputDecoration(
-                    hintText: '내용을 입력해주세요.',
+                    hintText: '내용을 작성해주세요',
                     hintStyle: TextStyleFamily.hintTextStyle,
                     border: InputBorder.none,
 

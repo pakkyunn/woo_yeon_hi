@@ -5,7 +5,7 @@ import 'package:woo_yeon_hi/style/color.dart';
 import '../../widget/diary/diary_detail_album.dart';
 import '../../widget/diary/diary_detail_content.dart';
 import '../../widget/diary/diary_detail_top_app_bar.dart';
-import '../../widget/diary/diary_detail_weather.dart';
+import '../../widget/diary/diary_detail_info.dart';
 
 class DiaryDetailScreen extends StatefulWidget {
   DiaryDetailScreen(this.diary, {super.key});
@@ -23,16 +23,16 @@ class _DiaryDetailScreenState extends State<DiaryDetailScreen> {
       backgroundColor: ColorFamily.cream,
       appBar: const DiaryDetailTopAppBar(),
       body: Padding(
-          padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.fromLTRB(20,0,20,20),
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.fromLTRB(20,0,10,0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // 날짜, 쓴 사람, 날씨
-                  DiaryDetailWeather(widget.diary),
+                  // 날짜, 쓴 사람
+                  DiaryDetailInfo(widget.diary),
                   // 썸네일
                   DiaryDetailAlbum(widget.diary)
                 ],

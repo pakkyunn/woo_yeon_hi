@@ -5,19 +5,19 @@ import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 
 import '../../provider/diary_provider.dart';
-import '../../widget/diary/diary_edit_album.dart';
-import '../../widget/diary/diary_edit_textInput.dart';
-import '../../widget/diary/diary_edit_top_app_bar.dart';
-import '../../widget/diary/diary_edit_weather.dart';
+import '../../widget/diary/diary_write_album.dart';
+import '../../widget/diary/diary_write_textInput.dart';
+import '../../widget/diary/diary_write_top_app_bar.dart';
+import '../../widget/diary/diary_write_info.dart';
 
-class DiaryEditScreen extends StatefulWidget {
-  const DiaryEditScreen({super.key});
+class DiaryWriteScreen extends StatefulWidget {
+  const DiaryWriteScreen({super.key});
 
   @override
-  State<DiaryEditScreen> createState() => _DiaryEditScreenState();
+  State<DiaryWriteScreen> createState() => _DiaryWriteScreenState();
 }
 
-class _DiaryEditScreenState extends State<DiaryEditScreen> {
+class _DiaryWriteScreenState extends State<DiaryWriteScreen> {
 
   @override
   Widget build(BuildContext context) {
@@ -27,19 +27,22 @@ class _DiaryEditScreenState extends State<DiaryEditScreen> {
         builder: (context, provider, _){
           return Scaffold(
             backgroundColor: ColorFamily.cream,
-            appBar: DiaryEditTopAppBar(provider),
+            appBar: DiaryWriteTopAppBar(provider),
             body: Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.fromLTRB(20,0,20,20),
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // 날짜, 쓴 사람, 날씨
-                      DiaryEditWeather(provider),
-                      // 썸네일 등록
-                      DiaryEditAlbum(provider)
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20,0,10,0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // 날짜, 쓴 사람
+                        DiaryWriteInfo(provider),
+                        // 썸네일 등록
+                        DiaryWriteAlbum(provider)
+                      ],
+                    ),
                   ),
                   const SizedBox(
                     height: 20,
@@ -54,7 +57,7 @@ class _DiaryEditScreenState extends State<DiaryEditScreen> {
                                     minHeight: constraints.maxHeight
                                 ),
                                 child: IntrinsicHeight(
-                                  child: DiaryEditTextInput(provider),
+                                  child: DiaryWriteTextInput(provider),
                                 ),
                               ),
                             );
