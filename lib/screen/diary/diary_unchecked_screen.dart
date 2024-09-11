@@ -7,6 +7,8 @@ import 'package:woo_yeon_hi/screen/diary/diary_detail_screen.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/style/text_style.dart';
 
+import '../../provider/tab_page_index_provider.dart';
+
 class DiaryUncheckedScreen extends StatefulWidget {
   DiaryUncheckedScreen(this.unCheckedDiary, {super.key});
   Diary unCheckedDiary;
@@ -26,6 +28,8 @@ class _DiaryUncheckedScreenState extends State<DiaryUncheckedScreen> {
         highlightColor: Colors.transparent,
         onTap: (){
           readDiary(widget.unCheckedDiary);
+          //TODO 바텀네비게이션 탭이동 후 화면이동
+          Provider.of<TabPageIndexProvider>(context, listen: false).setCurrentPageIndex(0);
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DiaryDetailScreen(widget.unCheckedDiary)));
         },
         child: Padding(

@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/screen/main_screen_container.dart';
 import '../dao/user_dao.dart';
 import '../provider/login_register_provider.dart';
+import '../provider/tab_page_index_provider.dart';
 import '../style/color.dart';
 import '../widget/main_bottom_navigation_bar.dart';
 
@@ -50,22 +52,25 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
+  //알림 탭 동작
   Future<void> _onDidReceiveNotificationResponse(
       NotificationResponse response) async {
     if (response.payload != null) {
-      switch (response.payload) {
-        case 'document1':
-          Navigator.of(context)
-              .pushNamed('/detail1', arguments: response.payload);
-          break;
-        case 'document2':
-          Navigator.of(context)
-              .pushNamed('/detail2', arguments: response.payload);
-          break;
-        default:
-          Navigator.of(context).pushNamed('/');
-          break;
-      }
+      Provider.of<TabPageIndexProvider>(context, listen: false).setCurrentPageIndex(0);
+      Provider.of<TabPageIndexProvider>(context, listen: false).changeTab(0);
+      // switch (response.payload) {
+      //   case 'document1':
+      //     Navigator.of(context)
+      //         .pushNamed('/detail1', arguments: response.payload);
+      //     break;
+      //   case 'document2':
+      //     Navigator.of(context)
+      //         .pushNamed('/detail2', arguments: response.payload);
+      //     break;
+      //   default:
+      //     Navigator.of(context).pushNamed('/');
+      //     break;
+      // }
     }
   }
 
@@ -86,7 +91,7 @@ class _MainScreenState extends State<MainScreen> {
       if (notificationIsAllowed) {
         for (var change in snapshot.docChanges) {
           if (change.type == DocumentChangeType.added) {
-            _checkDocumentChanges(change.doc, 'DiaryData');
+            _checkDocumentChanges(change.doc, 'DiaryData', context);
           }
         }
       }
@@ -100,7 +105,7 @@ class _MainScreenState extends State<MainScreen> {
       if (snapshot.docChanges.isNotEmpty && notificationIsAllowed) {
         for (var change in snapshot.docChanges) {
           if (change.type == DocumentChangeType.added) {
-            _checkDocumentChanges(change.doc, 'HistoryData');
+            _checkDocumentChanges(change.doc, 'HistoryData', context);
           }
         }
       }
@@ -114,7 +119,7 @@ class _MainScreenState extends State<MainScreen> {
       if (snapshot.docChanges.isNotEmpty && notificationIsAllowed) {
         for (var change in snapshot.docChanges) {
           if (change.type == DocumentChangeType.added) {
-            _checkDocumentChanges(change.doc, 'LedgerData');
+            _checkDocumentChanges(change.doc, 'LedgerData', context);
           }
         }
       }
@@ -128,7 +133,7 @@ class _MainScreenState extends State<MainScreen> {
       if (snapshot.docChanges.isNotEmpty && notificationIsAllowed) {
         for (var change in snapshot.docChanges) {
           if (change.type == DocumentChangeType.added) {
-            _checkDocumentChanges(change.doc, 'PlanData');
+            _checkDocumentChanges(change.doc, 'PlanData', context);
           }
         }
       }
@@ -169,15 +174,15 @@ class _MainScreenState extends State<MainScreen> {
               updatedData!.containsKey('user_profile_image')) {
             String loverProfileImagePath = updatedData['user_profile_image'];
             Image loverProfileImage = loverProfileImagePath == "lib/assets/images/default_profile.png"
-            ? Image.asset("lib/assets/images/default_profile.png")
-            : await getProfileImage(loverProfileImagePath);
+                ? Image.asset("lib/assets/images/default_profile.png")
+                : await getProfileImage(loverProfileImagePath);
 
             // Provider를 통해 상태 업데이트
             userProvider.setLoverProfileImagePath(loverProfileImagePath);
             userProvider.setLoverProfileImage(loverProfileImage);
+          }
         }
-      }
-    }});
+      }});
   }
 }
 
@@ -186,15 +191,16 @@ Future<void> _showNotification(String title, String body) async {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
 
-  const AndroidNotificationDetails androidPlatformChannelSpecifics =
-  AndroidNotificationDetails(
-    'your_channel_id',
-    'your_channel_name',
+  AndroidNotificationDetails androidPlatformChannelSpecifics =
+  const AndroidNotificationDetails(
+    '우연히 알림 채널',
+    '우연히',
+    icon: 'app_icon',
     importance: Importance.max,
     priority: Priority.high,
     showWhen: false,
   );
-  const NotificationDetails platformChannelSpecifics =
+  NotificationDetails platformChannelSpecifics =
   NotificationDetails(android: androidPlatformChannelSpecifics);
   int notificationId =
       DateTime
@@ -209,23 +215,34 @@ Future<void> _showNotification(String title, String body) async {
   );
 }
 
-void _checkDocumentChanges(DocumentSnapshot document, String collectionName) {
+void _checkDocumentChanges(DocumentSnapshot document, String collectionName, BuildContext context) {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final data = document.data() as Map<String, dynamic>;
+  bool notificationAllow = Provider.of<UserProvider>(context, listen: false).notificationAllow;
 
   // 문서에 'notified' 필드가 없거나 false로 설정되어 있는 경우에만 알림 전송
   if (data['notified'] == null || data['notified'] == false) {
     switch (collectionName) {
       case 'DiaryData':
-        _showNotification("우연히 알림", "연인이 작성한 일기가 도착했습니다!");
+        notificationAllow == true
+            ? _showNotification("우연히 알림", "연인이 작성한 일기가 도착했습니다!")
+            : null;
       case 'HistoryData':
-        _showNotification("우연히 알림", "새로운 히스토리가 생성되었습니다!");
+        notificationAllow == true
+            ? _showNotification("우연히 알림", "새로운 히스토리가 생성되었습니다!")
+            : null;
       case 'LedgerData':
-        _showNotification("우연히 알림", "가계부가 업데이트되었습니다!");
+        notificationAllow == true
+            ? _showNotification("우연히 알림", "가계부가 업데이트되었습니다!")
+            : null;
       case 'PlanData':
-        _showNotification("우연히 알림", "새로운 데이트플랜이 등록되었습니다!");
+        notificationAllow == true
+            ? _showNotification("우연히 알림", "새로운 데이트플랜이 등록되었습니다!")
+            : null;
       case 'ScheduleData':
-        _showNotification("우연히 알림", "새로운 일정이 등록되었습니다!");
+        notificationAllow == true
+            ? _showNotification("우연히 알림", "새로운 일정이 등록되었습니다!")
+            : null;
     }
     // 중복알림 방지를 위해, 알림을 보낸 후 'notified' 필드를 true로 업데이트
     firestore
