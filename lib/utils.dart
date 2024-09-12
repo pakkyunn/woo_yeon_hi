@@ -222,7 +222,7 @@ Future<bool> checkAndRequestNotificationPermission(BuildContext context, Functio
       return false;
     }
   } else if (settings.authorizationStatus == AuthorizationStatus.denied) {
-    showDialogFunction(context);
+    showDialogFunction();
     return false;
   }
 

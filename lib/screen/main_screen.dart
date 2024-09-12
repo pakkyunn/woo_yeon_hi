@@ -194,8 +194,8 @@ Future<void> _showNotification(String title, String body) async {
   AndroidNotificationDetails androidPlatformChannelSpecifics =
   const AndroidNotificationDetails(
     '우연히 알림 채널',
-    '우연히',
-    icon: 'app_icon',
+    '앱 활동 알림',
+    icon: '@mipmap/launcher_icon',
     importance: Importance.max,
     priority: Priority.high,
     showWhen: false,

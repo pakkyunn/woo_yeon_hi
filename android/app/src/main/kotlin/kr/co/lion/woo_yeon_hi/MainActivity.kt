@@ -44,13 +44,12 @@ class MainActivity: FlutterFragmentActivity() {
 
         // 알림 채널 생성 코드 추가
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channelName = "Fixed Notification Channel"
+            val channelName = "앱 알림 및 상단바 설정"
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(CHANNEL_ID, channelName, importance).apply {
                 enableLights(true)
                 lightColor = Color.RED
                 enableVibration(true)
-                description = "This channel is used for fixed notifications"
             }
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -127,7 +126,6 @@ class MainActivity: FlutterFragmentActivity() {
                 enableLights(true)
                 lightColor = Color.RED
                 enableVibration(true)
-                description = "This channel is used for fixed notifications"
             }
             notificationManager.createNotificationChannel(channel)
         }

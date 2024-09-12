@@ -25,9 +25,12 @@ import 'package:home_widget/home_widget.dart';
 import 'dao/more_dao.dart';
 import 'firebase_options.dart';
 
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env"); // .env 환경변수 파일 로드
+
+  // .env 환경변수 파일 로드
+  await dotenv.load(fileName: ".env");
   KakaoSdk.init(
     nativeAppKey: dotenv.env['KAKAO_NATIVE_APP_KEY'],
   );
