@@ -8,6 +8,8 @@ import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/style/font.dart';
 import 'package:woo_yeon_hi/widget/ledger/ledger_modal_bottom_sheet.dart';
 
+import '../../style/text_style.dart';
+
 class LedgerListView extends StatefulWidget {
   //const LedgerListView({super.key});
   List<Ledger> selectedLedgerDate;
@@ -30,7 +32,8 @@ class _LedgerListViewState extends State<LedgerListView> {
   String formatLedgerDate(String ledgerDate) {
     try {
       DateTime dateTime = DateTime.parse(ledgerDate);
-      String formattedDate = DateFormat('yyyy. M. d.(E) kk:mm', 'ko').format(dateTime);
+      String formattedDate =
+          DateFormat('yyyy. M. d.(E) kk:mm', 'ko').format(dateTime);
       return formattedDate;
     } catch (e) {
       // 유효하지 않은 날짜 형식일 경우
@@ -65,18 +68,25 @@ class _LedgerListViewState extends State<LedgerListView> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-        child: ListView.builder(
-          itemCount: widget.selectedLedgerDate.length,
-          itemBuilder: (context, index) {
-            final ledger = widget.selectedLedgerDate[index];
-            return makeListItem(ledger);
-          },
-        ),
+      child: widget.selectedLedgerDate.isEmpty
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+              Container(margin: EdgeInsets.only(bottom: 100), child: Text("내역 없음", style: TextStyleFamily.smallTitleTextStyle))
+            ])
+          : ListView.builder(
+              itemCount: widget.selectedLedgerDate.length,
+              itemBuilder: (context, index) {
+                final ledger = widget.selectedLedgerDate[index];
+                return makeListItem(ledger);
+              },
+            ),
     );
   }
 
   // 리스트뷰 항목 하나를 구성
-  Widget makeListItem(Ledger ledger){
+  Widget makeListItem(Ledger ledger) {
     return Column(
       children: [
         Row(
@@ -84,14 +94,21 @@ class _LedgerListViewState extends State<LedgerListView> {
           children: [
             Row(
               children: [
-                SvgPicture.asset(getIconPath(ledger.ledgerCategory), width: 24, height: 24),
+                SvgPicture.asset(getIconPath(ledger.ledgerCategory),
+                    width: 24, height: 24),
                 const SizedBox(width: 10),
-                Text(ledger.ledgerTitle, style: const TextStyle(fontSize: 14, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight)),
+                Text(ledger.ledgerTitle,
+                    style: const TextStyle(
+                        fontSize: 14,
+                        color: ColorFamily.black,
+                        fontFamily: FontFamily.mapleStoryLight)),
               ],
             ),
             Row(
               children: [
                 InkWell(
+                  splashColor: Colors.transparent,
+                  splashFactory: NoSplash.splashFactory,
                   onTap: () {
                     showModalBottomSheet(
                       context: context,
@@ -104,7 +121,8 @@ class _LedgerListViewState extends State<LedgerListView> {
                   },
                   child: Container(
                     padding: const EdgeInsets.all(10),
-                    child: SvgPicture.asset('lib/assets/icons/horizontal_more.svg'),
+                    child: SvgPicture.asset(
+                        'lib/assets/icons/horizontal_more.svg'),
                   ),
                 ),
               ],
@@ -116,8 +134,16 @@ class _LedgerListViewState extends State<LedgerListView> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('일시', style: TextStyle(fontSize: 14, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight)),
-            Text(formatLedgerDate(ledger.ledgerDate), style: const TextStyle(fontSize: 14, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight)),
+            const Text('일시',
+                style: TextStyle(
+                    fontSize: 14,
+                    color: ColorFamily.black,
+                    fontFamily: FontFamily.mapleStoryLight)),
+            Text(formatLedgerDate(ledger.ledgerDate),
+                style: const TextStyle(
+                    fontSize: 14,
+                    color: ColorFamily.black,
+                    fontFamily: FontFamily.mapleStoryLight)),
           ],
         ),
         const SizedBox(height: 15),
@@ -125,8 +151,17 @@ class _LedgerListViewState extends State<LedgerListView> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('금액', style: TextStyle(fontSize: 14, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight)),
-            Text('${ledger.ledgerType.type == 0 ? '-' : '+'}${formatNumber(ledger.ledgerAmount)}원', style: const TextStyle(fontSize: 14, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight)),
+            const Text('금액',
+                style: TextStyle(
+                    fontSize: 14,
+                    color: ColorFamily.black,
+                    fontFamily: FontFamily.mapleStoryLight)),
+            Text(
+                '${ledger.ledgerType.type == 0 ? '-' : '+'}${formatNumber(ledger.ledgerAmount)}원',
+                style: const TextStyle(
+                    fontSize: 14,
+                    color: ColorFamily.black,
+                    fontFamily: FontFamily.mapleStoryLight)),
           ],
         ),
         const SizedBox(height: 15),
@@ -134,8 +169,16 @@ class _LedgerListViewState extends State<LedgerListView> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('메모', style: TextStyle(fontSize: 14, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight)),
-            Text(ledger.ledgerMemo, style: const TextStyle(fontSize: 14, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight)),
+            const Text('메모',
+                style: TextStyle(
+                    fontSize: 14,
+                    color: ColorFamily.black,
+                    fontFamily: FontFamily.mapleStoryLight)),
+            Text(ledger.ledgerMemo,
+                style: const TextStyle(
+                    fontSize: 14,
+                    color: ColorFamily.black,
+                    fontFamily: FontFamily.mapleStoryLight)),
           ],
         ),
         const SizedBox(height: 15),

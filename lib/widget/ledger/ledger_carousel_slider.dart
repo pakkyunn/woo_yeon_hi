@@ -8,6 +8,8 @@ import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/style/font.dart';
 import 'package:woo_yeon_hi/style/text_style.dart';
 
+import '../../screen/ledger/ledger_detail_screen.dart';
+
 class LedgerCarouselSlider extends StatefulWidget {
   const LedgerCarouselSlider({super.key});
 
@@ -19,7 +21,6 @@ class _LedgerCarouselSliderState extends State<LedgerCarouselSlider> {
 
   @override
   Widget build(BuildContext context) {
-
     return Consumer<LedgerProvider>(
         builder: (context, provider, child) {
           return Stack(
@@ -85,13 +86,15 @@ class _LedgerCarouselSliderState extends State<LedgerCarouselSlider> {
                                   //alignment: Alignment.center
                                 ),
                               ),
-                            if (item.containsKey('icon') && !item.containsKey('image'))
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(width: 64, child: SvgPicture.asset(item['icon'], width: 24, height: 24)),
-                                ],
-                              ),
+                            // if (item.containsKey('icon') && !item.containsKey('image'))
+                            //   Column(
+                            //     mainAxisAlignment: MainAxisAlignment.center,
+                            //     children: [
+                            //       InkWell(
+                            //           onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => LedgerDetailScreen())),
+                            //           child: SizedBox(width: 64, child: SvgPicture.asset(item['icon'], width: 24, height: 24))),
+                            //     ],
+                            //   ),
                           ],
                         ),
                       ),

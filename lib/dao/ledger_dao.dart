@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:woo_yeon_hi/model/enums.dart';
 import 'package:woo_yeon_hi/model/ledger_model.dart';
 
+import '../utils.dart';
+
 class LedgerDao{
 
   // 가계부 시퀀스값 가져오기
@@ -85,5 +87,18 @@ class LedgerDao{
         .where('ledger_date', isLessThan: '$yearMonth-32T00:00:00.000')
         .get();
     return querySnapshot.docs.map((doc) => Ledger.fromMap(doc.data() as Map<String, dynamic>)).toList();
+  }
+}
+
+Future<bool> isLedgerExistOnDate(DateTime date) async {
+  var stringDate = dateToString(date);
+  var querySnapshot = await FirebaseFirestore.instance
+      .collection('Ledger')
+      .where('ledger_date', isEqualTo: stringDate)
+      .get();
+  if (querySnapshot.docs.isNotEmpty) {
+    return true;
+  } else {
+    return false;
   }
 }

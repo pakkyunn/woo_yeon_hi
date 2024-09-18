@@ -181,7 +181,7 @@ Future<void> readDiary(Diary diary) async {
   document.reference.update({'diary_lover_check': true});
 }
 
-Future<bool> isExistOnDate(DateTime date) async {
+Future<bool> isDiaryExistOnDate(DateTime date) async {
   var stringDate = dateToString(date);
   var querySnapshot = await FirebaseFirestore.instance
       .collection('DiaryData')

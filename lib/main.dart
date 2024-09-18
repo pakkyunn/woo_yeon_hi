@@ -21,10 +21,7 @@ import 'package:woo_yeon_hi/screen/login/login_screen.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/utils.dart';
 import 'package:home_widget/home_widget.dart';
-
-import 'dao/more_dao.dart';
 import 'firebase_options.dart';
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

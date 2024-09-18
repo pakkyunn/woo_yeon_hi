@@ -27,13 +27,14 @@ class _LedgerScreenState extends State<LedgerScreen> {
       // 전체 배경색
       body: Container(
         color: ColorFamily.cream,
-        child: Stack(
+        child: const Stack(
           children: [
-            const SingleChildScrollView(
+            SingleChildScrollView(
               child: Column(
                 children: [
-                  // 상단 베너
+                  // 상단 배너
                   LedgerCarouselSlider(),
+                  SizedBox(height: 10),
                   // 캘린더
                   LedgerTableCalendar(),
                 ],
@@ -57,7 +58,6 @@ class _LedgerScreenState extends State<LedgerScreen> {
             //             // FAB의 액션
             //             DateTime today = DateTime.now();
             //             Provider.of<LedgerProvider>(context, listen: false).setSelectedAndFocusedDay(today);
-            //
             //           },
             //           child: const Text('오늘', style: TextStyle(fontSize: 15,fontFamily: FontFamily.mapleStoryLight)),
             //         ),

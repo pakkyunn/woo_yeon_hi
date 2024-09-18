@@ -346,14 +346,8 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
   }
 
   void _showCalendarBottomSheet() {
-    var deviceWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
-    var deviceHeight = MediaQuery
-        .of(context)
-        .size
-        .height;
+    var deviceWidth = MediaQuery.of(context).size.width;
+    var deviceHeight = MediaQuery.of(context).size.height;
 
     DateTime _selectedDay = _summaryDay;
     DateTime _focusedDay = _summaryDay;

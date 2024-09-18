@@ -141,7 +141,7 @@ void showCalendarBottomSheet(BuildContext context, String flag, DiaryProvider pr
                           },
                           markerBuilder: (context, day, events) {
                             return FutureBuilder(
-                                future: isExistOnDate(day),
+                                future: isDiaryExistOnDate(day),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData == false) {
                                     return const SizedBox();
@@ -360,7 +360,7 @@ void showCalendarBottomSheet(BuildContext context, String flag, DiaryProvider pr
                         );
                       }, markerBuilder: (context, day, events) {
                         return FutureBuilder(
-                          future: isExistOnDate(day),
+                          future: isDiaryExistOnDate(day),
                           builder: (context, snapshot){
                             if(snapshot.hasData == false){
                               return const SizedBox();

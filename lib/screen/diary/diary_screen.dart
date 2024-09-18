@@ -120,9 +120,8 @@ class _DiaryScreenState extends State<DiaryScreen> with RouteAware {
                         );
                       }else if(snapshot.hasError){
                         return const Text("오류 발생", style: TextStyleFamily.normalTextStyle);
-                      } else{
-                        //TODO 필터링 조건에 맞는 일기가 없을 때
-                        if(diaryProvider.diaryData.isEmpty) {
+                      }else if(diaryProvider.diaryData.isEmpty) {
+                        //필터링 조건에 맞는 일기가 없을 때
                           return const Expanded(child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -130,11 +129,10 @@ class _DiaryScreenState extends State<DiaryScreen> with RouteAware {
                                 Text("일기 목록 없음", style: TextStyleFamily
                                     .smallTitleTextStyle)
                               ]));
-                        } else {
+                        }else {
                           return Expanded(child: DiaryGridView(diaryProvider));
                         }
                       }
-                    },
                   ),
                 ],
               ),

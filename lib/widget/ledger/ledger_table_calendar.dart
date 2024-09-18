@@ -13,8 +13,12 @@ import 'package:woo_yeon_hi/screen/ledger/ledger_detail_screen.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/style/font.dart';
 import 'package:woo_yeon_hi/utils.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
 
+import '../../dao/ledger_dao.dart';
+import '../../screen/ledger/ledger_write_screen.dart';
 import '../../style/text_style.dart';
+import 'ledger_dialog.dart';
 
 class LedgerTableCalendar extends StatefulWidget {
   const LedgerTableCalendar({super.key});
@@ -184,32 +188,32 @@ class _LedgerTableCalendarState extends State<LedgerTableCalendar> {
               ),
 
               calendarBuilders: CalendarBuilders(
-                // 요일 관련
+                // 요일
                 dowBuilder: (context, day) {
-                  if (isWeekend(day)) {
-                    // DateFormat.E(): 요일
-                    // DateFormat.d(): 일자
-                    final text = DateFormat.E('ko').format(day);
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: Center(
-                        child: Text(
-                            text, style: const TextStyle(fontSize: 14, color: Colors.red, fontFamily: FontFamily.mapleStoryBold)
-                        ),
-                      ),
-                    );
-                  } else if (isSaturday(day)) {
-                    final text = DateFormat.E('ko').format(day);
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: Center(
-                        child: Text(
-                            text, style: const TextStyle(fontSize: 14, color: Colors.blueAccent, fontFamily: FontFamily.mapleStoryBold)
-                        ),
-                      ),
-                    );
-                  }
-                  else{
+                  // if (isWeekend(day)) {
+                  //   // DateFormat.E(): 요일
+                  //   // DateFormat.d(): 일자
+                  //   final text = DateFormat.E('ko').format(day);
+                  //   return Padding(
+                  //     padding: const EdgeInsets.only(bottom: 10),
+                  //     child: Center(
+                  //       child: Text(
+                  //           text, style: const TextStyle(fontSize: 14, color: Colors.red, fontFamily: FontFamily.mapleStoryBold)
+                  //       ),
+                  //     ),
+                  //   );
+                  // } else if (isSaturday(day)) {
+                  //   final text = DateFormat.E('ko').format(day);
+                  //   return Padding(
+                  //     padding: const EdgeInsets.only(bottom: 10),
+                  //     child: Center(
+                  //       child: Text(
+                  //           text, style: const TextStyle(fontSize: 14, color: Colors.blueAccent, fontFamily: FontFamily.mapleStoryBold)
+                  //       ),
+                  //     ),
+                  //   );
+                  // }
+                  // else{
                     final text = DateFormat.E('ko').format(day);
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 10),
@@ -219,7 +223,7 @@ class _LedgerTableCalendarState extends State<LedgerTableCalendar> {
                         ),
                       ),
                     );
-                  }
+                //   }
                 },
 
                 // 범위에 포함 되어 있지 않은 날짜
@@ -231,7 +235,7 @@ class _LedgerTableCalendarState extends State<LedgerTableCalendar> {
                   );
                 },
 
-                // 모든 날짜 관련
+                // 모든 날짜
                 defaultBuilder: (context, date, focusedDay) {
                   DateTime day = DateTime(date.year, date.month, date.day);
                   List<Ledger> dayEvents = _showMainEvents[day] ?? [];
@@ -253,14 +257,14 @@ class _LedgerTableCalendarState extends State<LedgerTableCalendar> {
                               if (dayTotalMoney['expenditure'] != 0)
                                 Text(
                                   '-${formatNumber(dayTotalMoney['expenditure']!)}',
-                                  style: const TextStyle(fontSize: 10, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight),
+                                  style: const TextStyle(fontSize: 10, color: Colors.pink, fontFamily: FontFamily.mapleStoryLight),
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
                                 ),
                               if (dayTotalMoney['income'] != 0)
                                 Text(
                                   '+${formatNumber(dayTotalMoney['income']!)}',
-                                  style: const TextStyle(fontSize: 10, color: Colors.pink, fontFamily: FontFamily.mapleStoryLight),
+                                  style: const TextStyle(fontSize: 10, color: Colors.blueAccent, fontFamily: FontFamily.mapleStoryLight),
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
                                 ),
@@ -271,7 +275,7 @@ class _LedgerTableCalendarState extends State<LedgerTableCalendar> {
                     );
                 },
 
-                // 오늘 날짜 관련
+                // 오늘 날짜
                 todayBuilder: (context, date, focusedDay) {
                   DateTime day = DateTime(date.year, date.month, date.day);
                   List<Ledger> dayEvents = _showMainEvents[day] ?? [];
@@ -289,14 +293,14 @@ class _LedgerTableCalendarState extends State<LedgerTableCalendar> {
                             if (dayTotalMoney['expenditure'] != 0)
                               Text(
                                 '-${formatNumber(dayTotalMoney['expenditure']!)}',
-                                style: const TextStyle(fontSize: 10, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight),
+                                  style: const TextStyle(fontSize: 10, color: Colors.pink, fontFamily: FontFamily.mapleStoryLight),
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
                               ),
                             if (dayTotalMoney['income'] != 0)
                               Text(
                                 '+${formatNumber(dayTotalMoney['income']!)}',
-                                style: const TextStyle(fontSize: 10, color: ColorFamily.pink, fontFamily: FontFamily.mapleStoryLight),
+                                style: const TextStyle(fontSize: 10, color: Colors.blueAccent, fontFamily: FontFamily.mapleStoryLight),
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
                               ),
@@ -307,7 +311,7 @@ class _LedgerTableCalendarState extends State<LedgerTableCalendar> {
                   );
                 },
 
-                // 선택된 날짜 관련
+                // 선택된 날짜
                 selectedBuilder: (context, date, focusedDay) {
                   DateTime day = DateTime(date.year, date.month, date.day);
                   List<Ledger> dayEvents = _showMainEvents[day] ?? [];
@@ -344,14 +348,14 @@ class _LedgerTableCalendarState extends State<LedgerTableCalendar> {
                                   if (dayTotalMoney['expenditure'] != 0)
                                   Text(
                                     '-${formatNumber(dayTotalMoney['expenditure']!)}',
-                                    style: const TextStyle(fontSize: 10, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight),
+                                    style: const TextStyle(fontSize: 10, color: Colors.pink, fontFamily: FontFamily.mapleStoryLight),
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
                                   ),
                                   if (dayTotalMoney['income'] != 0)
                                   Text(
                                     '+${formatNumber(dayTotalMoney['income']!)}',
-                                    style: const TextStyle(fontSize: 10, color: Colors.pink, fontFamily: FontFamily.mapleStoryLight),
+                                    style: const TextStyle(fontSize: 10, color: Colors.blueAccent, fontFamily: FontFamily.mapleStoryLight),
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
                                   ),
@@ -365,7 +369,7 @@ class _LedgerTableCalendarState extends State<LedgerTableCalendar> {
                   );
                 },
 
-                // 다른 달의 날짜 관련
+                // 다른 달의 날짜
                 outsideBuilder: (context, date, focusedDay) {
                   DateTime day = DateTime(date.year, date.month, date.day);
                   List<Ledger> dayEvents = _showMainEvents[day] ?? [];
@@ -383,14 +387,14 @@ class _LedgerTableCalendarState extends State<LedgerTableCalendar> {
                             if (dayTotalMoney['expenditure'] != 0)
                               Text(
                                 '-${formatNumber(dayTotalMoney['expenditure']!)}',
-                                style: const TextStyle(fontSize: 10, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryLight),
+                                style: const TextStyle(fontSize: 10, color: Colors.pink, fontFamily: FontFamily.mapleStoryLight),
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
                               ),
                             if (dayTotalMoney['income'] != 0)
                               Text(
                                 '+${formatNumber(dayTotalMoney['income']!)}',
-                                style: const TextStyle(fontSize: 10, color: ColorFamily.pink, fontFamily: FontFamily.mapleStoryLight),
+                                style: const TextStyle(fontSize: 10, color: Colors.blueAccent, fontFamily: FontFamily.mapleStoryLight),
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
                               ),
@@ -432,7 +436,6 @@ class _LedgerTableCalendarState extends State<LedgerTableCalendar> {
                             String dateOnly = ledger.ledgerDate.split('T')[0];
                             // 날짜에 맞는 데이터로 갱신
                             ledgerProvider.readLedger(dateOnly);
-                            // 화면 전환
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 // 보여질 다음 화면을 설정한다.
@@ -454,49 +457,143 @@ class _LedgerTableCalendarState extends State<LedgerTableCalendar> {
     );
   }
 
-  // 커스텀 헤더 함수
+  // 커스텀 헤더
   Widget calendarCustomHeader() {
     var ledgerProvider = Provider.of<LedgerProvider>(context, listen: false);
+
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
+      padding: const EdgeInsets.fromLTRB(15, 20, 15, 20),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Center(
-            child: Text(
-              DateFormat.MMMM('ko').format(ledgerProvider.focusedDay),
-              style: const TextStyle(fontSize: 20, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryBold),
+          const SizedBox(width: 70),
+          InkWell(
+            onTap: () {
+              picker.DatePicker.showPicker(
+                context,
+                showTitleActions: true,
+                // minTime: DateTime(1900, 1, 1), // 최소 선택 가능한 날짜
+                // maxTime: DateTime.now(), // 최대 선택 가능한 날짜
+                theme: const picker.DatePickerTheme(
+                  titleHeight: 60,
+                  containerHeight: 300,
+                  itemHeight: 50,
+                  headerColor: Colors.white,
+                  backgroundColor: Colors.white,
+                    itemStyle: TextStyleFamily.smallTitleTextStyle,
+                    cancelStyle: TextStyle(
+                        color: ColorFamily.black,
+                        fontSize: 18,
+                        fontFamily: FontFamily.mapleStoryLight),
+                    doneStyle: TextStyle(
+                        color: ColorFamily.black,
+                        fontSize: 18,
+                        fontFamily: FontFamily.mapleStoryLight)
+                ),
+                pickerModel: CustomMonthPicker(
+                  currentTime: ledgerProvider.focusedDay,
+                  minTime: stringToDate(Provider.of<UserProvider>(context, listen: false).loveDday),
+                  maxTime: DateTime.now(),
+                ),
+                onConfirm: (date) {
+                  ledgerProvider.setFocusedDay(DateTime(date.year, date.month, 1));
+                },
+                locale: picker.LocaleType.ko,
+              );
+            },
+              // picker.DatePicker.showDatePicker(
+              //     context,
+              //     showTitleActions: true,
+              //     minTime: DateTime(1900, 1, 1),
+              //     maxTime: DateTime.now(),
+              //     theme: const picker.DatePickerTheme(
+              //         titleHeight: 60,
+              //         containerHeight: 300,
+              //         itemHeight: 50,
+              //         headerColor:
+              //         ColorFamily.white,
+              //         backgroundColor:
+              //         ColorFamily.white,
+              //         itemStyle: TextStyleFamily.smallTitleTextStyle,
+              //         cancelStyle: TextStyle(
+              //             color: ColorFamily.black,
+              //             fontSize: 18,
+              //             fontFamily: FontFamily
+              //                 .mapleStoryLight),
+              //         doneStyle: TextStyle(
+              //             color: ColorFamily.black,
+              //             fontSize: 18,
+              //             fontFamily: FontFamily
+              //                 .mapleStoryLight)),
+              //     // onChanged: (date) {
+              //     //   print('change $date in time zone ' +
+              //     //    date.timeZoneOffset.inHours.toString());
+              //     // },
+              //     onConfirm: (date) {
+              //       ledgerProvider.setSelectedDay(date);
+              //     },
+              //     // onCancel: (){},
+              //     currentTime: DateTime.now(),
+              //     locale: picker.LocaleType.ko);
+            child: Row(
+              children: [
+                Text(
+                  DateFormat.yMMM('ko').format(ledgerProvider.focusedDay),
+                  style: const TextStyle(fontSize: 20, color: ColorFamily.black, fontFamily: FontFamily.mapleStoryBold),
+                ),
+                // 제목 옆에 아이콘 추가
+                InkWell(
+                    // onTap: () {
+                    //   // DatePicker 기능
+                    //   DatePicker.showPicker(
+                    //     context,
+                    //     showTitleActions: true,
+                    //     locale: LocaleType.ko,
+                    //     onChanged: (date) {
+                    //       print('설정 중 change $date');
+                    //     },
+                    //     onConfirm: (date) {
+                    //       print('확인 클릭 onConfirm $date');
+                    //       DateTime firstDayOfMonth = DateTime(date.year, date.month, 1);
+                    //       ledgerProvider.setSelectedAndFocusedDay(firstDayOfMonth);
+                    //     },
+                    //     pickerModel: CustomMonthPicker(
+                    //       currentTime: DateTime.now(),
+                    //     ),
+                    //   );
+                    // },
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      child: Center(
+                          child: SvgPicture.asset('lib/assets/icons/under_triangle.svg')
+                      ),
+                    )
+                )
+              ],
             ),
           ),
-
-          // 제목 옆에 아이콘 추가
           InkWell(
-              onTap: () {
-                // DatePicker 기능
-                DatePicker.showPicker(
-                  context,
-                  showTitleActions: true,
-                  locale: LocaleType.ko,
-                  onChanged: (date) {
-                    print('설정 중 change $date');
-                  },
-                  onConfirm: (date) {
-                    print('확인 클릭 onConfirm $date');
-                    DateTime firstDayOfMonth = DateTime(date.year, date.month, 1);
-                    ledgerProvider.setSelectedAndFocusedDay(firstDayOfMonth);
-                  },
-                  pickerModel: CustomMonthPicker(
-                    currentTime: DateTime.now(),
-                  ),
-                );
-              },
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                child: Center(
-                    child: SvgPicture.asset('lib/assets/icons/under_triangle.svg')
+            splashColor: Colors.transparent,
+            splashFactory: NoSplash.splashFactory,
+            onTap: () {
+              // showDialog(
+              //     context: context,
+              //     builder: (BuildContext context) {
+              //       return LedgerDialog('LedgerScreen', '미등록 거래내역이 있습니다.', '이동하시겠습니까?');
+              //     });
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const LedgerWriteScreen(),
+                  // builder: (context) => BirthdaySettingScreen(isHost: true),
                 ),
-              )
-          ),
+              );
+            },
+            child: SizedBox(
+              width: 30,
+              height: 30,
+              child: SvgPicture.asset('lib/assets/icons/add.svg')
+            )
+          )
         ],
       ),
     );
@@ -504,62 +601,19 @@ class _LedgerTableCalendarState extends State<LedgerTableCalendar> {
 }
 
 // DatePicker 커스텀 class
-class CustomMonthPicker extends CommonPickerModel {
-  CustomMonthPicker({DateTime? currentTime, LocaleType? locale})
-      : super(locale: locale) {
-    this.currentTime = currentTime ?? DateTime.now();
-    this.setLeftIndex(this.currentTime.year - 2023);
-    this.setMiddleIndex(this.currentTime.month - 1);
-    this.setRightIndex(0);
-  }
-
-  @override
-  String? leftStringAtIndex(int index) {
-    if (index >= 0 && index < (2025 - 2023)) {
-      return (2023 + index).toString();
-    } else {
-      return null;
-    }
-  }
-
-  @override
-  String? middleStringAtIndex(int index) {
-    if (index >= 0 && index < 12) {
-      return (index + 1).toString().padLeft(2, '0');
-    } else {
-      return null;
-    }
-  }
+class CustomMonthPicker extends picker.DatePickerModel {
+  CustomMonthPicker({DateTime? currentTime, DateTime? minTime, DateTime? maxTime})
+      : super(locale: picker.LocaleType.ko, currentTime: currentTime, minTime: minTime, maxTime: maxTime);
 
   @override
   String? rightStringAtIndex(int index) {
+    // Day는 숨김 처리
     return null;
   }
 
   @override
-  void setLeftIndex(int index) {
-    super.setLeftIndex(index);
-    this.currentTime = DateTime(2023 + index, this.currentTime.month);
-  }
-
-  @override
-  void setMiddleIndex(int index) {
-    super.setMiddleIndex(index);
-    this.currentTime = DateTime(this.currentTime.year, index + 1);
-  }
-
-  @override
-  void setRightIndex(int index) {
-    super.setRightIndex(index);
-  }
-
-  @override
   List<int> layoutProportions() {
+    // Year와 Month의 비율만 설정, Day는 비율 0으로 숨김
     return [3, 2, 0];
-  }
-
-  @override
-  DateTime finalTime() {
-    return currentTime;
   }
 }
