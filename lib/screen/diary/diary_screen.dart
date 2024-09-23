@@ -111,8 +111,9 @@ class _DiaryScreenState extends State<DiaryScreen> with RouteAware {
                     future: diaryProvider.diaryFuture,
                     builder: (context, snapshot){
                       if(snapshot.hasData == false){
-                        return const Expanded(
-                          child: Center(
+                        return SizedBox(
+                          height: MediaQuery.of(context).size.height*0.5,
+                          child: const Center(
                             child: CircularProgressIndicator(
                               color: ColorFamily.pink,
                             ),

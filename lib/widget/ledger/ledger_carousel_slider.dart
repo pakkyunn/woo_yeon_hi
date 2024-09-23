@@ -18,28 +18,12 @@ class LedgerCarouselSlider extends StatefulWidget {
 }
 
 class _LedgerCarouselSliderState extends State<LedgerCarouselSlider> {
-  bool _dataLoaded = false;
-
-  Future<void> _asyncData(LedgerProvider provider) async {
-    // await provider.fetchLedgers();
-    // await provider.carouselSliderInitialData();
-    // await provider.updateTextsOnMonthChange(provider.focusedDay);
-    setState(() {
-      _dataLoaded = true;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<LedgerProvider>(
       builder: (context, provider, child) {
-        if (!_dataLoaded) {
-          // 처음 한 번만 Future를 실행하여 데이터를 불러옴
-          _asyncData(provider);
-        }
-
-        return _dataLoaded
-          ? Stack(
+        return Stack(
                   children: [
                     SizedBox(
                       height: 145,
@@ -185,13 +169,7 @@ class _LedgerCarouselSliderState extends State<LedgerCarouselSlider> {
                       ),
                     ),
                   ],
-                )
-          : const SizedBox();
-            // : const Center(
-            //   child: CircularProgressIndicator(
-            //     color: ColorFamily.pink,
-            //   ),
-            // );
+                );
       },
     );
   }

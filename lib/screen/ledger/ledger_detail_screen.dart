@@ -60,11 +60,9 @@ class _LedgerDetailScreenState extends State<LedgerDetailScreen> {
                 future: _ledgerDao.readLedger(ledgerDateString, context),
                 builder: (context, snapshot) {
                   if(snapshot.hasData == false){
-                    return const Expanded(
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          color: ColorFamily.pink,
-                        ),
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: ColorFamily.pink,
                       ),
                     );
                   }else if(snapshot.hasError){

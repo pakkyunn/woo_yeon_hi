@@ -243,11 +243,9 @@ Widget datePlan(BuildContext context) {
                   future: _asyncData(datePlanProvider),
                   builder: (context, snapshot){
                     if(snapshot.hasData == false){
-                      return const Expanded(
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            color: ColorFamily.pink,
-                          ),
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: ColorFamily.pink,
                         ),
                       );
                     }else if(snapshot.hasError){
@@ -299,11 +297,9 @@ Widget accountBook(BuildContext context) {
     future: _asyncData(ledgerProvider),
     builder: (context, snapshot){
       if(snapshot.hasData == false){
-        return const Expanded(
-          child: Center(
-            child: CircularProgressIndicator(
-              color: ColorFamily.pink,
-            ),
+        return const Center(
+          child: CircularProgressIndicator(
+            color: ColorFamily.pink,
           ),
         );
       }else if(snapshot.hasError){
@@ -588,11 +584,9 @@ Widget calendarFutureBuilderWidget(BuildContext context){
       future: _asyncData(datePlanProvider),
       builder: (context, snapshot){
         if(snapshot.hasData == false){
-          return const Expanded(
-            child: Center(
-              child: CircularProgressIndicator(
-                  color: ColorFamily.pink),
-            ),
+          return const Center(
+            child: CircularProgressIndicator(
+                color: ColorFamily.pink),
           );
         }else if(snapshot.hasError){
           return const Text("오류 발생", style: TextStyleFamily.normalTextStyle,);

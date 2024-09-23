@@ -547,9 +547,12 @@ class _LedgerTableCalendarState extends State<LedgerTableCalendar> {
                 const SizedBox(height: 80),
               ],
             )
-          : const Center(
-            child: CircularProgressIndicator(
-              color: ColorFamily.pink,
+          : Center(
+            child: Container(
+              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.25),
+              child: const CircularProgressIndicator(
+                color: ColorFamily.pink,
+              ),
             ),
           );
     });

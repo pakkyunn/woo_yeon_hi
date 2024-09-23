@@ -31,11 +31,9 @@ class _FootprintDatePlanDetailScreenState extends State<FootprintDatePlanDetailS
       future: _asyncData(datePlanProvider),
       builder: (context, snapshot) {
         if (snapshot.hasData == false) {
-          return const Expanded(
-            child: Center(
-              child: CircularProgressIndicator(
-                color: ColorFamily.pink,
-              ),
+          return const Center(
+            child: CircularProgressIndicator(
+              color: ColorFamily.pink,
             ),
           );
         } else if (snapshot.hasError) {

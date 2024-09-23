@@ -17,25 +17,8 @@ class LedgerScreen extends StatefulWidget {
 }
 
 class _LedgerScreenState extends State<LedgerScreen> {
-  bool _bannerLoaded = false;
-  bool _calendarLoaded = false;
-
-  void _onBannerLoaded() {
-    setState(() {
-      _bannerLoaded = true;
-    });
-  }
-
-  void _onCalendarLoaded() {
-    setState(() {
-      _calendarLoaded = true;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    // bool allDataLoaded = _bannerLoaded && _calendarLoaded;
-
     return const Scaffold(
       backgroundColor: ColorFamily.cream,
       appBar: LedgerTopAppBar(
@@ -46,9 +29,8 @@ class _LedgerScreenState extends State<LedgerScreen> {
             children: [
               // 상단 배너
               SizedBox(height: 150, child: LedgerCarouselSlider()),
-              SizedBox(height: 10),
               // 캘린더
-              Column(children: [LedgerTableCalendar()]),
+              LedgerTableCalendar(),
             ],
           ),
         )
