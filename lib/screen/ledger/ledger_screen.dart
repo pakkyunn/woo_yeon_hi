@@ -17,56 +17,41 @@ class LedgerScreen extends StatefulWidget {
 }
 
 class _LedgerScreenState extends State<LedgerScreen> {
+  bool _bannerLoaded = false;
+  bool _calendarLoaded = false;
+
+  void _onBannerLoaded() {
+    setState(() {
+      _bannerLoaded = true;
+    });
+  }
+
+  void _onCalendarLoaded() {
+    setState(() {
+      _calendarLoaded = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // 앱바
-      appBar: const LedgerTopAppBar(
+    // bool allDataLoaded = _bannerLoaded && _calendarLoaded;
+
+    return const Scaffold(
+      backgroundColor: ColorFamily.cream,
+      appBar: LedgerTopAppBar(
         title: '가계부',
       ),
-      // 전체 배경색
-      body: Container(
-        color: ColorFamily.cream,
-        child: const Stack(
-          children: [
-            SingleChildScrollView(
-              child: Column(
-                children: [
-                  // 상단 배너
-                  LedgerCarouselSlider(),
-                  SizedBox(height: 10),
-                  // 캘린더
-                  LedgerTableCalendar(),
-                ],
-              ),
-            ),
-
-            // 하단 중앙에 FloatingActionButton 배치
-            // Align(
-            //   alignment: Alignment.bottomCenter,
-            //   child: Padding(
-            //       padding: const EdgeInsets.only(bottom: 16.0), // 화면 하단에서 간격 설정
-            //       child: Container(
-            //         color: Colors.transparent,
-            //         width: 60,
-            //         height: 40,
-            //         child: FloatingActionButton(
-            //           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-            //           backgroundColor: ColorFamily.beige,
-            //           heroTag: "actionButton1",
-            //           onPressed: () {
-            //             // FAB의 액션
-            //             DateTime today = DateTime.now();
-            //             Provider.of<LedgerProvider>(context, listen: false).setSelectedAndFocusedDay(today);
-            //           },
-            //           child: const Text('오늘', style: TextStyle(fontSize: 15,fontFamily: FontFamily.mapleStoryLight)),
-            //         ),
-            //       ),
-            //   ),
-            // ),
-          ],
-        ),
-      ),
+      body: SingleChildScrollView(
+          child: Column(
+            children: [
+              // 상단 배너
+              SizedBox(height: 150, child: LedgerCarouselSlider()),
+              SizedBox(height: 10),
+              // 캘린더
+              Column(children: [LedgerTableCalendar()]),
+            ],
+          ),
+        )
 
       // 하단 오른쪽에 FloatingActionButton 배치
       // floatingActionButton: FloatingActionButton(

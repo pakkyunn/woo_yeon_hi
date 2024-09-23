@@ -21,7 +21,8 @@ import '../../dialogs.dart';
 import '../../model/ledger_model.dart';
 
 class LedgerWriteScreen extends StatefulWidget {
-  const LedgerWriteScreen({super.key});
+  DateTime selectedDay;
+  LedgerWriteScreen(this.selectedDay, {super.key});
 
   @override
   State<LedgerWriteScreen> createState() => _LedgerWriteScreenState();
@@ -55,7 +56,7 @@ class _LedgerWriteScreenState extends State<LedgerWriteScreen> {
 
   // 날짜 설정
   late String _dateSetting;
-  DateTime _dateSettingSave = DateTime.now();
+  late DateTime _dateSettingSave;
 
   // 요일 변환
   String _getWeekday(int weekday) {
@@ -113,9 +114,25 @@ class _LedgerWriteScreenState extends State<LedgerWriteScreen> {
   }
 
   // GlobalKey를 사용하여 2개의 필드 유효성 검사
-  bool validateFieldsCheck() {
-    return _titleKey.currentState!.validate() &
-    _priceKey.currentState!.validate();
+  // bool validateFieldsCheck() {
+  //   return _titleKey.currentState!.validate() &
+  //   _priceKey.currentState!.validate();
+  // }
+
+  // 제목과 내용, 이미지가 다 작성되었는지 검사합니다.
+  int validateFieldsCheck(){
+    //금액 입력 체크
+    if(priceController.text.isEmpty){
+      return 1;
+    }
+    //내역 이름 입력 체크
+    else if(titleController.text.isEmpty){
+      return 2;
+    }
+    //정상인 경우
+    else{
+      return 0;
+    }
   }
 
   // 최초 오류 메시지 false (유효성 검사)
@@ -136,7 +153,7 @@ class _LedgerWriteScreenState extends State<LedgerWriteScreen> {
           _dateSettingSave = date;
         });
       },
-      currentTime: DateTime.now(),
+      currentTime: widget.selectedDay,
       locale: picker.LocaleType.ko,
       theme: const picker.DatePickerTheme(
         titleHeight: 60,
@@ -156,8 +173,9 @@ class _LedgerWriteScreenState extends State<LedgerWriteScreen> {
             color: ColorFamily.black,
             fontSize: 18,
             fontFamily: FontFamily
-                .mapleStoryLight),)
+                .mapleStoryLight)),
     );
+
   }
 
   @override
@@ -166,9 +184,11 @@ class _LedgerWriteScreenState extends State<LedgerWriteScreen> {
     // 텍스트 변경 시 숫자 형식을 지정하기 위해 컨트롤러에 리스너를 추가
     priceController.addListener(_formatNumber);
 
-    // 오늘 날짜로 지정
-    final now = DateTime.now();
-    _dateSetting = '${now.year}. ${now.month}. ${now.day}.\(${_getWeekday(now.weekday)}\) ${now.hour}:${now.minute}';
+    _dateSettingSave = widget.selectedDay;
+
+    // 선택한 날짜로 지정
+    final selectedDay = widget.selectedDay;
+    _dateSetting = '${selectedDay.year}. ${selectedDay.month}. ${selectedDay.day}.\(${_getWeekday(selectedDay.weekday)}\) ${selectedDay.hour}:${selectedDay.minute}';
   }
 
   @override
@@ -252,8 +272,7 @@ class _LedgerWriteScreenState extends State<LedgerWriteScreen> {
                 ),
 
                 //금액 부분
-                Form(
-                child: TextFormField(
+                TextFormField(
                   textAlign: TextAlign.center,
                   key: _priceKey,
                   controller: priceController,
@@ -263,7 +282,7 @@ class _LedgerWriteScreenState extends State<LedgerWriteScreen> {
                       fontFamily: FontFamily.mapleStoryLight
                   ),
                   // 커서 숨김
-                  //showCursor: false,
+                  showCursor: false,
                   cursorColor: ColorFamily.black,
                   // 키보드 타입
                   keyboardType: TextInputType.number,
@@ -282,7 +301,7 @@ class _LedgerWriteScreenState extends State<LedgerWriteScreen> {
                       fontFamily: FontFamily.mapleStoryLight,
                     ),
                     errorStyle: TextStyle(
-                      color: Colors.red,
+                      color: ColorFamily.pink,
                       fontSize: 14,
                       fontFamily: FontFamily.mapleStoryLight,
                     ),
@@ -292,18 +311,17 @@ class _LedgerWriteScreenState extends State<LedgerWriteScreen> {
                     FilteringTextInputFormatter.digitsOnly,
                   ],
                   // 유효성 검사를 수행
-                  autovalidateMode: _showErrorMessages ? AutovalidateMode.always : AutovalidateMode.disabled,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '금액 입력은 필수입니다.';
-                    }
-                    return null;
-                  },
+                  // autovalidateMode: _showErrorMessages ? AutovalidateMode.always : AutovalidateMode.disabled,
+                  // validator: (value) {
+                  //   if (value == null || value.isEmpty) {
+                  //     showBlackToast('금액을 입력해주세요!');
+                  //   }
+                  //   return null;
+                  // },
                   onChanged: (value) {
                     _formatNumber();
                   },
                 ),
-                                    ),
 
                 // 탭 조정 (가계부 타입)
                 Row(
@@ -413,13 +431,13 @@ class _LedgerWriteScreenState extends State<LedgerWriteScreen> {
                                 ),
                               ),
                               // 유효성 검사를 수행
-                              autovalidateMode: _showErrorMessages ? AutovalidateMode.always : AutovalidateMode.disabled,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return '타이틀 입력은 필수입니다.';
-                                }
-                                return null;
-                              },
+                              // autovalidateMode: _showErrorMessages ? AutovalidateMode.always : AutovalidateMode.disabled,
+                              // validator: (value) {
+                              //   if (value == null || value.isEmpty) {
+                              //     showBlackToast('내역을 입력해주세요!');
+                              //   }
+                              //   return null;
+                              // },
                             ),
                             const SizedBox(height: 30),
 
@@ -538,10 +556,10 @@ class _LedgerWriteScreenState extends State<LedgerWriteScreen> {
                                     ),
                                     child: InkWell(
                                       onTap: ()  async {
-                                        if (validateFieldsCheck()) {
+                                        if (validateFieldsCheck()==0) {
                                           var ledgerIdx = await ledgerDao.getLedgerSequence();
                                           await ledgerDao.updateLedgerSequence(ledgerIdx + 1);
-                                          var ledgerUserIdx = 100;
+                                          var ledgerUserIdx = Provider.of<UserProvider>(context, listen: false).userIdx;
 
                                           _priceKey.currentState!.save();
 
@@ -559,23 +577,20 @@ class _LedgerWriteScreenState extends State<LedgerWriteScreen> {
                                               ledgerCategory: LedgerCategory.fromValue(_selectedValue),
                                               ledgerMemo: memoController.text,
                                               ledgerState: LedgerState.STATE_NORMAL,
-                                              ledgerModifyDate: ''
+                                              // ledgerModifyDate: ''
                                           );
-                                          ledgerProvider.addLedger(newLedger);
+                                          ledgerProvider.addLedger(newLedger, context);
                                           Navigator.popUntil(context, (route) => route.isFirst);
                                           showPinkSnackBar(context, "가계부 항목이 작성되었습니다");
-                                        }else{
-                                          if(priceController.text.isEmpty){
-                                            // 포커스 이동
-                                            _priceFocusNode.requestFocus();
-                                          } else if(titleController.text.isEmpty){
-                                            // 포커스 이동
-                                            _titleFocusNode.requestFocus();
+                                          ledgerProvider.providerNotify();
+
+                                        }else if(validateFieldsCheck()==1){
+                                          _priceFocusNode.requestFocus();
+                                          showBlackToast("금액을 입력해주세요");
+                                          } else {
+                                          _titleFocusNode.requestFocus();
+                                          showBlackToast("내역을 입력해주세요");
                                           }
-                                          setState(() {
-                                            _showErrorMessages = true;
-                                          });
-                                        }
                                       },
                                       borderRadius: BorderRadius.circular(20.0),
                                       child: Container(

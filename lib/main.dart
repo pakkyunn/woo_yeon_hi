@@ -145,7 +145,7 @@ class _WooYeonHiState extends State<WooYeonHi> {
           ChangeNotifierProvider(create: (context) => TabPageIndexProvider()),
           ChangeNotifierProvider(create: (context) => DiaryProvider()),
           ChangeNotifierProvider(create: (context) => FootprintProvider()),
-          ChangeNotifierProvider(create: (context) => LedgerProvider()),
+          ChangeNotifierProvider(create: (context) => LedgerProvider(context)),
           ChangeNotifierProvider(create: (context) => FootPrintSlidableProvider()),
           ChangeNotifierProvider(create: (context) => FootPrintDatePlanSlidableProvider()),
           ChangeNotifierProvider(create: (context) => FootprintDraggableSheetProvider()),

@@ -115,18 +115,16 @@ void dialogOnlyTitle(BuildContext context, String title,VoidCallback onCancle, V
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         TextButton(
-                            style: ButtonStyle(
-                                overlayColor: MaterialStateProperty.all(
-                                    ColorFamily.gray)),
+                            style: TextButton.styleFrom(
+                                overlayColor: Colors.transparent),
                             onPressed: onCancle,
                             child: const Text(
                               "취소",
                               style: TextStyleFamily.dialogButtonTextStyle,
                             )),
                         TextButton(
-                            style: ButtonStyle(
-                                overlayColor: MaterialStateProperty.all(
-                                    ColorFamily.gray)),
+                            style: TextButton.styleFrom(
+                                overlayColor: Colors.transparent),
                             onPressed: onConfirm,
                             child: const Text(
                               "확인",

@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/dao/ledger_dao.dart';
 import 'package:woo_yeon_hi/model/ledger_model.dart';
 
+import 'login_register_provider.dart';
+
 class LedgerProvider extends ChangeNotifier{
+  final BuildContext context;
+
   // LedgerDao 인스턴스
   final LedgerDao _ledgerDao = LedgerDao();
   List<Ledger> _ledgers = [];
 
   List<Ledger> get ledgers => _ledgers;
 
-  LedgerProvider() {
-    fetchLedgers();
-    carouselSliderInitialData();
-  }
+  LedgerProvider(this.context);
 
   // 상단 베너 텍스트에 콤마
   String formatNumber(int number) {
@@ -90,15 +92,12 @@ class LedgerProvider extends ChangeNotifier{
     }
   }
 
-  // 상단 베너 초기화
+  // 상단 배너 초기화
   Future<void> carouselSliderInitialData() async {
-    _isLoading = true;
-    notifyListeners();
-
     try {
       DateTime now = DateTime.now();
-      List<Ledger> ledgers = await _ledgerDao.getMonthlyLedgerData(now);
-      List<Ledger> previousLedgers = await _ledgerDao.getPreviousMonthLedgerData(now);
+      List<Ledger> ledgers = await _ledgerDao.getMonthlyLedgerData(now, context);
+      List<Ledger> previousLedgers = await _ledgerDao.getPreviousMonthLedgerData(now, context);
 
       int currentMonthSum = ledgers
           .where((ledger) => ledger.ledgerType.type == 0)
@@ -131,14 +130,13 @@ class LedgerProvider extends ChangeNotifier{
     }
 
     _isLoading = false;
-    notifyListeners();
   }
 
-  // 상단 베너 업데이트
+  // 상단 배너 업데이트
   Future<void> updateTextsOnMonthChange(DateTime newFocusedDay) async {
     try {
-      List<Ledger> currentMonthLedgers = await _ledgerDao.getMonthlyLedgerData(newFocusedDay);
-      List<Ledger> previousMonthLedgers = await _ledgerDao.getPreviousMonthLedgerData(newFocusedDay);
+      List<Ledger> currentMonthLedgers = await _ledgerDao.getMonthlyLedgerData(newFocusedDay, context);
+      List<Ledger> previousMonthLedgers = await _ledgerDao.getPreviousMonthLedgerData(newFocusedDay, context);
 
       int currentMonthSum = currentMonthLedgers
           .where((ledger) => ledger.ledgerType.type == 0)
@@ -161,8 +159,7 @@ class LedgerProvider extends ChangeNotifier{
   // 데이터 가져오기
   Future<void> fetchLedgers() async {
     try {
-      _ledgers = await _ledgerDao.getLedgerData();
-      notifyListeners();
+      _ledgers = await _ledgerDao.getLedgerData(context);
       print('가져오기 확인: $_ledgers');
     } catch (error) {
       print('가계부 데이터 호출 중에 오류 $error');
@@ -170,11 +167,11 @@ class LedgerProvider extends ChangeNotifier{
   }
 
   // 데이터 추가
-  Future<void> addLedger(Ledger ledger) async {
+  Future<void> addLedger(Ledger ledger, BuildContext context) async {
     try {
       await _ledgerDao.saveLedger(ledger)
         .then((value) => print('가계부 데이터 저장 성공 ${ledger}'));
-      fetchLedgers(); // 데이터를 새로고침
+      await _ledgerDao.getLedgerData(context); // 데이터를 새로고침
     } catch (error) {
       print('가계부 데이터 저장 중 오류 $error');
     }
@@ -186,7 +183,7 @@ class LedgerProvider extends ChangeNotifier{
 
   Future<void> readLedger(String ledgerDate) async {
     try{
-      _selectedLedgerDate = await _ledgerDao.readLedger(ledgerDate);
+      _selectedLedgerDate = await _ledgerDao.readLedger(ledgerDate, context);
       notifyListeners();
     } catch (error){
       print('가계부 데이터 상세 보기 중 오류 $error');
@@ -194,25 +191,29 @@ class LedgerProvider extends ChangeNotifier{
   }
 
   // 데이터 수정
-  Future<void> updateLedger(Ledger ledger) async {
+  Future<void> updateLedger(Ledger ledger, BuildContext context) async {
     try {
       await _ledgerDao.updateLedger(ledger);
-      fetchLedgers(); // 데이터를 새로고침
+      await _ledgerDao.getLedgerData(context); // 데이터를 새로고침
+      notifyListeners();
     } catch (error) {
       print('가계부 데이터 업데이트 중 오류 $error');
     }
   }
 
   // 데이터 삭제 (상태 값 업데이트)
-  Future<void> deleteLedger(Ledger ledger) async {
+  Future<void> deleteLedger(Ledger ledger, BuildContext context) async {
     try {
-      await _ledgerDao.updateLedgerState(ledger);
-      fetchLedgers(); // 데이터를 새로고침
+      await _ledgerDao.deleteLedger(ledger);
+      notifyListeners();
     } catch (error) {
       print('가계부 데이터 삭제 중 오류 $error');
     }
   }
 
+  void providerNotify(){
+    notifyListeners();
+  }
 }
 
 // 체크박스 상태관리

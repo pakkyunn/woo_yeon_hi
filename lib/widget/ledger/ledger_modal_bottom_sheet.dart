@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/model/ledger_model.dart';
 import 'package:woo_yeon_hi/provider/ledger_provider.dart';
 import 'package:woo_yeon_hi/screen/ledger/ledger_edit_screen.dart';
@@ -21,11 +22,6 @@ class LedgerModalBottomSheet extends StatefulWidget {
 
 class _LedgerModalBottomSheetState extends State<LedgerModalBottomSheet> {
 
-  // 가계부 데이터 삭제 (상태 값 업데이트)
-  void _deleteLedger(BuildContext context) async {
-    await widget.provider.deleteLedger(widget.ledger);
-  }
-
   @override
   Widget build(BuildContext context) {
     // 현재 화면의 높이를 가져옵니다.
@@ -39,15 +35,11 @@ class _LedgerModalBottomSheetState extends State<LedgerModalBottomSheet> {
         Column(
           children: [
             InkWell(
-              splashColor: ColorFamily.gray.withOpacity(0.5),
+              splashColor: Colors.transparent,
               onTap: () {
                 Navigator.pop(context);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => LedgerEditScreen(widget.ledger),
-                    )
-                );
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => LedgerEditScreen(widget.ledger)));
                 FocusScope.of(context).unfocus();
               },
               child: Container(
@@ -77,14 +69,17 @@ class _LedgerModalBottomSheetState extends State<LedgerModalBottomSheet> {
               ),
             ),
             InkWell(
-              splashColor: ColorFamily.gray.withOpacity(0.5),
+              // splashColor: ColorFamily.gray.withOpacity(0.5),
+              splashColor: Colors.transparent,
+              // splashFactory: NoSplash.splashFactory,
               onTap: () {
-                setState(() {
-                  _deleteLedger(context);
-                  Navigator.pop(context);
-                  FocusScope.of(context).unfocus();
-                  showPinkSnackBar(context, "가계부 항목이 삭제되었습니다");
-                });
+                dialogOnlyTitle(context, "해당 내역을 삭제하시겠습니까?",
+                        (){Navigator.pop(context);},
+                        (){Provider.of<LedgerProvider>(context, listen: false).deleteLedger(widget.ledger, context);
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        showPinkSnackBar(context, "가계부 항목이 삭제되었습니다");}
+                );
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 30),

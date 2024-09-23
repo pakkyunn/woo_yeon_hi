@@ -18,119 +18,181 @@ class LedgerCarouselSlider extends StatefulWidget {
 }
 
 class _LedgerCarouselSliderState extends State<LedgerCarouselSlider> {
+  bool _dataLoaded = false;
+
+  Future<void> _asyncData(LedgerProvider provider) async {
+    // await provider.fetchLedgers();
+    // await provider.carouselSliderInitialData();
+    // await provider.updateTextsOnMonthChange(provider.focusedDay);
+    setState(() {
+      _dataLoaded = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<LedgerProvider>(
-        builder: (context, provider, child) {
-          return Stack(
-            children: [
-              SizedBox(
-                height: 145,
-                child: FlutterCarousel.builder(
-                  options: CarouselOptions(
-                    height: 140.0,
-                    // 보여줄 슬라이더의 비율
-                    viewportFraction: 1.0,
-                    autoPlay: false,
-                    onPageChanged: (index, reason) {
-                      provider.setCurrentIndex(index);
-                    },
-                  ),
-                  itemCount: provider.isLoading ? 1 : provider.items.length,
-                  itemBuilder: (context, index, realIndex) {
-                    final item = provider.isLoading ? provider.itemsSetting[index] : provider.items[index];
-                    return Material(
-                      color: ColorFamily.cream,
-                      child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 20),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: ColorFamily.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.6),
-                                spreadRadius: 0,
-                                blurRadius: 1,
-                              )
-                            ]
+      builder: (context, provider, child) {
+        if (!_dataLoaded) {
+          // 처음 한 번만 Future를 실행하여 데이터를 불러옴
+          _asyncData(provider);
+        }
+
+        return _dataLoaded
+          ? Stack(
+                  children: [
+                    SizedBox(
+                      height: 145,
+                      child: FlutterCarousel.builder(
+                        options: CarouselOptions(
+                          height: 140.0,
+                          // 보여줄 슬라이더의 비율
+                          viewportFraction: 1.0,
+                          autoPlay: false,
+                          onPageChanged: (index, reason) {
+                            provider.setCurrentIndex(index);
+                          },
                         ),
-                        child: provider.isLoading ? Center(child: CircularProgressIndicator(color: ColorFamily.pink,)) : Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            if(item.containsKey('texts1'))
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(20, 20, 0, 20),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ...item['texts1'].map<Widget>((text) => Text(text, style: TextStyleFamily.normalTextStyle)).toList(),
-                                    const SizedBox(height: 10),
-                                    ...item['texts2'].map<Widget>((text) => Text(text, style: TextStyleFamily.appBarTitleBoldTextStyle)).toList(),
-                                    const SizedBox(height: 5),
-                                    Row(
+                        itemCount: provider.isLoading ? 1 : provider.items.length,
+                        itemBuilder: (context, index, realIndex) {
+                          final item = provider.isLoading
+                              ? provider.itemsSetting[index]
+                              : provider.items[index];
+                          return Material(
+                            color: ColorFamily.cream,
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 20),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: ColorFamily.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.6),
+                                      spreadRadius: 0,
+                                      blurRadius: 1,
+                                    )
+                                  ]),
+                              child: provider.isLoading
+                                  ? const Center(
+                                      child: CircularProgressIndicator(
+                                      color: ColorFamily.pink,
+                                    ))
+                                  : Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        ...item['texts3'].map<Widget>((text) => Text(text, style: TextStyleFamily.normalTextStyle)).toList(),
-                                        ...item['texts4'].map<Widget>((text) => Text(text, style: TextStyle(fontSize: 14, color: ColorFamily.pink, fontFamily: FontFamily.mapleStoryLight))).toList(),
-                                        ...item['texts5'].map<Widget>((text) => Text(text, style: TextStyleFamily.normalTextStyle)).toList(),
+                                        if (item.containsKey('texts1'))
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                20, 20, 0, 20),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                ...item['texts1']
+                                                    .map<Widget>((text) => Text(
+                                                        text,
+                                                        style: TextStyleFamily
+                                                            .normalTextStyle))
+                                                    .toList(),
+                                                const SizedBox(height: 10),
+                                                ...item['texts2']
+                                                    .map<Widget>((text) => Text(
+                                                        text,
+                                                        style: TextStyleFamily
+                                                            .appBarTitleBoldTextStyle))
+                                                    .toList(),
+                                                const SizedBox(height: 5),
+                                                Row(
+                                                  children: [
+                                                    ...item['texts3']
+                                                        .map<Widget>((text) => Text(
+                                                            text,
+                                                            style: TextStyleFamily
+                                                                .normalTextStyle))
+                                                        .toList(),
+                                                    ...item['texts4']
+                                                        .map<Widget>((text) => Text(
+                                                            text,
+                                                            style: const TextStyle(
+                                                                fontSize: 14,
+                                                                color: ColorFamily
+                                                                    .pink,
+                                                                fontFamily: FontFamily
+                                                                    .mapleStoryLight)))
+                                                        .toList(),
+                                                    ...item['texts5']
+                                                        .map<Widget>((text) => Text(
+                                                            text,
+                                                            style: TextStyleFamily
+                                                                .normalTextStyle))
+                                                        .toList(),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        else if (item.containsKey('image'))
+                                          Expanded(
+                                            child: Image.asset(
+                                              item['image'],
+                                              fit: BoxFit.contain,
+                                              //alignment: Alignment.center
+                                            ),
+                                          ),
+                                        // if (item.containsKey('icon') && !item.containsKey('image'))
+                                        //   Column(
+                                        //     mainAxisAlignment: MainAxisAlignment.center,
+                                        //     children: [
+                                        //       InkWell(
+                                        //           onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => LedgerDetailScreen())),
+                                        //           child: SizedBox(width: 64, child: SvgPicture.asset(item['icon'], width: 24, height: 24))),
+                                        //     ],
+                                        //   ),
                                       ],
                                     ),
-                                  ],
-                                ),
-                              )
-                            else if (item.containsKey('image'))
-                              Expanded(
-                                child: Image.asset(
-                                  item['image'],
-                                  fit: BoxFit.contain,
-                                  //alignment: Alignment.center
-                                ),
-                              ),
-                            // if (item.containsKey('icon') && !item.containsKey('image'))
-                            //   Column(
-                            //     mainAxisAlignment: MainAxisAlignment.center,
-                            //     children: [
-                            //       InkWell(
-                            //           onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => LedgerDetailScreen())),
-                            //           child: SizedBox(width: 64, child: SvgPicture.asset(item['icon'], width: 24, height: 24))),
-                            //     ],
-                            //   ),
-                          ],
-                        ),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
-              ),
-              SizedBox(
-                width: double.infinity,
-                height: 135.0,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    // 인디케이터
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 5),
-                      height: 15,
-                      decoration: BoxDecoration(color: Color(0xFFE6E6E6),borderRadius: BorderRadius.circular(20)),
-                      child: AnimatedSmoothIndicator(
-                        activeIndex: provider.currentIndex,
-                        count: provider.items.length,
-                        // 속성 설정
-                        effect: const ScrollingDotsEffect(
-                          dotWidth: 10,
-                          dotHeight: 10,
-                          activeDotColor: ColorFamily.pink,
-                          dotColor: ColorFamily.white,
-                        ),
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 135.0,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          // 인디케이터
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 5),
+                            height: 15,
+                            decoration: BoxDecoration(
+                                color: Color(0xFFE6E6E6),
+                                borderRadius: BorderRadius.circular(20)),
+                            child: AnimatedSmoothIndicator(
+                              activeIndex: provider.currentIndex.toInt(),
+                              count: provider.items.length,
+                              // 속성 설정
+                              effect: const ScrollingDotsEffect(
+                                dotWidth: 10.0,
+                                dotHeight: 10.0,
+                                activeDotColor: ColorFamily.pink,
+                                dotColor: ColorFamily.white,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
-                ),
-              ),
-            ],
-          );
-        },
-      );
+                )
+          : const SizedBox();
+            // : const Center(
+            //   child: CircularProgressIndicator(
+            //     color: ColorFamily.pink,
+            //   ),
+            // );
+      },
+    );
   }
 }

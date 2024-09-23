@@ -57,7 +57,7 @@ class _LedgerDetailScreenState extends State<LedgerDetailScreen> {
             ),
             backgroundColor: ColorFamily.white,
             body: FutureBuilder(
-                future: _ledgerDao.readLedger(ledgerDateString),
+                future: _ledgerDao.readLedger(ledgerDateString, context),
                 builder: (context, snapshot) {
                   if(snapshot.hasData == false){
                     return const Expanded(

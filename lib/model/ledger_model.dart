@@ -6,11 +6,11 @@ class Ledger{
   String ledgerDate; // 발생 날짜
   int ledgerAmount; // 금액
   LedgerType ledgerType; // 가계부 타입
-  String ledgerTitle; // 제목(타이틀)
+  String ledgerTitle; // 내역 이름
   LedgerCategory ledgerCategory; // 카테고리 번호
   String ledgerMemo; // 메모
   LedgerState ledgerState; // 가계부 상태
-  String ledgerModifyDate; // 가계부 수정 날짜
+  // String ledgerModifyDate; // 가계부 수정 날짜
 
   // 기본 생성자
   Ledger(
@@ -23,7 +23,7 @@ class Ledger{
        required this.ledgerCategory,
        required this.ledgerMemo,
        required this.ledgerState,
-       required this.ledgerModifyDate,
+       // required this.ledgerModifyDate,
       });
 
   // 팩토리 생성자: Map<String, dynamic> 데이터를 받아 Ledger 객체를 생성
@@ -39,7 +39,7 @@ class Ledger{
       ledgerCategory: LedgerCategory.fromValue(map['ledger_category']),
       ledgerMemo: map['ledger_memo'],
       ledgerState: LedgerState.fromValue(map['ledger_state']),
-      ledgerModifyDate: map['ledger_modify_date'],
+      // ledgerModifyDate: map['ledger_modify_date'],
     );
   }
 
@@ -55,7 +55,7 @@ class Ledger{
       'ledger_category': ledgerCategory.number,
       'ledger_memo': ledgerMemo,
       'ledger_state': ledgerState.state,
-      'ledger_modify_date': ledgerModifyDate,
+      // 'ledger_modify_date': ledgerModifyDate,
     };
   }
 }

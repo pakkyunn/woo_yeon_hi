@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/model/enums.dart';
 import 'package:woo_yeon_hi/model/ledger_model.dart';
 
+import '../provider/login_register_provider.dart';
 import '../utils.dart';
 
 class LedgerDao{
@@ -26,15 +29,26 @@ class LedgerDao{
   }
 
   // 가계부 데이터를 Firestore에서 가져오기
-  Future<List<Ledger>> getLedgerData() async {
-    var querySnapShot = await FirebaseFirestore.instance.collection('LedgerData').get();
+  Future<List<Ledger>> getLedgerData(BuildContext context) async {
+    var userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    var userIdx = userProvider.userIdx;
+    var loverIdx = userProvider.loverIdx;
+
+    var querySnapShot = await FirebaseFirestore.instance.collection('LedgerData').where('ledger_user_idx', whereIn: [userIdx, loverIdx]).get();
     return querySnapShot.docs.map((doc) => Ledger.fromMap(doc.data() as Map<String, dynamic>)).toList();
   }
 
   // 가계부 상세 데이터 가져오기
-  Future<List<Ledger>> readLedger(String ledgerDate) async {
+  Future<List<Ledger>> readLedger(String ledgerDate, BuildContext context) async {
+    var userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    var userIdx = userProvider.userIdx;
+    var loverIdx = userProvider.loverIdx;
+
     var querySnapShot = await FirebaseFirestore.instance
         .collection('LedgerData')
+        .where('ledger_user_idx', whereIn: [userIdx, loverIdx])
         .where('ledger_date', isGreaterThanOrEqualTo: ledgerDate, isLessThan: '${ledgerDate}T23:59:59.999')
         .where('ledger_state', isEqualTo: LedgerState.STATE_NORMAL.state)
         .get();
@@ -57,21 +71,25 @@ class LedgerDao{
   }
 
   // 가계부 데이터 삭제 (상태 값 업데이트)
-  Future<List<Ledger>> updateLedgerState(Ledger ledger) async{
+  Future<void> deleteLedger(Ledger ledger) async{
     var querySnapShot = await FirebaseFirestore.instance
         .collection('LedgerData')
         .where('ledger_idx', isEqualTo: ledger.ledgerIdx)
         .get();
     var document = querySnapShot.docs.first;
-    document.reference.update({'ledger_state': LedgerState.STATE_DELETE.state});
-
-    return querySnapShot.docs.map((doc) => Ledger.fromMap(doc.data() as Map<String, dynamic>)).toList();
+    document.reference.delete();
   }
 
   // 연도와 월 조건으로 현재 월 데이터 가져오기
-  Future<List<Ledger>> getMonthlyLedgerData(DateTime focusedDay) async {
+  Future<List<Ledger>> getMonthlyLedgerData(DateTime focusedDay, BuildContext context) async {
+    var userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    var userIdx = userProvider.userIdx;
+    var loverIdx = userProvider.loverIdx;
+
     String yearMonth = '${focusedDay.year.toString().padLeft(4, '0')}-${focusedDay.month.toString().padLeft(2, '0')}';
     var querySnapshot = await FirebaseFirestore.instance.collection('LedgerData')
+        .where('ledger_user_idx', whereIn: [userIdx, loverIdx])
         .where('ledger_date', isGreaterThanOrEqualTo: '$yearMonth-01T00:00:00.000')
         .where('ledger_date', isLessThan: '$yearMonth-32T00:00:00.000')
         .get();
@@ -79,10 +97,16 @@ class LedgerDao{
   }
 
   // 연도와 월 조건으로 지난달 데이터 가져오기
-  Future<List<Ledger>> getPreviousMonthLedgerData(DateTime focusedDay) async {
+  Future<List<Ledger>> getPreviousMonthLedgerData(DateTime focusedDay, BuildContext context) async {
+    var userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    var userIdx = userProvider.userIdx;
+    var loverIdx = userProvider.loverIdx;
+
     DateTime previousMonth = DateTime(focusedDay.year, focusedDay.month - 1, 1);
     String yearMonth = '${previousMonth.year.toString().padLeft(4, '0')}-${previousMonth.month.toString().padLeft(2, '0')}';
     var querySnapshot = await FirebaseFirestore.instance.collection('LedgerData')
+        .where('ledger_user_idx', whereIn: [userIdx, loverIdx])
         .where('ledger_date', isGreaterThanOrEqualTo: '$yearMonth-01T00:00:00.000')
         .where('ledger_date', isLessThan: '$yearMonth-32T00:00:00.000')
         .get();
@@ -90,15 +114,21 @@ class LedgerDao{
   }
 }
 
-Future<bool> isLedgerExistOnDate(DateTime date) async {
-  var stringDate = dateToString(date);
-  var querySnapshot = await FirebaseFirestore.instance
-      .collection('Ledger')
-      .where('ledger_date', isEqualTo: stringDate)
-      .get();
-  if (querySnapshot.docs.isNotEmpty) {
-    return true;
-  } else {
-    return false;
-  }
-}
+// Future<bool> isLedgerExistOnDate(DateTime date, BuildContext context) async {
+//   var userProvider = Provider.of<UserProvider>(context, listen: false);
+//
+//   var userIdx = userProvider.userIdx;
+//   var loverIdx = userProvider.loverIdx;
+//
+//   var stringDate = dateToString(date);
+//   var querySnapshot = await FirebaseFirestore.instance
+//       .collection('Ledger')
+//       .where('ledger_user_idx', whereIn: [userIdx, loverIdx])
+//       .where('ledger_date', isEqualTo: stringDate)
+//       .get();
+//   if (querySnapshot.docs.isNotEmpty) {
+//     return true;
+//   } else {
+//     return false;
+//   }
+// }
