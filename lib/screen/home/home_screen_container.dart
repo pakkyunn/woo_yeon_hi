@@ -23,6 +23,7 @@ import '../../style/font.dart';
 import '../../style/text_style.dart';
 import '../../utils.dart';
 import '../../widget/diary/diary_calendar_bottom_sheet.dart';
+import '../../widget/home/lover_nickname_edit_dialog.dart';
 import '../calendar/calendar_screen.dart';
 import '../dDay/dDay_screen.dart';
 
@@ -54,6 +55,7 @@ class _HomeScreenContainerState extends State<HomeScreenContainer> {
   }
 }
 
+//디데이
 Widget dDay(BuildContext context) {
   var deviceWidth = MediaQuery.of(context).size.width;
   var deviceHeight = MediaQuery.of(context).size.height;
@@ -67,20 +69,16 @@ Widget dDay(BuildContext context) {
                   color: ColorFamily.black,
                   fontSize: 20,
                   fontFamily: FontFamily.mapleStoryLight)),
-          SizedBox(
-            width: 40,
-            height: 40,
-            child: FittedBox(
-              child: IconButton(
-                icon: SvgPicture.asset('lib/assets/icons/expand.svg'),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const dDayScreen()));
-                },
-              ),
-            ),
+          InkWell(
+            onTap: (){
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const dDayScreen()));
+            },
+            splashColor: Colors.transparent,
+            splashFactory: NoSplash.splashFactory,
+            child: SvgPicture.asset('lib/assets/icons/expand.svg'),
           )
         ],
       ),
@@ -174,11 +172,22 @@ Widget dDay(BuildContext context) {
                             )))),
                 // ClipOval(child: Image.asset('lib/assets/images/test_wooyeon_women.jpg', width: 75, height: 75)),
                 const SizedBox(height: 5),
-                Text(provider.loverNickname,
-                    style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.black,
-                        fontFamily: FontFamily.mapleStoryLight)),
+                InkWell(
+                  splashFactory: NoSplash.splashFactory,
+                  splashColor: Colors.transparent,
+                  onTap: (){
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                      return LoverNicknameEditDialog();
+                    });
+                  },
+                  child: Text(provider.loverNickname,
+                      style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.black,
+                          fontFamily: FontFamily.mapleStoryLight)),
+                ),
               ],
             ),
           ),
@@ -189,6 +198,109 @@ Widget dDay(BuildContext context) {
   });
 }
 
+//가계부
+Widget accountBook(BuildContext context) {
+  var ledgerProvider = Provider.of<LedgerProvider>(context);
+
+  var deviceWidth = MediaQuery.of(context).size.width;
+  var deviceHeight = MediaQuery.of(context).size.height;
+
+  Future<bool> _asyncData(LedgerProvider provider) async {
+    await provider.getMonthExpenditureSum();
+
+    return true;
+  }
+
+  return FutureBuilder(
+    future: _asyncData(ledgerProvider),
+    builder: (context, snapshot){
+      if(snapshot.hasData == false){
+        return const Center(
+          child: CircularProgressIndicator(
+            color: ColorFamily.pink,
+          ),
+        );
+      }else if(snapshot.hasError){
+        return const Text("오류 발생", style: TextStyleFamily.normalTextStyle,);
+      }else{
+        return _cardContainer(
+            const Text("가계부",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontFamily: FontFamily.mapleStoryLight)),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: deviceWidth*0.38,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 15),
+                            child: Text("${ledgerProvider.monthExpenditureTargetDateTime.year}", style: TextStyleFamily.normalTextStyle),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  ledgerProvider.updatePreviousMonth();
+                                },
+                                icon: SvgPicture.asset('lib/assets/icons/arrow_left.svg'),
+                              ),
+                              Text("${ledgerProvider.monthExpenditureTargetDateTime.month}월",
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 24,
+                                      fontFamily: FontFamily.mapleStoryLight)),
+                              IconButton(
+                                onPressed: () {
+                                  ledgerProvider.updateNextMonth();
+                                },
+                                icon: SvgPicture.asset('lib/assets/icons/arrow_right.svg'),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(width: 2, height: 70, color: ColorFamily.pink),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Flexible(
+                              child: Text(ledgerProvider.monthExpenditureSum,
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontFamily: FontFamily.mapleStoryLight),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            ),
+                            const Text("원 소비",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontFamily: FontFamily.mapleStoryLight),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                          ]),
+                    ),
+                    const SizedBox(width: 20),
+                  ],
+                ),
+            deviceWidth*0.95, deviceHeight*0.15
+        );
+      }
+    },
+  );
+}
+
+//데이트플랜
 Widget datePlan(BuildContext context) {
   var deviceWidth = MediaQuery.of(context).size.width;
   var deviceHeight = MediaQuery.of(context).size.height;
@@ -283,74 +395,6 @@ Widget datePlan(BuildContext context) {
   );
 }
 
-Widget accountBook(BuildContext context) {
-  var deviceWidth = MediaQuery.of(context).size.width;
-  var deviceHeight = MediaQuery.of(context).size.height;
-
-  Future<bool> _asyncData(LedgerProvider provider) async {
-  //TODO 가계부 정보 가져오기
-    return true;
-  }
-  var ledgerProvider = Provider.of<LedgerProvider>(context);
-
-  return FutureBuilder(
-    future: _asyncData(ledgerProvider),
-    builder: (context, snapshot){
-      if(snapshot.hasData == false){
-        return const Center(
-          child: CircularProgressIndicator(
-            color: ColorFamily.pink,
-          ),
-        );
-      }else if(snapshot.hasError){
-        return const Text("오류 발생", style: TextStyleFamily.normalTextStyle,);
-      }else{
-        return _cardContainer(
-            const Text("가계부",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontFamily: FontFamily.mapleStoryLight)),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ClipRRect(
-                  child: Material(
-                    child: IconButton(
-                      onPressed: () {},
-                      icon: SvgPicture.asset('lib/assets/icons/arrow_left.svg'),
-                    ),
-                  ),
-                ),
-                const Text("10월",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 24,
-                        fontFamily: FontFamily.mapleStoryLight)),
-                ClipRRect(
-                  child: Material(
-                    child: IconButton(
-                      onPressed: () {},
-                      icon: SvgPicture.asset('lib/assets/icons/arrow_right.svg'),
-                    ),
-                  ),
-                ),
-                Container(width: 2, height: 70, color: ColorFamily.pink),
-                const Text("526,300원 소비",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontFamily: FontFamily.mapleStoryLight))
-              ],
-            ),
-            deviceWidth*0.95, deviceHeight*0.15
-        );
-      }
-    },
-  );
-}
-
-
 Widget calendar(BuildContext context) {
   var deviceWidth = MediaQuery.of(context).size.width;
   var deviceHeight = MediaQuery.of(context).size.height;
@@ -384,20 +428,16 @@ Widget calendar(BuildContext context) {
                     color: ColorFamily.black,
                     fontSize: 20,
                     fontFamily: FontFamily.mapleStoryLight)),
-            SizedBox(
-              width: 40,
-              height: 40,
-              child: FittedBox(
-                child: IconButton(
-                  icon: SvgPicture.asset('lib/assets/icons/expand.svg'),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const CalendarScreen()));
-                  },
-                ),
-              ),
+            InkWell(
+              onTap: (){
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const CalendarScreen()));
+              },
+              splashColor: Colors.transparent,
+              splashFactory: NoSplash.splashFactory,
+              child: SvgPicture.asset('lib/assets/icons/expand.svg'),
             )
           ],
         ),
@@ -620,7 +660,7 @@ Widget _cardContainer(Widget title, Widget child, double? width, double? height)
         height: height,
         child: Material(
             color: ColorFamily.white,
-            elevation: 1,
+            elevation: 0.5,
             shadowColor: Colors.black,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.0),

@@ -25,9 +25,9 @@ class _HomeScreenState extends State<HomeScreenSet4> {
               children: [
                 dDay(context),
                 const SizedBox(height: 20),
-                datePlan(context),
-                const SizedBox(height: 20),
                 accountBook(context),
+                const SizedBox(height: 20),
+                datePlan(context),
                 const SizedBox(height: 20),
                 calendar(context),
               ],

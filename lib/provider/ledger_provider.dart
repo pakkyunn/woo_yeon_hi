@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/dao/ledger_dao.dart';
 import 'package:woo_yeon_hi/model/ledger_model.dart';
+import 'package:woo_yeon_hi/utils.dart';
 
 import 'login_register_provider.dart';
 
@@ -17,7 +18,7 @@ class LedgerProvider extends ChangeNotifier{
 
   LedgerProvider(this.context);
 
-  // 상단 베너 텍스트에 콤마
+  // 상단 배너 텍스트에 콤마
   String formatNumber(int number) {
     final formatter = NumberFormat('#,###');
     return formatter.format(number);
@@ -47,7 +48,7 @@ class LedgerProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  // Carousel_Slider에서 사용 (상단 베너)
+  // Carousel_Slider에서 사용 (상단 배너)
   int _currentIndex = 0;
   bool _isLoading = true;
 
@@ -59,16 +60,16 @@ class LedgerProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  // 상단 베너 로딩 데이터
+  // 상단 배너 로딩 데이터
   final List<Map<String, dynamic>> _itemsSetting = [{'texts1': ['']}, {'image': ''}];
   List<Map<String, dynamic>> get itemsSetting => _itemsSetting;
 
-  // 상단 베너
+  // 상단 배너
   final List<Map<String, dynamic>> _items = [];
 
   List<Map<String, dynamic>> get items => _items;
 
-  // 상단 베너 Text1
+  // 상단 배너 Text1
   void updateTexts1(int index, List<String> newTexts1) {
     if (index >= 0 && index < _items.length && _items[index].containsKey('texts1')) {
       _items[index]['texts1'] = newTexts1;
@@ -76,7 +77,7 @@ class LedgerProvider extends ChangeNotifier{
     }
   }
 
-  // 상단 베너 Text2
+  // 상단 배너 Text2
   void updateTexts2(int index, List<String> newTexts2) {
     if (index >= 0 && index < _items.length && _items[index].containsKey('texts2')) {
       _items[index]['texts2'] = newTexts2;
@@ -84,7 +85,7 @@ class LedgerProvider extends ChangeNotifier{
     }
   }
 
-  // 상단 베너 Text4
+  // 상단 배너 Text4
   void updateTexts4(int index, List<String> newTexts4) {
     if (index >= 0 && index < _items.length && _items[index].containsKey('texts4')) {
       _items[index]['texts4'] = newTexts4;
@@ -126,10 +127,75 @@ class LedgerProvider extends ChangeNotifier{
       });
 
     } catch (e) {
-      print("상단 베너 초기화 오류: $e");
+      print("상단 배너 초기화 오류: $e");
     }
 
     _isLoading = false;
+  }
+
+  String _monthExpenditureSum = "0";
+  String get monthExpenditureSum => _monthExpenditureSum;
+  void setMonthExpenditureSum(String sum){
+    _monthExpenditureSum = sum;
+    notifyListeners();
+  }
+
+  DateTime _monthExpenditureTargetDateTime = DateTime.now();
+  DateTime get monthExpenditureTargetDateTime => _monthExpenditureTargetDateTime;
+  void setTargetDateTime(DateTime targetDateTime){
+    _monthExpenditureTargetDateTime = targetDateTime;
+    notifyListeners();
+  }
+
+  // 가계부 위젯 월 지출액 가져오기
+  Future<void> getMonthExpenditureSum() async {
+    try {
+      List<Ledger> monthLedgers = await _ledgerDao.getMonthlyLedgerData(monthExpenditureTargetDateTime, context);
+
+      int monthSum = monthLedgers
+          .where((ledger) => ledger.ledgerType.type == 0)
+          .fold(0, (sum, ledger) => sum + ledger.ledgerAmount);
+
+      String formattedMonthSumString = formatNumber(monthSum);
+
+      setMonthExpenditureSum(formattedMonthSumString);
+    }catch (e) {
+      print("상단 배너 업데이트 오류: $e");
+    }
+  }
+  // 가계부 위젯_이전 월로 이동 시
+  void updatePreviousMonth(){
+    DateTime loveDdayDateTime = stringToDate(Provider.of<UserProvider>(context, listen: false).loveDday);
+    DateTime previousMonth =
+      monthExpenditureTargetDateTime.year == loveDdayDateTime.year && monthExpenditureTargetDateTime.month == loveDdayDateTime.month
+        ? loveDdayDateTime
+        : DateTime(
+            monthExpenditureTargetDateTime.month == 1
+              ? monthExpenditureTargetDateTime.year - 1
+              : monthExpenditureTargetDateTime.year,
+            monthExpenditureTargetDateTime.month == 1
+              ? 12
+              : monthExpenditureTargetDateTime.month - 1,
+            monthExpenditureTargetDateTime.day
+         );
+    setTargetDateTime(previousMonth);
+  }
+
+  // 가계부 위젯_다음 월로 이동 시
+  void updateNextMonth(){
+    DateTime nextMonth =
+      monthExpenditureTargetDateTime.year == DateTime.now().year && monthExpenditureTargetDateTime.month == DateTime.now().month
+       ? DateTime.now()
+       : DateTime(
+          monthExpenditureTargetDateTime.month == 12
+            ? monthExpenditureTargetDateTime.year + 1
+            : monthExpenditureTargetDateTime.year,
+          monthExpenditureTargetDateTime.month == 12
+            ? 1
+            : monthExpenditureTargetDateTime.month + 1,
+          monthExpenditureTargetDateTime.day
+         );
+    setTargetDateTime(nextMonth);
   }
 
   // 상단 배너 업데이트
@@ -150,7 +216,7 @@ class LedgerProvider extends ChangeNotifier{
       updateTexts4(0, [currentMonthSum > previousMonthSum ? '${formatNumber(currentMonthSum - previousMonthSum)} 원' : '0 원']);
 
     } catch (e) {
-      print("상단 베너 업데이트 오류: $e");
+      print("상단 배너 업데이트 오류: $e");
     }
 
     updateTexts1(0, ['${newFocusedDay.month}월 지출 현황']);
