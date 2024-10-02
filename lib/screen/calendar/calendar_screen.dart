@@ -35,7 +35,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   // 데이터를 가져옴
   Future<void> getData() async {
-    var tempScheduleData = await getScheduleData();
+    var tempScheduleData = await getScheduleData(context);
 
     setState(() {
       scheduleData = tempScheduleData;

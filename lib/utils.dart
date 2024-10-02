@@ -36,8 +36,9 @@ DateTime stringToDate(String date) {
 /// Datetime 객체를 날짜 저장 형식으로 변환합니다.
 /// 날짜 뒤 요일이 추가된 형식입니다. (E)
 String dateToStringWithDay(DateTime date) {
-  String selectedDay = DateFormat('yyyy. M. dd.(E)', 'ko_KR').format(date);
-  return '$selectedDay';
+  String formattedDay = DateFormat('yyyy. M. dd.(E)', 'ko_KR').format(date);
+
+  return formattedDay;
 }
 
 /// 현재 시각을 int 저장 형식으로 변환합니다.

@@ -185,7 +185,7 @@ class _CalendarDateState extends State<CalendarDate> {
                           },
                           markerBuilder: (context, day, events) {
                             return FutureBuilder(
-                                future: isExistOnSchedule(day),
+                                future: isExistOnSchedule(day, context),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData == false) {
                                     return const SizedBox();

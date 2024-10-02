@@ -10,6 +10,7 @@ import 'package:woo_yeon_hi/model/enums.dart';
 import 'package:woo_yeon_hi/model/schedule_model.dart';
 import 'package:woo_yeon_hi/provider/schedule_provider.dart';
 import 'package:woo_yeon_hi/style/color.dart';
+import 'package:woo_yeon_hi/utils.dart';
 import 'package:woo_yeon_hi/widget/calendar/calendar_color_picker.dart';
 import 'package:woo_yeon_hi/widget/calendar/calendar_switch.dart';
 import 'package:woo_yeon_hi/widget/calendar/calendar_term_finish.dart';
@@ -350,8 +351,8 @@ class _CalendarAddScreenState extends State<CalendarAddScreen> {
     var schedule_idx = await getScheduleSequence() + 1; // 저장할 때 idx 값 1씩 증가
     var schedule_user_idx = 0;
     await setScheduleSequence(schedule_idx);
-    var schedule_start_date = DateFormat('yyyy. M. dd.(E)', 'ko_KR').format(termStart);
-    var schedule_finish_date = DateFormat('yyyy. M. dd.(E)', 'ko_KR').format(termFinish);
+    var schedule_start_date = dateToStringWithDay(termStart);
+    var schedule_finish_date = dateToStringWithDay(termFinish);
     var schedule_start_time = DateFormat('HH:mm').format(termStart);
     var schedule_finish_time = DateFormat('HH:mm').format(termFinish);
 

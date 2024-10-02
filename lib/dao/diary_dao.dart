@@ -112,12 +112,10 @@ Future<List<Map<String, dynamic>>> getDiaryData(
   // 연인이 쓴 일기
   else if (filter_editor == DiaryEditorState.EDITOR_LOVER.type) {
     query = query.where('diary_user_idx', isEqualTo: lover_idx);
-    print("Query: diary_user_idx == $lover_idx");
   }
   // 내가 쓴 것과 연인이 쓴 일기 모두
   else if (filter_editor == DiaryEditorState.EDITOR_ALL.type){
     query = query.where('diary_user_idx', whereIn: [user_idx, lover_idx]);
-    print("Query: diary_user_idx in [$user_idx, $lover_idx]");
   }
 
   // 기간 조회
@@ -125,36 +123,27 @@ Future<List<Map<String, dynamic>>> getDiaryData(
     query = query
         .where('diary_date', isGreaterThanOrEqualTo: filter_start)
         .where('diary_date', isLessThanOrEqualTo: filter_end);
-    print("Query: diary_date >= $filter_start && diary_date <= $filter_end");
   } else if (filter_start.isNotEmpty && filter_end.isEmpty) {
     query = query.where('diary_date', isGreaterThanOrEqualTo: filter_start);
-    print("Query: diary_date >= $filter_start");
   } else if (filter_start.isEmpty && filter_end.isNotEmpty) {
     query = query.where('diary_date', isLessThanOrEqualTo: filter_end);
-    print("Query: diary_date <= $filter_end");
   }
 
   // 정렬 조건
   if (filter_sort == DiarySortState.SORT_ASC.type) {
     query = query.orderBy('diary_idx', descending: false);
-    print("Query: order by diary_idx ascending");
   } else {
     query = query.orderBy('diary_idx', descending: true);
-    print("Query: order by diary_idx descending");
   }
 
   // 실제로 실행되는 쿼리와 결과 확인
   var querySnapShot = await query.get();
   for (var doc in querySnapShot.docs) {
     results.add(doc.data());
-    print("Fetched Document: ${doc.data()}");
   }
 
   return results;
 }
-
-
-
 
 Future<void> uploadDiaryImage(XFile imageFile, String imageName) async {
   await FirebaseStorage.instance

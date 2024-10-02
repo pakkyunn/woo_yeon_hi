@@ -20,6 +20,7 @@ class ScheduleProvider extends ChangeNotifier {
   void providerNotify(){
     notifyListeners();
   }
+
 }
 
 class HomeCalendarProvider extends ChangeNotifier {

@@ -163,6 +163,7 @@ class LedgerProvider extends ChangeNotifier{
       print("상단 배너 업데이트 오류: $e");
     }
   }
+
   // 가계부 위젯_이전 월로 이동 시
   void updatePreviousMonth(){
     DateTime loveDdayDateTime = stringToDate(Provider.of<UserProvider>(context, listen: false).loveDday);

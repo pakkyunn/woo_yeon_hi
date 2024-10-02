@@ -36,12 +36,6 @@ class HomeScreenContainer extends StatefulWidget {
 
 class _HomeScreenContainerState extends State<HomeScreenContainer> {
   @override
-  void initState() {
-    super.initState();
-    Provider.of<HomeCalendarProvider>(context, listen: false).setSelectedDay(DateTime.now());
-    Provider.of<HomeCalendarProvider>(context, listen: false).setFocusedDay(DateTime.now());
-  }
-  @override
   Widget build(BuildContext context) {
     return Consumer<UserProvider>(builder: (context, provider, child) {
       return provider.homePresetType == 0
@@ -200,7 +194,7 @@ Widget dDay(BuildContext context) {
 
 //가계부
 Widget accountBook(BuildContext context) {
-  var ledgerProvider = Provider.of<LedgerProvider>(context);
+  var ledgerProvider = Provider.of<LedgerProvider>(context, listen: false);
 
   var deviceWidth = MediaQuery.of(context).size.width;
   var deviceHeight = MediaQuery.of(context).size.height;
@@ -311,7 +305,7 @@ Widget datePlan(BuildContext context) {
     provider.addPlanList(result);
     return true;
   }
-  var datePlanProvider = Provider.of<FootPrintSlidableProvider>(context);
+  var datePlanProvider = Provider.of<FootPrintSlidableProvider>(context, listen: false);
   final controller = PageController(viewportFraction: 1, keepPage: true);
 
   final pages = List.generate(4, (index) => const Column(
@@ -395,26 +389,13 @@ Widget datePlan(BuildContext context) {
   );
 }
 
+//캘린더
 Widget calendar(BuildContext context) {
   var deviceWidth = MediaQuery.of(context).size.width;
   var deviceHeight = MediaQuery.of(context).size.height;
 
   DateTime _focusedDay = Provider.of<HomeCalendarProvider>(context).focusedDay;
   DateTime? _selectedDay = Provider.of<HomeCalendarProvider>(context).selectedDay;
-
-  // Future<bool> _asyncData(CalendarProvider provider) async {
-  //   //TODO 일정 정보 가져오기
-  //   return false;
-  // }
-  // var calendarProvider = Provider.of<CalendarProvider>(context);
-
-  Future<bool> _asyncData(FootPrintSlidableProvider provider) async {
-    var userProvider = Provider.of<UserProvider>(context, listen: false);
-    List<Plan> result = await getPlanData(userProvider.userIdx);
-    provider.addPlanList(result);
-    return true;
-  }
-  var datePlanProvider = Provider.of<FootPrintSlidableProvider>(context);
 
   CalendarFormat _calendarFormat = CalendarFormat.month;
 
@@ -445,23 +426,24 @@ Widget calendar(BuildContext context) {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Container(
-                  padding: const EdgeInsets.fromLTRB(10,0,10,10),
+                  padding: const EdgeInsets.all(10.0),
                   width: deviceWidth * 0.95,
                   child: Column(
                       children: [
                         TableCalendar(
                           availableGestures: AvailableGestures.none,
-                          firstDay: stringToDate(Provider.of<UserProvider>(context, listen: false).loveDday),
-                          lastDay: DateTime.utc(2099, 12, 31),
+                          firstDay: DateTime(DateTime.now().year, DateTime.now().month, 1),
+                          lastDay: DateTime(DateTime.now().year, DateTime.now().month, 31),
                           focusedDay: _focusedDay,
                           locale: 'ko_kr',
                           rowHeight: 45,
                           daysOfWeekHeight:40,
                           headerStyle: const HeaderStyle(
                             titleCentered: true,
-                            titleTextStyle: TextStyleFamily
-                                .appBarTitleBoldTextStyle,
+                            titleTextStyle: TextStyleFamily.appBarTitleBoldTextStyle,
                             formatButtonVisible: false,
+                            leftChevronVisible: false,
+                            rightChevronVisible: false,
                           ),
                           daysOfWeekStyle: const DaysOfWeekStyle(
                               weekdayStyle: TextStyleFamily.normalTextStyle,
@@ -532,8 +514,7 @@ Widget calendar(BuildContext context) {
                                                 : isSaturday(day)
                                                 ? ColorFamily.white
                                                 : ColorFamily.black,
-                                            fontFamily: FontFamily
-                                                .mapleStoryLight
+                                            fontFamily: FontFamily.mapleStoryLight
                                         ),
                                       ),
                                     ),
@@ -555,7 +536,7 @@ Widget calendar(BuildContext context) {
                               },
                               markerBuilder: (context, day, events) {
                                 return FutureBuilder(
-                                    future: isExistOnSchedule(day),
+                                    future: isExistOnSchedule(day, context),
                                     builder: (context, snapshot) {
                                       if (snapshot.hasData == false) {
                                         return const SizedBox();
@@ -592,9 +573,6 @@ Widget calendar(BuildContext context) {
                             provider.setSelectedDay(selectedDay);
                             provider.setFocusedDay(focusedDay);
                           },
-                          onPageChanged: (focusedDay) {
-                            provider.setFocusedDay(focusedDay);
-                          },
                         ),
                         const SizedBox(height: 20),
                         calendarFutureBuilderWidget(context)
@@ -605,6 +583,7 @@ Widget calendar(BuildContext context) {
   });
 }
 
+//캘린더 일정 리스트
 Widget calendarFutureBuilderWidget(BuildContext context){
   // Future<bool> _asyncData(CalendarProvider provider) async {
   //   //TODO 일정 정보 가져오기
@@ -612,16 +591,13 @@ Widget calendarFutureBuilderWidget(BuildContext context){
   // }
   // var calendarProvider = Provider.of<CalendarProvider>(context);
 
-  Future<bool> _asyncData(FootPrintSlidableProvider provider) async {
-    var userProvider = Provider.of<UserProvider>(context, listen: false);
-    List<Plan> result = await getPlanData(userProvider.userIdx);
-    provider.addPlanList(result);
+  Future<bool> _asyncData() async {
+    getScheduleData(context);
     return true;
   }
-  var datePlanProvider = Provider.of<FootPrintSlidableProvider>(context);
 
   return FutureBuilder(
-      future: _asyncData(datePlanProvider),
+      future: _asyncData(),
       builder: (context, snapshot){
         if(snapshot.hasData == false){
           return const Center(

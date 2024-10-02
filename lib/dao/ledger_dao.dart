@@ -17,9 +17,9 @@ class LedgerDao{
   }
 
   // 가계부 시퀀스값 업데이트
-  Future<void> updateLedgerSequence(int LedgerSequence) async {
+  Future<void> updateLedgerSequence(int ledgerSequence) async {
     await FirebaseFirestore.instance.collection('Sequence').doc('LedgerSequence').set({
-      'value': LedgerSequence
+      'value': ledgerSequence
     });
   }
 
@@ -36,7 +36,7 @@ class LedgerDao{
     var loverIdx = userProvider.loverIdx;
 
     var querySnapShot = await FirebaseFirestore.instance.collection('LedgerData').where('ledger_user_idx', whereIn: [userIdx, loverIdx]).get();
-    return querySnapShot.docs.map((doc) => Ledger.fromMap(doc.data() as Map<String, dynamic>)).toList();
+    return querySnapShot.docs.map((doc) => Ledger.fromMap(doc.data())).toList();
   }
 
   // 가계부 상세 데이터 가져오기
