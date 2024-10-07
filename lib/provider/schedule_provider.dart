@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
+import '../dao/schedule_dao.dart';
+
 class ScheduleProvider extends ChangeNotifier {
   final TextEditingController _titleController = TextEditingController(); // 일정 제목
   final TextEditingController _memoController = TextEditingController();  // 일정 메모
@@ -30,12 +32,30 @@ class HomeCalendarProvider extends ChangeNotifier {
   DateTime _focusedDay = DateTime.now();
   DateTime get focusedDay => _focusedDay;
 
+  List<List<Map<String, dynamic>>> _scheduleList = [];
+  List<List<Map<String, dynamic>>> get scheduleList => _scheduleList;
+
+  int _listIndex = 0;
+  int get listIndex => _listIndex;
+
   void setSelectedDay(DateTime selectedDay){
     _selectedDay = selectedDay;
     notifyListeners();
   }
+
   void setFocusedDay(DateTime focusedDay){
     _focusedDay = focusedDay;
+    notifyListeners();
+  }
+
+  void setScheduleList(List<List<Map<String, dynamic>>> scheduleList){
+    _scheduleList = scheduleList;
+    notifyListeners();
+  }
+
+  void setListIndex() {
+    _listIndex = selectedDay.day - 1;
+
     notifyListeners();
   }
 }
