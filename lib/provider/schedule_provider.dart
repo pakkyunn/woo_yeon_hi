@@ -35,6 +35,9 @@ class HomeCalendarProvider extends ChangeNotifier {
   List<List<Map<String, dynamic>>> _scheduleList = [];
   List<List<Map<String, dynamic>>> get scheduleList => _scheduleList;
 
+  List<Map<String, dynamic>> _selectedDayScheduleList = [];
+  List<Map<String, dynamic>> get selectedDayScheduleList => _selectedDayScheduleList;
+
   int _listIndex = 0;
   int get listIndex => _listIndex;
 
@@ -53,9 +56,13 @@ class HomeCalendarProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setSelectedDayScheduleList(){
+    _selectedDayScheduleList = _scheduleList[listIndex];
+    notifyListeners();
+  }
+
   void setListIndex() {
     _listIndex = selectedDay.day - 1;
-
     notifyListeners();
   }
 }

@@ -9,7 +9,7 @@ import 'package:woo_yeon_hi/dao/plan_dao.dart';
 import 'package:woo_yeon_hi/dialogs.dart';
 import 'package:woo_yeon_hi/model/enums.dart';
 import 'package:woo_yeon_hi/model/plan_model.dart';
-import 'package:woo_yeon_hi/screen/footPrint/footprint_date_plan_detail_screen.dart';
+import 'package:woo_yeon_hi/screen/footPrint/footprint_date_plan_list_view_screen.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/utils.dart';
 import 'package:woo_yeon_hi/widget/footPrint/footprint_date_plan_draggable_sheet.dart';
@@ -23,14 +23,14 @@ import '../../style/font.dart';
 import '../../style/text_style.dart';
 import '../../widget/footPrint/footprint_date_plan_write_place_info.dart';
 
-class FootprintDatePlanWriteScreen extends StatefulWidget {
-  const FootprintDatePlanWriteScreen({super.key});
+class FootprintDatePlanEditScreen extends StatefulWidget {
+  const FootprintDatePlanEditScreen({super.key});
 
   @override
-  State<FootprintDatePlanWriteScreen> createState() => _FootprintDatePlanWriteScreenState();
+  State<FootprintDatePlanEditScreen> createState() => _FootprintDatePlanEditScreenState();
 }
 
-class _FootprintDatePlanWriteScreenState extends State<FootprintDatePlanWriteScreen> {
+class _FootprintDatePlanEditScreenState extends State<FootprintDatePlanEditScreen> {
   late NaverMapController _mapController;
 
   @override
@@ -42,7 +42,7 @@ class _FootprintDatePlanWriteScreenState extends State<FootprintDatePlanWriteScr
           return Scaffold(
             // 앱바
             appBar: FootprintDatePlanTopAppBar(
-              title: '데이트 플랜 생성',
+              title: '데이트 플랜 편집(임시화면)',
               leading: IconButton(
                 onPressed: () {
                   Navigator.pop(context);
@@ -55,7 +55,7 @@ class _FootprintDatePlanWriteScreenState extends State<FootprintDatePlanWriteScr
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => FootprintDatePlanDetailScreen(provider)
+                            builder: (context) => FootprintDatePlanListViewScreen()
                         )
                     );
                   },
@@ -357,24 +357,24 @@ Future<DateTime?> _showDatePicker(BuildContext context, FootPrintDatePlanSlidabl
       minTime: DateTime(1900, 1, 1),
       maxTime: DateTime(2099, 12, 31),
       theme: const picker.DatePickerTheme(
-          titleHeight: 60,
-          containerHeight: 300,
-          itemHeight: 50,
-          headerColor: ColorFamily.white,
-          backgroundColor:
-          ColorFamily.white,
-          itemStyle: TextStyleFamily
-              .smallTitleTextStyle,
-          cancelStyle: TextStyle(
-              color: ColorFamily.black,
-              fontSize: 18,
-              fontFamily: FontFamily
-                  .mapleStoryLight),
-          doneStyle: TextStyle(
-              color: ColorFamily.black,
-              fontSize: 18,
-              fontFamily: FontFamily
-                  .mapleStoryLight),),
+        titleHeight: 60,
+        containerHeight: 300,
+        itemHeight: 50,
+        headerColor: ColorFamily.white,
+        backgroundColor:
+        ColorFamily.white,
+        itemStyle: TextStyleFamily
+            .smallTitleTextStyle,
+        cancelStyle: TextStyle(
+            color: ColorFamily.black,
+            fontSize: 18,
+            fontFamily: FontFamily
+                .mapleStoryLight),
+        doneStyle: TextStyle(
+            color: ColorFamily.black,
+            fontSize: 18,
+            fontFamily: FontFamily
+                .mapleStoryLight),),
       // onChanged: (date) {
       //   print('change $date in time zone ' +
       //    date.timeZoneOffset.inHours.toString());

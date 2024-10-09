@@ -138,6 +138,7 @@ class _WooYeonHiState extends State<WooYeonHi> {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => CalendarProvider()),
+          ChangeNotifierProvider(create: (context) => HomeDatePlanProvider()),
           ChangeNotifierProvider(create: (context) => HomeCalendarProvider()),
           ChangeNotifierProvider(create: (context) => CalendarScreenProvider()),
           ChangeNotifierProvider(create: (context) => PasswordProvider()),

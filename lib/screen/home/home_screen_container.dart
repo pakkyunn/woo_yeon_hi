@@ -26,6 +26,7 @@ import '../../widget/diary/diary_calendar_bottom_sheet.dart';
 import '../../widget/home/lover_nickname_edit_dialog.dart';
 import '../calendar/calendar_screen.dart';
 import '../dDay/dDay_screen.dart';
+import '../footPrint/footprint_date_plan_edit_screen.dart';
 
 class HomeScreenContainer extends StatefulWidget {
   const HomeScreenContainer({super.key});
@@ -38,13 +39,24 @@ class _HomeScreenContainerState extends State<HomeScreenContainer> {
   @override
   void initState() {
     super.initState();
-    getFutureScheduleList();
+    _getDatePlanData();
+    _getScheduleData();
   }
 
-  Future<void> getFutureScheduleList() async {
-    var scheduleList = await getScheduleList(context);
-    Provider.of<HomeCalendarProvider>(context, listen: false)
-        .setScheduleList(scheduleList);
+  Future<void> _getDatePlanData() async {
+    // 데이트플랜 데이터 가져오기
+    var homeDatePlanProvider = Provider.of<HomeDatePlanProvider>(context, listen: false);
+    var datePlanList = await getHomePlanList(context);
+    homeDatePlanProvider.setDatePlanList(datePlanList);
+  }
+
+  Future<void> _getScheduleData() async {
+    // 캘린더 데이터 가져오기
+    var homeCalendarProvider = Provider.of<HomeCalendarProvider>(context, listen: false);
+    var scheduleList = await getHomeScheduleList(context);
+    homeCalendarProvider.setScheduleList(scheduleList);
+    homeCalendarProvider.setListIndex();
+    homeCalendarProvider.setSelectedDayScheduleList();
   }
 
   @override
@@ -195,7 +207,7 @@ Widget dDay(BuildContext context) {
                     child: Text(provider.loverNickname,
                         style: const TextStyle(
                             fontSize: 14,
-                            color: Colors.black,
+                            color: ColorFamily.black,
                             fontFamily: FontFamily.mapleStoryLight)),
                   ),
                 ],
@@ -241,7 +253,7 @@ Widget accountBook(BuildContext context) {
               children: [
                 Text("가계부",
                     style: TextStyle(
-                        color: Colors.black,
+                        color: ColorFamily.black,
                         fontSize: 20,
                         fontFamily: FontFamily.mapleStoryLight)),
               ],
@@ -277,7 +289,7 @@ Widget accountBook(BuildContext context) {
                           Text(
                               "${ledgerProvider.monthExpenditureTargetDateTime.month}월",
                               style: const TextStyle(
-                                  color: Colors.black,
+                                  color: ColorFamily.black,
                                   fontSize: 24,
                                   fontFamily: FontFamily.mapleStoryLight)),
                           IconButton(
@@ -304,7 +316,7 @@ Widget accountBook(BuildContext context) {
                           child: Text(
                             ledgerProvider.monthExpenditureSum,
                             style: const TextStyle(
-                                color: Colors.black,
+                                color: ColorFamily.black,
                                 fontSize: 20,
                                 fontFamily: FontFamily.mapleStoryLight),
                             overflow: TextOverflow.ellipsis,
@@ -314,7 +326,7 @@ Widget accountBook(BuildContext context) {
                         const Text(
                           "원 소비",
                           style: TextStyle(
-                              color: Colors.black,
+                              color: ColorFamily.black,
                               fontSize: 20,
                               fontFamily: FontFamily.mapleStoryLight),
                           overflow: TextOverflow.ellipsis,
@@ -335,37 +347,27 @@ Widget accountBook(BuildContext context) {
 Widget datePlan(BuildContext context) {
   var deviceHeight = MediaQuery.of(context).size.height;
 
-  Future<bool> _asyncData(FootPrintSlidableProvider provider) async {
-    var userProvider = Provider.of<UserProvider>(context, listen: false);
-    List<Plan> result = await getPlanData(userProvider.userIdx);
-    provider.addPlanList(result);
-    return true;
-  }
-
-  var datePlanProvider =
-      Provider.of<FootPrintSlidableProvider>(context, listen: false);
+  var provider = Provider.of<HomeDatePlanProvider>(context, listen: false);
   final controller = PageController(viewportFraction: 1, keepPage: true);
 
-  final pages = List.generate(
-      4,
-      (index) => const Column(
+  final pages = List.generate(provider.datePlanList.length, (index) => Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text("제주도 여행",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
-                      fontFamily: FontFamily.mapleStoryLight)),
-              Text("2024.6.13(수) - 2024.6.17(월)",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 12,
-                      fontFamily: FontFamily.mapleStoryLight)),
-              Text("2024.5.17 작성 by 우연녀",
+              Text(provider.datePlanList[index]["plan_title"],
+                  style: const TextStyle(
+                    color: ColorFamily.black,
+                    fontSize: 20,
+                    fontFamily: FontFamily.mapleStoryLight
+                  )),
+              const SizedBox(height: 5),
+              Text(provider.datePlanList[index]["plan_date"],
+                  style: TextStyleFamily.normalTextStyle),
+              const SizedBox(height: 10),
+              Text("${provider.datePlanList[index]["plan_user_nickname"]}의 플랜",
                   textAlign: TextAlign.right,
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 10,
+                  style: const TextStyle(
+                      color: ColorFamily.black,
+                      fontSize: 12,
                       fontFamily: FontFamily.mapleStoryLight)),
             ],
           ));
@@ -376,61 +378,58 @@ Widget datePlan(BuildContext context) {
         children: [
           Text("데이트 플랜",
               style: TextStyle(
-                  color: Colors.black,
+                  color: ColorFamily.black,
                   fontSize: 20,
                   fontFamily: FontFamily.mapleStoryLight)),
         ],
       ),
-      Padding(
-        padding: const EdgeInsets.only(top: 16, left: 20, right: 20, bottom: 0),
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: PageView.builder(
-                controller: controller,
-                itemCount: pages.length,
-                itemBuilder: (_, index) {
-                  return FutureBuilder(
-                    future: _asyncData(datePlanProvider),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData == false) {
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            color: ColorFamily.pink,
-                          ),
-                        );
-                      } else if (snapshot.hasError) {
-                        return const Text(
-                          "오류 발생",
-                          style: TextStyleFamily.normalTextStyle,
-                        );
-                      } else {
-                        return pages[index % pages.length];
-                      }
-                    },
-                  );
-                },
+      InkWell(
+        onTap: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const FootprintDatePlanEditScreen()));
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(top: 16, left: 20, right: 20, bottom: 0),
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                child:
+                provider.datePlanList.isNotEmpty
+                ? PageView.builder(
+                  controller: controller,
+                  itemCount: provider.datePlanList.length,
+                  itemBuilder: (_, index) {
+                    return pages[index];
+                  },
+                )
+                : const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("데이트 플랜 없음", style: TextStyleFamily.normalTextStyle)
+                  ],
+                )
               ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(5),
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(15)),
-                color: ColorFamily.beige,
-              ),
-              child: SmoothPageIndicator(
-                controller: controller,
-                count: pages.length,
-                effect: const ScrollingDotsEffect(
-                  dotHeight: 11,
-                  dotWidth: 11,
-                  activeDotColor: ColorFamily.pink,
-                  dotColor: ColorFamily.white,
+              provider.datePlanList.isNotEmpty
+              ? Container(
+                padding: const EdgeInsets.all(5),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                  color: ColorFamily.beige,
                 ),
-              ),
-            ),
-            const SizedBox(height: 10)
-          ],
+                child: SmoothPageIndicator(
+                  controller: controller,
+                  count: provider.datePlanList.isNotEmpty ? provider.datePlanList.length : 1,
+                  effect: const ScrollingDotsEffect(
+                    dotHeight: 11,
+                    dotWidth: 11,
+                    activeDotColor: ColorFamily.pink,
+                    dotColor: ColorFamily.white,
+                  ),
+                ),
+              )
+              : const SizedBox(),
+              const SizedBox(height: 10)
+            ],
+          ),
         ),
       ),
       deviceHeight * 0.15);
@@ -439,8 +438,7 @@ Widget datePlan(BuildContext context) {
 //캘린더_달력
 Widget calendar(BuildContext context) {
   DateTime _focusedDay = Provider.of<HomeCalendarProvider>(context).focusedDay;
-  DateTime? _selectedDay =
-      Provider.of<HomeCalendarProvider>(context).selectedDay;
+  DateTime? _selectedDay = Provider.of<HomeCalendarProvider>(context).selectedDay;
 
   // CalendarFormat _calendarFormat = CalendarFormat.month;
 
@@ -601,10 +599,11 @@ Widget calendar(BuildContext context) {
                     provider.setSelectedDay(selectedDay);
                     provider.setFocusedDay(focusedDay);
                     provider.setListIndex();
+                    provider.setSelectedDayScheduleList();
                   },
                 ),
                 const SizedBox(height: 20),
-                calendarFutureBuilderWidget(context, provider.selectedDay)
+                scheduleListWidget(context)
               ]))
         ]),
         null);
@@ -612,16 +611,15 @@ Widget calendar(BuildContext context) {
 }
 
 //캘린더_일정
-Widget calendarFutureBuilderWidget(BuildContext context, DateTime selectedDay) {
+Widget scheduleListWidget(BuildContext context) {
   var provider = Provider.of<HomeCalendarProvider>(context, listen: false);
-  var selectedDayScheduleList = provider.scheduleList[provider.listIndex];
-  String selectedDayParse = dateToStringWithDay(selectedDay);
+  String selectedDayParse = dateToStringWithDay(provider.selectedDay);
 
-  return selectedDayScheduleList.isNotEmpty
+  return provider.selectedDayScheduleList.isNotEmpty
       ? SizedBox(
           height: 110,
           child: ListView.builder(
-              itemCount: selectedDayScheduleList.length,
+              itemCount: provider.selectedDayScheduleList.length,
               itemBuilder: (context, index) => Container(
                   height: 50,
                   margin: const EdgeInsets.only(bottom: 5),
@@ -632,9 +630,9 @@ Widget calendarFutureBuilderWidget(BuildContext context, DateTime selectedDay) {
                   child: Row(
                     children: [
                       // 1.하루일정인 경우
-                      selectedDayScheduleList[index]['schedule_start_date'] ==
+                      provider.selectedDayScheduleList[index]['schedule_start_date'] ==
                                   selectedDayParse &&
-                              selectedDayScheduleList[index]
+                              provider.selectedDayScheduleList[index]
                                       ['schedule_finish_date'] ==
                                   selectedDayParse
                           ? SizedBox(
@@ -643,7 +641,7 @@ Widget calendarFutureBuilderWidget(BuildContext context, DateTime selectedDay) {
                                 children: [
                                   const SizedBox(width: 20),
                                   Text(
-                                      selectedDayScheduleList[index]
+                                      provider.selectedDayScheduleList[index]
                                           ['schedule_start_time'],
                                       style: const TextStyle(
                                           fontSize: 15,
@@ -655,7 +653,7 @@ Widget calendarFutureBuilderWidget(BuildContext context, DateTime selectedDay) {
                                           fontFamily:
                                               FontFamily.mapleStoryLight)),
                                   Text(
-                                      selectedDayScheduleList[index]
+                                      provider.selectedDayScheduleList[index]
                                           ['schedule_finish_time'],
                                       style: const TextStyle(
                                           fontSize: 15,
@@ -665,10 +663,10 @@ Widget calendarFutureBuilderWidget(BuildContext context, DateTime selectedDay) {
                               ),
                             )
                           // 2-1. 여러날 일정 중 첫날인 경우
-                          : selectedDayScheduleList[index]
+                          : provider.selectedDayScheduleList[index]
                                           ['schedule_start_date'] ==
                                       selectedDayParse &&
-                                  selectedDayScheduleList[index]
+                                  provider.selectedDayScheduleList[index]
                                           ['schedule_finish_date'] !=
                                       selectedDayParse
                               ? SizedBox(
@@ -678,7 +676,7 @@ Widget calendarFutureBuilderWidget(BuildContext context, DateTime selectedDay) {
                                     children: [
                                       const SizedBox(width: 20),
                                       Text(
-                                          selectedDayScheduleList[index]
+                                          provider.selectedDayScheduleList[index]
                                               ['schedule_start_time'],
                                           style: const TextStyle(
                                               fontSize: 15,
@@ -693,10 +691,10 @@ Widget calendarFutureBuilderWidget(BuildContext context, DateTime selectedDay) {
                                   ),
                                 )
                               // 2-2. 여러날 일정 중 중간날인 경우
-                              : selectedDayScheduleList[index]
+                              : provider.selectedDayScheduleList[index]
                                               ['schedule_start_date'] !=
                                           selectedDayParse &&
-                                      selectedDayScheduleList[index]
+                                      provider.selectedDayScheduleList[index]
                                               ['schedule_finish_date'] !=
                                           selectedDayParse
                                   ? const SizedBox(
@@ -725,7 +723,7 @@ Widget calendarFutureBuilderWidget(BuildContext context, DateTime selectedDay) {
                                                   fontFamily: FontFamily
                                                       .mapleStoryLight)),
                                           Text(
-                                              selectedDayScheduleList[index]
+                                              provider.selectedDayScheduleList[index]
                                                   ['schedule_finish_time'],
                                               style: const TextStyle(
                                                   fontSize: 15,
@@ -739,7 +737,7 @@ Widget calendarFutureBuilderWidget(BuildContext context, DateTime selectedDay) {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                                selectedDayScheduleList[index]
+                                provider.selectedDayScheduleList[index]
                                     ['schedule_title'],
                                 style: const TextStyle(
                                     fontSize: 15,
@@ -779,9 +777,9 @@ Widget _cardContainer(
         child: Material(
             color: ColorFamily.white,
             elevation: 0.5,
-            shadowColor: Colors.black,
+            shadowColor: ColorFamily.black,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
+              borderRadius: BorderRadius.circular(20.0),
             ),
             child: SizedBox(
               child: child,

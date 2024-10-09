@@ -64,7 +64,7 @@ Future<List<Map<String, dynamic>>> getScheduleData(BuildContext context) async {
 }
 
 // Firebase - ScheduleDate 로 부터 List<Map<String, dynamic>> 형태의 값을 받아옴
-Future<List<List<Map<String, dynamic>>>> getScheduleList(BuildContext context) async {
+Future<List<List<Map<String, dynamic>>>> getHomeScheduleList(BuildContext context) async {
   var userProvider = Provider.of<UserProvider>(context, listen: false);
 
   var userIdx = userProvider.userIdx;
@@ -95,10 +95,10 @@ Future<List<List<Map<String, dynamic>>>> getScheduleList(BuildContext context) a
     // 문서 추가
     monthScheduleList[dayIndex].add({
       'schedule_title': document['schedule_title'],
-      'schedule_start_time': startTime,
-      'schedule_finish_time': finishTime,
       'schedule_start_date': document['schedule_start_date'],
-      'schedule_finish_date': document['schedule_finish_date']
+      'schedule_finish_date': document['schedule_finish_date'],
+      'schedule_start_time': startTime,
+      'schedule_finish_time': finishTime
     });
   }
 
@@ -141,8 +141,8 @@ Future<List<List<Map<String, dynamic>>>> getScheduleList(BuildContext context) a
   fillCalendar(results);
 
   // 각 날짜의 문서들을 정렬
-  for (int i = 0; i < monthScheduleList.length; i++) {
-    DateTime currentDay = DateTime(now.year, now.month, i + 1);
+  for (int i = 0; i < monthScheduleList.length-1; i++) {
+    DateTime currentDay = DateTime(now.year, now.month, i+1);
 
     if (monthScheduleList[i].isNotEmpty) {
       monthScheduleList[i].sort((a, b) {
@@ -206,17 +206,7 @@ Future<List<List<Map<String, dynamic>>>> getScheduleList(BuildContext context) a
   }
 
   // 결과 출력 테스트
-  print('정렬 후 결과 출력: ${monthScheduleList[20]}');
-  print('정렬 후 결과 출력: ${monthScheduleList[21]}');
-  print('정렬 후 결과 출력: ${monthScheduleList[22]}');
-  print('정렬 후 결과 출력: ${monthScheduleList[23]}');
-  print('정렬 후 결과 출력: ${monthScheduleList[24]}');
-  print('정렬 후 결과 출력: ${monthScheduleList[25]}');
-  print('정렬 후 결과 출력: ${monthScheduleList[26]}');
-  print('정렬 후 결과 출력: ${monthScheduleList[27]}');
-  print('정렬 후 결과 출력: ${monthScheduleList[28]}');
-  print('정렬 후 결과 출력: ${monthScheduleList[29]}');
-  print('정렬 후 결과 출력: ${monthScheduleList[30]}');
+  // print('정렬 후 결과 출력 1일: ${monthScheduleList[0]}');
 
   return monthScheduleList;
 }

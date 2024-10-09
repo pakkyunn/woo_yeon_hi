@@ -9,14 +9,13 @@ import 'package:woo_yeon_hi/style/font.dart';
 import 'package:woo_yeon_hi/style/text_style.dart';
 import 'package:woo_yeon_hi/widget/footPrint/footprint_date_plan_top_app_bar.dart';
 
-class FootprintDatePlanDetailScreen extends StatefulWidget {
-  FootprintDatePlanDetailScreen(this.provider, {super.key});
-  FootPrintDatePlanSlidableProvider provider;
+class FootprintDatePlanListViewScreen extends StatefulWidget {
+  FootprintDatePlanListViewScreen({super.key});
   @override
-  State<FootprintDatePlanDetailScreen> createState() => _FootprintDatePlanDetailScreenState();
+  State<FootprintDatePlanListViewScreen> createState() => _FootprintDatePlanListViewScreenState();
 }
 
-class _FootprintDatePlanDetailScreenState extends State<FootprintDatePlanDetailScreen> {
+class _FootprintDatePlanListViewScreenState extends State<FootprintDatePlanListViewScreen> {
 
   Future<bool> _asyncData(FootPrintSlidableProvider provider) async {
     //TODO 데이트플랜 상세데이터 가져오기
@@ -40,7 +39,7 @@ class _FootprintDatePlanDetailScreenState extends State<FootprintDatePlanDetailS
           return const Text("오류 발생", style: TextStyleFamily.normalTextStyle,);
         } else {
           //현재 데이트플랜 상세프로바이더 만들어져 있지 않아서 임시로 다른 프로바이더 적용
-          return Consumer<FootPrintSlidableProvider>(builder: (context, provider, child) {
+          return Consumer<FootPrintDatePlanSlidableProvider>(builder: (context, footPrintDatePlanSlidableProvider, child) {
             return Scaffold(
                 appBar: FootprintDatePlanTopAppBar(
                   title: '데이트 플랜 리스트',
@@ -59,10 +58,10 @@ class _FootprintDatePlanDetailScreenState extends State<FootprintDatePlanDetailS
                 ),
                 backgroundColor: ColorFamily.cream,
                 body: ListView.builder(
-                  itemCount: widget.provider.planList.length,
+                  itemCount: footPrintDatePlanSlidableProvider.planList.length,
                   itemBuilder: (context, index) {
-                    print(widget.provider.planedList.toString());
-                    final item = widget.provider.planList[index];
+                    print(footPrintDatePlanSlidableProvider.planedList.toString());
+                    final item = footPrintDatePlanSlidableProvider.planList[index];
                     return Column(
                       children: [
                         makeListView(item, index),

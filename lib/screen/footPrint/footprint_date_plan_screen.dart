@@ -5,7 +5,7 @@ import 'package:woo_yeon_hi/dao/plan_dao.dart';
 import 'package:woo_yeon_hi/model/enums.dart';
 import 'package:woo_yeon_hi/provider/footprint_provider.dart';
 import 'package:woo_yeon_hi/provider/login_register_provider.dart';
-import 'package:woo_yeon_hi/screen/footPrint/footprint_date_plan_write_screen.dart';
+import 'package:woo_yeon_hi/screen/footPrint/footprint_date_plan_make_screen.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/style/font.dart';
 import 'package:woo_yeon_hi/style/text_style.dart';
@@ -150,7 +150,7 @@ class _FootprintDatePlanScreenState extends State<FootprintDatePlanScreen> {
                         onTap: () {
                           Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => const FootprintDatePlanWriteScreen(),
+                                builder: (context) => const FootprintDatePlanMakeScreen(),
                               )
                           );
                         },

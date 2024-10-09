@@ -393,3 +393,22 @@ class FootprintDraggableSheetProvider extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+class HomeDatePlanProvider extends ChangeNotifier {
+  List<Map<String, dynamic>> _datePlanList = [];
+  List<Map<String, dynamic>> get datePlanList => _datePlanList;
+
+  Map<String, dynamic> _currentDatePlan = {};
+  Map<String, dynamic> get currentDatePlanList => _currentDatePlan;
+
+  void setDatePlanList(List<Map<String, dynamic>> planList){
+    _datePlanList = planList;
+    notifyListeners();
+  }
+
+  void setCurrentDatePlanList(int index){
+    _currentDatePlan = _datePlanList[index];
+    notifyListeners();
+  }
+
+}
