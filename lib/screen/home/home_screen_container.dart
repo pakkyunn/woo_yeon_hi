@@ -221,7 +221,7 @@ Widget dDay(BuildContext context) {
 
 //가계부
 Widget accountBook(BuildContext context) {
-  var ledgerProvider = Provider.of<LedgerProvider>(context, listen: false);
+  var ledgerProvider = Provider.of<LedgerProvider>(context);
 
   var deviceWidth = MediaQuery.of(context).size.width;
   var deviceHeight = MediaQuery.of(context).size.height;
