@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/provider/dDay_provider.dart';
-import 'package:woo_yeon_hi/screen/dDay/dDay_make_custom_screen.dart';
+import 'package:woo_yeon_hi/screen/dDay/dDay_make_screen.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/style/font.dart';
 
@@ -45,7 +45,7 @@ class _dDayAddListViewState extends State<dDayAddListView> {
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
       onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const dDayMakeCustomScreen()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const dDayMakeScreen()));
       },
       child: Column(
         children: [

@@ -31,7 +31,7 @@ Future<void> setScheduleSequence(int sequence) async {
 }
 
 // Firebase - ScheduleData 에 저장
-Future<void> saveSchedule(Schedule schedule) async {
+Future<void> addSchedule(Schedule schedule) async {
   await FirebaseFirestore.instance.collection("ScheduleData").add({
     "schedule_idx" : schedule.scheduleIdx,
     "schedule_user_idx" : schedule.scheduleUserIdx,

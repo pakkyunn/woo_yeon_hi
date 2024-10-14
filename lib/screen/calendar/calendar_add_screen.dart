@@ -369,7 +369,7 @@ class _CalendarAddScreenState extends State<CalendarAddScreen> {
       scheduleState: ScheduleState.STATE_NORMAL.state
     );
 
-    await saveSchedule(schedule); // 컬렉션에 저장
+    await addSchedule(schedule); // 컬렉션에 저장
     provider.providerNotify();
   }
 

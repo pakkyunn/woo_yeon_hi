@@ -153,7 +153,7 @@ Widget dDay(BuildContext context) {
                   SvgPicture.asset('lib/assets/icons/like.svg'),
                   const SizedBox(height: 5),
                   Text(
-                    '${DateTime.now().difference(stringToDate(provider.loveDday)).inDays + 1}일',
+                    '${DateTime(DateTime.now().year-2000,DateTime.now().month,DateTime.now().day,).difference(stringToDate(provider.loveDday)).inDays}일',
                     style:
                         const TextStyle(fontFamily: FontFamily.mapleStoryLight),
                   ),
@@ -477,8 +477,8 @@ Widget calendar(BuildContext context) {
                       DateTime(DateTime.now().year, DateTime.now().month, 31),
                   focusedDay: _focusedDay,
                   locale: 'ko_kr',
-                  rowHeight: 45,
-                  daysOfWeekHeight: 40,
+                  rowHeight: MediaQuery.of(context).size.height*0.05,
+                  daysOfWeekHeight: MediaQuery.of(context).size.height*0.055,
                   headerStyle: const HeaderStyle(
                     titleCentered: true,
                     titleTextStyle: TextStyleFamily.appBarTitleBoldTextStyle,

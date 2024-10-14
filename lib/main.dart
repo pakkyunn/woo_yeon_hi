@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:woo_yeon_hi/provider/dDay_provider.dart';
 import 'package:woo_yeon_hi/provider/diary_provider.dart';
 import 'package:woo_yeon_hi/provider/footprint_provider.dart';
 import 'package:woo_yeon_hi/provider/ledger_provider.dart';
@@ -140,6 +141,8 @@ class _WooYeonHiState extends State<WooYeonHi> {
           ChangeNotifierProvider(create: (context) => CalendarProvider()),
           ChangeNotifierProvider(create: (context) => HomeDatePlanProvider()),
           ChangeNotifierProvider(create: (context) => HomeCalendarProvider()),
+          ChangeNotifierProvider(create: (context) => DdayProvider()),
+          ChangeNotifierProvider(create: (context) => DdayMakeProvider()),
           ChangeNotifierProvider(create: (context) => CalendarScreenProvider()),
           ChangeNotifierProvider(create: (context) => PasswordProvider()),
           ChangeNotifierProvider(create: (context) => AuthCodeProvider()),

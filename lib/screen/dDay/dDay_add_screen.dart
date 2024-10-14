@@ -5,7 +5,7 @@ import 'package:woo_yeon_hi/style/text_style.dart';
 import 'package:woo_yeon_hi/widget/dDay/dDay_add_list_view.dart';
 
 import '../../widget/dDay/dDay_add_top_app_bar.dart';
-import 'dDay_make_custom_screen.dart';
+import 'dDay_make_screen.dart';
 
 class dDayAddScreen extends StatefulWidget {
   const dDayAddScreen({super.key});
@@ -31,10 +31,10 @@ class _dDayAddScreenState extends State<dDayAddScreen> {
                     style: ElevatedButton.styleFrom(
                         backgroundColor: ColorFamily.beige),
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const dDayMakeCustomScreen()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const dDayMakeScreen()));
                     },
                     child: const Text(
-                      "커스텀 디데이 만들기",
+                      "디데이 생성",
                       style: TextStyleFamily.normalTextStyle,
                     ))),
             const Expanded(child: dDayAddListView())

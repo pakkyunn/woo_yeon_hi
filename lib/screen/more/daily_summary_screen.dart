@@ -149,7 +149,7 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                                 shrinkWrap: true,
                                 itemCount: 3,
                                 itemBuilder: (context, index) =>
-                                    makeDdayItem(
+                                    _makeDdayItem(
                                         context,
                                         index,
                                         DateFormat('yyyy. M. d.')
@@ -576,20 +576,11 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
   }
 
 // 디데이 아이템
-  Widget makeDdayItem(BuildContext context, int index, String summaryDay) {
-    List<dDayModel> dDayList = [
-      dDayModel(title: "연애 D+",
-          content: "오래오래 가자",
-          count: "100일 째",
-          date: "2024. 3.01. ~"),
-      dDayModel(title: "생일",
-          content: "우연녀 생일",
-          count: "D-100",
-          date: "2024. 8.25.(일)"),
-      dDayModel(title: "200일",
-          content: "만난지 200일 ♥️",
-          count: "D-100",
-          date: "2024. 8.25. (일)"),
+  Widget _makeDdayItem(BuildContext context, int index, String summaryDay) {
+    List<DdayModel> tempDdayList = [
+      DdayModel(user_idx: 1, dDay_idx: 0, title: "연애 시작", description: "오래오래 가자", date: "24. 3. 1.(일)"),
+      DdayModel(user_idx: 1, dDay_idx: 0, title: "생일", description: "우연녀 생일", date: "24. 8. 25.(일)"),
+      DdayModel(user_idx: 1, dDay_idx: 0, title: "200일", description: "만난지 200일 ♥️", date: "24. 8. 25.(일)")
     ];
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
@@ -615,12 +606,12 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(dDayList[index].title, style: const TextStyle(
+                            Text(tempDdayList[index].title, style: const TextStyle(
                                 fontFamily: FontFamily.mapleStoryLight,
                                 fontSize: 20,
                                 color: ColorFamily.black
                             )),
-                            Text(dDayList[index].count, style: const TextStyle(
+                            const Text("100", style: TextStyle(
                                 fontFamily: FontFamily.mapleStoryBold,
                                 fontSize: 20,
                                 color: ColorFamily.pink
@@ -639,12 +630,12 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                                dDayList[index].content, style: const TextStyle(
+                                tempDdayList[index].description, style: const TextStyle(
                                 fontFamily: FontFamily.mapleStoryLight,
                                 fontSize: 14,
                                 color: ColorFamily.gray
                             )),
-                            Text(dDayList[index].date, style: const TextStyle(
+                            Text(tempDdayList[index].date, style: const TextStyle(
                                 fontFamily: FontFamily.mapleStoryLight,
                                 fontSize: 14,
                                 color: ColorFamily.gray

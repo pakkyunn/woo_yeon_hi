@@ -17,7 +17,7 @@ class _dDayScreenState extends State<dDayScreen> {
     return const Scaffold(
       backgroundColor: ColorFamily.cream,
       appBar: dDayTopAppBar(),
-      body: dDayListView(),
+      body: DdayListView(),
     );
   }
 }

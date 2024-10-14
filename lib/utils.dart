@@ -17,10 +17,11 @@ import 'dialogs.dart';
 
 /// Datetime 객체를 날짜 저장 형식으로 변환합니다.
 String dateToString(DateTime date) {
-  String year = DateFormat('yyyy').format(date);
-  String month = date.month.toString().padLeft(2, " ");
-  String day = date.day.toString().padLeft(2, " ");
-  return '$year.$month.$day.';
+  String formattedDay = DateFormat('yyyy. M. d.').format(date);
+  // String year = DateFormat('yyyy').format(date);
+  // String month = date.month.toString().padLeft(2, " ");
+  // String day = date.day.toString().padLeft(2, " ");
+  return formattedDay;
 }
 
 /// 'yyyy.MM.dd.' 형태의 문자열 날짜 데이터를 DateTime으로 변환합니다.
@@ -36,7 +37,14 @@ DateTime stringToDate(String date) {
 /// Datetime 객체를 날짜 저장 형식으로 변환합니다.
 /// 날짜 뒤 요일이 추가된 형식입니다. (E)
 String dateToStringWithDay(DateTime date) {
-  String formattedDay = DateFormat('yyyy. M. dd.(E)', 'ko_KR').format(date);
+  String formattedDay = DateFormat('yyyy. M. d.(E)', 'ko_KR').format(date);
+
+  return formattedDay;
+}
+
+/// 요일표시형식에서 연도를 간단하게 표시한 형태입니다. (E)
+String dateToStringWithDayLight(DateTime date) {
+  String formattedDay = DateFormat('yy. M. d.(E)', 'ko_KR').format(date);
 
   return formattedDay;
 }

@@ -1,81 +1,272 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:provider/provider.dart';
+import 'package:woo_yeon_hi/dao/d_day_dao.dart';
+import 'package:woo_yeon_hi/dao/user_dao.dart';
+import 'package:woo_yeon_hi/provider/login_register_provider.dart';
 import 'package:woo_yeon_hi/screen/footPrint/footprint_history_detail_screen.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/style/text_style.dart';
 
 import '../../model/dDay_model.dart';
+import '../../provider/dDay_provider.dart';
 import '../../style/font.dart';
+import '../../utils.dart';
 
-class dDayListView extends StatefulWidget {
-  const dDayListView({super.key});
+class DdayListView extends StatefulWidget {
+  const DdayListView({super.key});
 
   @override
-  State<dDayListView> createState() => _dDayListViewState();
+  State<DdayListView> createState() => _DdayListViewState();
 }
 
-class _dDayListViewState extends State<dDayListView> {
-  List<dDayModel> dDayList = [
-    dDayModel(title: "연애 D+", content: "오래오래 가자", count: "100일 째", date: "2024. 3.01. ~"),
-    dDayModel(title: "생일", content: "우연녀 생일", count: "D-100", date: "2024. 8.25.(일)"),
-    dDayModel(title: "200일", content: "만난지 200일 ♥️", count: "D-100", date: "2024. 8.25. (일)"),
-  ];
+class _DdayListViewState extends State<DdayListView> {
+  // List<DdayModel> tempDdayList = [
+  //   DdayModel(user_idx: 1, dDay_idx: 0, title: "연애 시작", description: "오래오래 가자", date: "24. 3. 1.(일)"),
+  //   DdayModel(user_idx: 1, dDay_idx: 0, title: "생일", description: "우연녀 생일", date: "24. 8. 25.(일)"),
+  //   DdayModel(user_idx: 1, dDay_idx: 0, title: "200일", description: "만난지 200일 ♥️", date: "24. 8. 25.(일)")
+  // ];
+  String? loverBirth;
+
+  @override
+  void initState() {
+    super.initState();
+    _getDdayData();
+    _getLoverBirthday();
+  }
+
+  Future<void> _getDdayData() async {
+    // 디데이 데이터 가져오기
+    var dDayProvider = Provider.of<DdayProvider>(context, listen: false);
+    var dDayList = await getDdayList(context);
+    dDayProvider.setDdayList(dDayList);
+  }
+
+  Future<void> _getLoverBirthday() async {
+    // 연인의 생일 정보 가져오기
+    var userProvider = Provider.of<UserProvider>(context, listen: false);
+    loverBirth = await getSpecificUserData(userProvider.loverIdx, "user_birth");
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: ListView.builder(
-        itemCount: dDayList.length,
-          itemBuilder: (context, index) => _makedDayItem(index)
-      ),
-    );
+    return
+      loverBirth == null
+      ? const Center(
+          child: CircularProgressIndicator(
+            color: ColorFamily.pink,
+          ))
+      : Consumer2<DdayProvider, UserProvider>(builder: (context, dDayProvider, userProvider, child){
+      print("디데이리스트: ${dDayProvider.dDayList}");
+      return Padding(
+          padding: const EdgeInsets.all(20),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Column(
+                  children: [
+                    Card(
+                      elevation: 1.5,
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                        child: Column(
+                          children: [
+                            // title, count
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("연애 시작", style: dDayTitleTextStyle),
+                                Text(countingOneOffDday(stringToDate(userProvider.loveDday)), style: dDayCountTextStyle)
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            // content, date
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("우리가 만난 날", style: dDayContentTextStyle),
+                                Text(dateToStringWithDayLight(stringToDate(userProvider.loveDday)), style: dDayDateTextStyle)
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Card(
+                      elevation: 1.5,
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                        child: Column(
+                          children: [
+                            // title, count
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("내 생일", style: dDayTitleTextStyle),
+                                Text(countingAnnualDday(stringToDate(userProvider.userBirth)), style: dDayCountTextStyle)
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            // content, date
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("", style: dDayContentTextStyle),
+                                Text(makeBirthToDday(userProvider.userBirth), style: dDayDateTextStyle)
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Card(
+                      elevation: 1.5,
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                        child: Column(
+                          children: [
+                            // title, count
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("연인 생일", style: dDayTitleTextStyle),
+                                Text(countingAnnualDday(stringToDate(loverBirth!)), style: dDayCountTextStyle)
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            // content, date
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("", style: dDayContentTextStyle),
+                                Text(makeBirthToDday(loverBirth!), style: dDayDateTextStyle)
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ),
+                Column(
+                  children: List.generate(dDayProvider.dDayList.length, (index) {
+                    return _makeDdayItem(index); // 항목들을 나열
+                  }),
+                )],
+            ),
+          ),
+        );
+    });
   }
-  Widget _makedDayItem(int index){
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width - 40,
-        child: Wrap(
+  Widget _makeDdayItem(int index){
+    var provider = Provider.of<DdayProvider>(context, listen: false);
+    return Column(
+      children: [
+        Wrap(
           children: [
             Card(
-              elevation: 1,
-              child: Padding(
+              elevation: 1.5,
+              child: Container(
                 padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                 child: Column(
                   children: [
                     // title, count
-                    SizedBox(
-                        width: MediaQuery.of(context).size.width - 40 - 40,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(dDayList[index].title, style: dDayTitleTextStyle,),
-                            Text(dDayList[index].count, style: dDayCountTextStyle,)
-                          ],
-                        )
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(provider.dDayList[index]["dDay_title"], style: dDayTitleTextStyle,),
+                        Text(countingOneOffDday(stringToDate(provider.dDayList[index]["dDay_date"])), style: dDayCountTextStyle,)
+                      ],
                     ),
-                    const SizedBox(height: 20,),
+                    const SizedBox(height: 20),
                     // content, date
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width - 40 - 40,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(dDayList[index].content, style: dDayContentTextStyle,),
-                            Text(dDayList[index].date, style: dDayDateTextStyle,)
-                          ],
-                        ))
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(provider.dDayList[index]["dDay_description"], style: dDayContentTextStyle,),
+                        Text(provider.dDayList[index]["dDay_date"], style: dDayDateTextStyle,)
+                      ],
+                    ),
                   ],
                 ),
               ),
             ),
           ],
         ),
-      ),
+        const SizedBox(height: 10),
+      ],
     );
   }
 }
 
+String countingOneOffDday(DateTime date){
+  var today = DateTime(DateTime.now().year-2000, DateTime.now().month, DateTime.now().day);
+  var dDay = DateTime(date.year, date.month, date.day);
+
+  // D+ 인 경우
+  if(dDay.isBefore(today)) {
+    return "D + ${(dDay.difference(today).inDays.abs())}";
+  }
+
+  // D-day 인 경우
+  else if(dDay.isAtSameMomentAs(today)) {
+    return "D - day";
+  }
+
+  // D- 인 경우
+  else if(dDay.isAfter(today)) {
+    return "D - ${(dDay.difference(today).inDays).abs()}";
+  }
+
+  else {
+    return "디데이 정보 없음";
+  }
+}
+
+String countingAnnualDday(DateTime date){
+  var now = DateTime.now();
+  DateTime currentYearDate = DateTime(now.year, date.month, date.day);
+  DateTime nextYearDate = DateTime(now.year+1, date.month, date.day);
+
+  //올해 아직 지나지 않은 날짜인 경우
+  if(currentYearDate.isAfter(DateTime(now.year, now.month, now.day))){
+    return "D - ${(currentYearDate.difference(now).inDays).abs()}";
+  }
+
+  //올해 이미 지난 날짜인 경우
+  else if(currentYearDate.isBefore(DateTime(now.year, now.month, now.day))){
+    return "D - ${(nextYearDate.difference(now).inDays).abs()}";
+  }
+
+  //오늘이 디데이인 경우
+  else if (currentYearDate.isAtSameMomentAs(DateTime(now.year, now.month, now.day))){
+    return "D - day";
+  }
+
+  else {
+    return "디데이 정보 없음";
+  }
+}
+
+String makeBirthToDday(String birthString){
+  var birthDate = stringToDate(birthString);
+  String dDayFormattedBirth = DateFormat('M. d.(E)', 'ko_KR').format(birthDate);
+
+  return dDayFormattedBirth;
+}
 
 TextStyle dDayTitleTextStyle = const TextStyle(
     fontFamily: FontFamily.mapleStoryLight,

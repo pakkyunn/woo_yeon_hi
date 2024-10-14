@@ -12,6 +12,7 @@ import 'package:woo_yeon_hi/style/text_style.dart';
 import '../../model/enums.dart';
 import '../../style/color.dart';
 import '../../style/font.dart';
+import '../../utils.dart';
 
 class FootprintHistoryEditInput extends StatefulWidget {
   FootprintHistoryEditInput(this.provider, {super.key});
@@ -326,8 +327,7 @@ class _FootprintHistoryEditInputState extends State<FootprintHistoryEditInput> {
                           bottomState(() {
                             setState(() {
                               _selectedDay = selectedDay;
-                              _focusedDay =
-                                  focusedDay; // update `_focusedDay` here as well
+                              _focusedDay = focusedDay;
                             });
                           });
                         },
@@ -495,12 +495,10 @@ class _FootprintHistoryEditInputState extends State<FootprintHistoryEditInput> {
                                       surfaceTintColor: ColorFamily.beige),
                                   onPressed: () {
                                     if (_selectedDay != null) {
-                                      var date = DateFormat('yyyy. M.dd.')
-                                          .format(_selectedDay!);
+                                      var date = dateToString(_selectedDay!);
                                       provider.setDate(date);
                                     } else {
-                                      var date = DateFormat('yyyy. M.dd.')
-                                          .format(_focusedDay);
+                                      var date = dateToString(_focusedDay);
                                       provider.setDate(date);
                                     }
 

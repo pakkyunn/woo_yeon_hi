@@ -1,12 +1,15 @@
-class dDayModel {
+class DdayModel {
+  int user_idx;
+  int dDay_idx;
   String title;
-  String content;
-  String count;
+  String description;
   String date;
 
-  dDayModel(
-      {required this.title,
-      required this.content,
-      required this.count,
-      required this.date});
+  DdayModel({
+      required this.user_idx,
+      required this.dDay_idx,
+      required this.title,
+      required this.description,
+      required this.date
+      });
 }

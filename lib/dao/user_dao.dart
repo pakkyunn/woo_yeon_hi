@@ -8,7 +8,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../model/user_model.dart';
 
-Future<void> saveUserData(UserModel user) async {
+Future<void> addUserData(UserModel user) async {
   await FirebaseFirestore.instance.collection('UserData').add({
     "user_idx": user.userIdx,
     "login_type": user.loginType,
