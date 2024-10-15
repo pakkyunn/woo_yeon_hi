@@ -33,6 +33,24 @@ Future<void> addDday(DdayModel dDayModel) async {
   });
 }
 
+Future<void> deleteDday(BuildContext context, int dDayIndex) async {
+  var userProvider = Provider.of<UserProvider>(context, listen: false);
+
+  var userIdx = userProvider.userIdx;
+  var loverIdx = userProvider.loverIdx;
+  QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
+      .instance
+      .collection('DdayData')
+      .where('user_idx', whereIn: [userIdx, loverIdx])
+      .where('dDay_idx', isEqualTo: dDayIndex)
+      .get();
+
+  for (DocumentSnapshot<Map<String, dynamic>> docSnapshot
+  in querySnapshot.docs) {
+    await docSnapshot.reference.delete();
+  }
+}
+
 Future<List<Map<String, dynamic>>> getDdayList(BuildContext context) async {
   var userProvider = Provider.of<UserProvider>(context, listen: false);
 
