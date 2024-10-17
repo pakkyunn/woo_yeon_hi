@@ -55,6 +55,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ? Text(_getCurrentMonth(), style: TextStyleFamily.appBarTitleBoldTextStyle)
             : const Text("일정 목록", style: TextStyleFamily.appBarTitleBoldTextStyle),
         leading: IconButton(
+          splashColor: Colors.transparent,
           onPressed: () {
             Navigator.pop(context);
           },

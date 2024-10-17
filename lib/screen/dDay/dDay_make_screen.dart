@@ -106,7 +106,7 @@ class _dDayMakeScreenState extends State<dDayMakeScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            "날짜 선택",
+                            "디데이 선택",
                             style: TextStyleFamily.dialogButtonTextStyle,
                           )
                         ],
@@ -120,36 +120,36 @@ class _dDayMakeScreenState extends State<dDayMakeScreen> {
                       decoration: BoxDecoration(
                         color: ColorFamily.white,
                         borderRadius: BorderRadius.circular(20)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: provider.selectedDay != null
-                        ? provider.selectedDay!.difference(_today()).inDays == 0
-                        ? Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text("D-day", style: exampleTextStyle),
-                          ],
-                        )
-                        : Column(
-                          children: [
-                            const Text("선택한 날짜로부터 오늘은", style: TextStyleFamily.normalTextStyle_pink),
-                            const SizedBox(height: 10),
-                            Text(
-                              provider.selectedDay!.difference(_today()).inDays < 0
-                                ? "D+${(provider.selectedDay!.difference(_today()).inDays).abs()}"
-                                : "D-${(provider.selectedDay!.difference(_today()).inDays).abs()}"
-                              , style: exampleTextStyle),
-                          ],
-                        )
-                        : const Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text("날짜를 선택해주세요", style: TextStyleFamily.normalTextStyle_pink),
-                          ],
-                        )
-                      ),
+                      child:
+                      provider.selectedDay == null
+                        ? const Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text("날짜를 선택해주세요", style: TextStyleFamily.normalTextStyle_pink),
+                            ],
+                          )
+                        : _ymdFormatDate(provider.selectedDay!) == _today()
+                          ? Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text("D-day", style: exampleTextStyle),
+                            ],
+                          )
+                         : Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Text("선택한 날짜로부터 오늘은", style: TextStyleFamily.normalTextStyle_pink),
+                              const SizedBox(height: 10),
+                              Text(
+                                  _ymdFormatDate(provider.selectedDay!).difference(_today()).inDays < 0
+                                  ? "D+${(provider.selectedDay!.difference(_today()).inDays).abs()+1}"
+                                  : "D-${(provider.selectedDay!.difference(_today()).inDays).abs()}"
+                                , style: exampleTextStyle),
+                            ],
+                           ),
                     ),
                     const SizedBox(height: 10),
                     // 캘린더
@@ -173,8 +173,7 @@ class _dDayMakeScreenState extends State<dDayMakeScreen> {
                                   focusedDay: provider.focusedDay,
                                   rowHeight: MediaQuery.of(context).size.height*0.05,
                                   daysOfWeekHeight: MediaQuery.of(context).size.height*0.055,
-                                  availableGestures:
-                                  AvailableGestures.horizontalSwipe,
+                                  availableGestures: AvailableGestures.none,
                                   headerStyle: const HeaderStyle(
                                       titleCentered: true,
                                       formatButtonVisible: false,
@@ -315,6 +314,11 @@ class _dDayMakeScreenState extends State<dDayMakeScreen> {
   DateTime _today() {
     final now = DateTime.now();
     return DateTime(now.year, now.month, now.day);
+  }
+
+  DateTime _ymdFormatDate(DateTime providerSelectedDay){
+    DateTime ymdFormatDate = DateTime(providerSelectedDay.year, providerSelectedDay.month, providerSelectedDay.day);
+    return ymdFormatDate;
   }
 }
 

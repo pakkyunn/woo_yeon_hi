@@ -81,13 +81,6 @@ Widget dDay(BuildContext context) {
   return Consumer<UserProvider>(builder: (context, provider, child) {
     return _cardContainer(
         context,
-        Row(
-          children: [
-            const Text("디데이",
-                style: TextStyle(
-                    color: ColorFamily.black,
-                    fontSize: 20,
-                    fontFamily: FontFamily.mapleStoryLight)),
             InkWell(
               onTap: () {
                 Navigator.push(
@@ -97,10 +90,17 @@ Widget dDay(BuildContext context) {
               },
               splashColor: Colors.transparent,
               splashFactory: NoSplash.splashFactory,
-              child: SvgPicture.asset('lib/assets/icons/expand.svg'),
-            )
-          ],
-        ),
+              child: Row(
+                children: [
+                  const Text("디데이",
+                      style: TextStyle(
+                          color: ColorFamily.black,
+                          fontSize: 20,
+                          fontFamily: FontFamily.mapleStoryLight)),
+                  SvgPicture.asset('lib/assets/icons/expand.svg'),
+                ],
+              ),
+            ),
         Row(
           children: [
             SizedBox(
@@ -266,7 +266,7 @@ Widget accountBook(BuildContext context) {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       SizedBox(
-                        height: 40,
+                        height: 35,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
@@ -301,7 +301,7 @@ Widget accountBook(BuildContext context) {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 35),
                     ],
                   ),
                 ),
@@ -356,12 +356,16 @@ Widget datePlan(BuildContext context) {
               Text(provider.datePlanList[index]["plan_title"],
                   style: const TextStyle(
                     color: ColorFamily.black,
-                    fontSize: 20,
-                    fontFamily: FontFamily.mapleStoryLight
+                    fontSize: 15,
+                    fontFamily: FontFamily.mapleStoryBold
                   )),
               const SizedBox(height: 5),
               Text(provider.datePlanList[index]["plan_date"],
-                  style: TextStyleFamily.normalTextStyle),
+                  style: const TextStyle(
+                      color: ColorFamily.black,
+                      fontSize: 14,
+                      fontFamily: FontFamily.mapleStoryLight
+                  )),
               const SizedBox(height: 10),
               Text("${provider.datePlanList[index]["plan_user_nickname"]}의 플랜",
                   textAlign: TextAlign.right,
@@ -388,7 +392,7 @@ Widget datePlan(BuildContext context) {
           Navigator.push(context, MaterialPageRoute(builder: (context) => const FootprintDatePlanEditScreen()));
         },
         child: Padding(
-          padding: const EdgeInsets.only(top: 16, left: 20, right: 20, bottom: 0),
+          padding: const EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 0),
           child: Column(
             children: <Widget>[
               Expanded(
@@ -419,15 +423,15 @@ Widget datePlan(BuildContext context) {
                   controller: controller,
                   count: provider.datePlanList.isNotEmpty ? provider.datePlanList.length : 1,
                   effect: const ScrollingDotsEffect(
-                    dotHeight: 11,
-                    dotWidth: 11,
+                    dotHeight: 8,
+                    dotWidth: 8,
                     activeDotColor: ColorFamily.pink,
                     dotColor: ColorFamily.white,
                   ),
                 ),
               )
               : const SizedBox(),
-              const SizedBox(height: 10)
+              const SizedBox(height: 5)
             ],
           ),
         ),
@@ -445,13 +449,6 @@ Widget calendar(BuildContext context) {
   return Consumer<HomeCalendarProvider>(builder: (context, provider, child) {
     return _cardContainer(
         context,
-        Row(
-          children: [
-            const Text("캘린더",
-                style: TextStyle(
-                    color: ColorFamily.black,
-                    fontSize: 20,
-                    fontFamily: FontFamily.mapleStoryLight)),
             InkWell(
               onTap: () {
                 Navigator.push(
@@ -461,10 +458,17 @@ Widget calendar(BuildContext context) {
               },
               splashColor: Colors.transparent,
               splashFactory: NoSplash.splashFactory,
-              child: SvgPicture.asset('lib/assets/icons/expand.svg'),
-            )
-          ],
-        ),
+              child: Row(
+                children: [
+                  const Text("캘린더",
+                      style: TextStyle(
+                          color: ColorFamily.black,
+                          fontSize: 20,
+                          fontFamily: FontFamily.mapleStoryLight)),
+                  SvgPicture.asset('lib/assets/icons/expand.svg'),
+                ],
+              ),
+            ),
         Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Container(
               padding: const EdgeInsets.all(10.0),
