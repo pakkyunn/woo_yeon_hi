@@ -45,26 +45,31 @@ Future<void> addSchedule(Schedule schedule) async {
     "schedule_state" : schedule.scheduleState,
   });
 }
-// Firebase - ScheduleDate 로 부터 List<Map<St, d>> 형태의 값을 받아옴
-Future<List<Map<String, dynamic>>> getScheduleData(BuildContext context) async {
+
+// 캘린더 화면에서 데이터를 가져오는 메서드
+Future<List<Map<String, dynamic>>> getCalendarScreenScheduleList(BuildContext context) async {
   var userProvider = Provider.of<UserProvider>(context, listen: false);
 
   var userIdx = userProvider.userIdx;
   var loverIdx = userProvider.loverIdx;
 
+  var query = FirebaseFirestore.instance.collection('ScheduleData').where('schedule_user_idx', whereIn: [userIdx, loverIdx]);
+  var querySnapshot = await query.get();
+
   List<Map<String, dynamic>> results = [];
 
-  var querySnapShot = await FirebaseFirestore.instance.collection('ScheduleData').where('ledger_user_idx', whereIn: [userIdx, loverIdx]).get();
-
-  for(var doc in querySnapShot.docs){
+  for(var doc in querySnapshot.docs){
     results.add(doc.data());
   }
+
+  // 결과 출력 테스트
+  // print('스케쥴 리스트: ${results[0]}');
 
   return results;
 }
 
-// Firebase - ScheduleDate 로 부터 List<Map<String, dynamic>> 형태의 값을 받아옴
-Future<List<List<Map<String, dynamic>>>> getHomeScheduleList(BuildContext context) async {
+// 홈 화면 캘린더 위젯에서 데이터를 가져오는 메서드
+Future<List<List<Map<String, dynamic>>>> getHomeCalendarScheduleList(BuildContext context) async {
   var userProvider = Provider.of<UserProvider>(context, listen: false);
 
   var userIdx = userProvider.userIdx;

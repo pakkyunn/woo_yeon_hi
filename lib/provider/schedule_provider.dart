@@ -68,18 +68,20 @@ class HomeCalendarProvider extends ChangeNotifier {
 }
 
 class CalendarScreenProvider extends ChangeNotifier {
-  DateTime _selectedDay = DateTime.now();
-  DateTime get selectedDay => _selectedDay;
 
   DateTime _focusedDay = DateTime.now();
   DateTime get focusedDay => _focusedDay;
 
-  void setSelectedDay(DateTime selectedDay){
-    _selectedDay = selectedDay;
-    notifyListeners();
-  }
+  List<Map<String, dynamic>> _scheduleList = [];
+  List<Map<String, dynamic>> get scheduleList => _scheduleList;
+
   void setFocusedDay(DateTime focusedDay){
     _focusedDay = focusedDay;
+    notifyListeners();
+  }
+
+  void setScheduleList(List<Map<String, dynamic>> scheduleList){
+    _scheduleList = scheduleList;
     notifyListeners();
   }
 }

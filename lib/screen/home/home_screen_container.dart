@@ -53,7 +53,7 @@ class _HomeScreenContainerState extends State<HomeScreenContainer> {
   Future<void> _getScheduleData() async {
     // 캘린더 데이터 가져오기
     var homeCalendarProvider = Provider.of<HomeCalendarProvider>(context, listen: false);
-    var scheduleList = await getHomeScheduleList(context);
+    var scheduleList = await getHomeCalendarScheduleList(context);
     homeCalendarProvider.setScheduleList(scheduleList);
     homeCalendarProvider.setListIndex();
     homeCalendarProvider.setSelectedDayScheduleList();
