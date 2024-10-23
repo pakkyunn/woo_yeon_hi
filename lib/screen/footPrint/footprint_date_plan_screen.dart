@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/dao/plan_dao.dart';
-import 'package:woo_yeon_hi/model/enums.dart';
+import 'package:woo_yeon_hi/enums.dart';
 import 'package:woo_yeon_hi/provider/footprint_provider.dart';
 import 'package:woo_yeon_hi/provider/login_register_provider.dart';
 import 'package:woo_yeon_hi/screen/footPrint/footprint_date_plan_make_screen.dart';

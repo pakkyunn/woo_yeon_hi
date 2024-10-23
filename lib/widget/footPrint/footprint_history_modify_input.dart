@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:woo_yeon_hi/model/history_model.dart';
 
-import '../../model/enums.dart';
+import '../../enums.dart';
 import '../../provider/footprint_provider.dart';
 import '../../screen/footPrint/footprint_history_edit_place_screen.dart';
 import '../../style/color.dart';

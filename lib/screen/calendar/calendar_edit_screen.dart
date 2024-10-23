@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/dialogs.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/style/font.dart';
 import 'package:woo_yeon_hi/style/text_style.dart';
-import 'package:woo_yeon_hi/widget/calendar/calendar_color_picker.dart';
 import 'package:woo_yeon_hi/widget/calendar/calendar_switch.dart';
 import 'package:woo_yeon_hi/widget/calendar/calendar_term_finish.dart';
 import 'package:woo_yeon_hi/widget/calendar/calendar_term_start.dart';
+
+import '../../enums.dart';
+import '../../provider/schedule_provider.dart';
 
 class CalendarEditScreen extends StatefulWidget {
   Map<String, dynamic> scheduleData;
@@ -23,10 +26,14 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
   Map<String, dynamic> _scheduleData = {};
 
   // 현재 선택된 색상
-  Color currentColor = ColorFamily.green;
+  Color currentColor = ScheduleColorType.GREEN_COLOR.colorCode;
 
   // 하루 종일 체크여부
   bool checkAllDay = false;
+
+  // 다이얼로그 위치
+  double? left;
+  double? top;
 
   // 시작일 날짜
   DateTime termStart = DateTime.now();
@@ -48,7 +55,6 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
   void isAllTime(bool isTrue){
     setState(() {
       checkAllDay = !checkAllDay;
-      updateFinishDecoration();
     });
   }
 
@@ -56,7 +62,6 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
   void onTermStartChanged(DateTime date){
     setState(() {
       termStart = date;
-      updateFinishDecoration();
     });
   }
 
@@ -64,53 +69,12 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
   void onTermFinishChanged(DateTime date){
     setState(() {
       termFinish = date;
-      updateFinishDecoration();
     });
-  }
-
-  // 종료일 상태 업데이트
-  void updateFinishDecoration() {
-
-    // 년, 월, 일
-    var startDay = termStart.year + termStart.month + termStart.day;
-    var finishDay = termFinish.year + termFinish.month + termFinish.day;
-
-    // 하루종일 - true
-    if(checkAllDay){
-      // 년, 월, 일이 같다면
-      if(startDay == finishDay) {
-        checkTerm = true;
-        finishTextDecoration = TextDecoration.none;
-      }
-      else {
-        // 종료일이 시작일보다 먼저라면
-        if (termFinish.isBefore(termStart)) {
-          checkTerm = false;
-          finishTextDecoration = TextDecoration.lineThrough;
-        } else {
-          checkTerm = true;
-          finishTextDecoration = TextDecoration.none;
-        }
-      }
-    }
-    // 하루종일 - false
-    else {
-      // 종료일이 시작일보다 먼저라면
-      if (termFinish.isBefore(termStart)) {
-        checkTerm = false;
-        finishTextDecoration = TextDecoration.lineThrough;
-      } else {
-        checkTerm = true;
-        finishTextDecoration = TextDecoration.none;
-      }
-    }
   }
 
   @override
   void initState() {
     super.initState();
-
-    updateFinishDecoration();
 
     _scheduleData = widget.scheduleData;
 
@@ -185,7 +149,7 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
             padding: const EdgeInsets.only(right: 20),
             child: IconButton(
               onPressed: () {
-                // 저장처리
+                //TODO 저장처리
                 Navigator.pop(context);
               },
               icon: SvgPicture.asset('lib/assets/icons/done.svg'),
@@ -203,7 +167,6 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
               child: IntrinsicHeight(
                 child: Column(
                   children: [
-                    const SizedBox(height: 30),
                     Row(
                       children: [
                         ElevatedButton(
@@ -211,7 +174,10 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
                             shape: const CircleBorder(),
                             backgroundColor: currentColor,
                           ),
-                          onPressed: () => showColorPickerDialog(context, currentColor, updateColor),
+                          onPressed: () {
+                            _showColorPickerDialog(context, currentColor, updateColor);
+                          },
+                          // => showColorPickerDialog(context, currentColor, updateColor),
                           child: const Icon(null),
                         ),
                         Expanded(
@@ -254,27 +220,23 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 30),
+                          const SizedBox(height: 40),
                           Row(
                             children: [
                               const Text("종료", style: TextStyleFamily.normalTextStyle),
                               const Spacer(),
                               CalendarTermFinish(
                                 onDateChanged: onTermFinishChanged,
-                                textDecoration: finishTextDecoration,
                                 initialDate: termFinish,
                                 isTrue: checkAllDay,
-                                checkTerm: checkTerm,
                               )
                             ],
                           ),
                           const SizedBox(height: 30),
-                          const Text("메모", style: TextStyleFamily.normalTextStyle),
-                          const SizedBox(height: 10),
                           Card(
                             color: ColorFamily.white,
                             surfaceTintColor: ColorFamily.white,
-                            elevation: 4,
+                            elevation: 1,
                             child: ConstrainedBox(
                               constraints: const BoxConstraints(
                                 minHeight: 320, // 위젯의 최소 크기
@@ -424,4 +386,93 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
       ),
     );
   }
+  void _showColorPickerDialog(BuildContext context, Color currentColor, ValueChanged<Color> onColorChanged) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final renderObject = context.findRenderObject();
+      if (renderObject is RenderBox) {
+        final RenderBox renderBox = renderObject;
+        final offset = renderBox.localToGlobal(Offset.zero);
+
+        setState(() {
+          left = offset.dx - 10; // x 좌표
+          top = offset.dy - 15;  // y 좌표
+        });
+
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Stack(
+              children: [
+                Positioned(
+                  left: left ?? 0,
+                  top: top ?? 0,
+                  child: Dialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    child: Container(
+                      padding: EdgeInsets.all(16.0),
+                      width: 200,
+                      height: 140,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Wrap(
+                            direction: Axis.horizontal, // 정렬 방향
+                            alignment: WrapAlignment.start, // 정렬 방식
+                            spacing: 10, // 좌우 간격
+                            runSpacing: 5,  // 상하 간격
+                            children: [
+                              _buildColorOption(context, ScheduleColorType.RED_COLOR, currentColor, onColorChanged),
+                              _buildColorOption(context, ScheduleColorType.ORANGE_COLOR, currentColor, onColorChanged),
+                              _buildColorOption(context, ScheduleColorType.YELLOW_COLOR, currentColor, onColorChanged),
+                              _buildColorOption(context, ScheduleColorType.GREEN_COLOR, currentColor, onColorChanged),
+                              _buildColorOption(context, ScheduleColorType.BLUE_COLOR, currentColor, onColorChanged),
+                              _buildColorOption(context, ScheduleColorType.NAVY_COLOR, currentColor, onColorChanged),
+                              _buildColorOption(context, ScheduleColorType.PURPLE_COLOR, currentColor, onColorChanged),
+                              _buildColorOption(context, ScheduleColorType.BLACK_COLOR, currentColor, onColorChanged),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    });
+  }
+}
+
+Widget _buildColorOption(BuildContext context, ScheduleColorType color, Color currentColor, ValueChanged<Color> onColorChanged) {
+  return GestureDetector(
+    onTap: () {
+      onColorChanged(color.colorCode);
+      Provider.of<CalendarScreenProvider>(context, listen: false).setSelectedColorType(color.typeIdx);
+      Navigator.of(context).pop();
+    },
+    child: Stack(
+      alignment: Alignment.center,
+      children: [
+        Container(
+          width: 40,
+          height: 50,
+          decoration: BoxDecoration(
+            color: color.colorCode,
+            shape: BoxShape.circle,
+          ),
+        ),
+        if(currentColor == color.colorCode)
+          Positioned(
+            child: SvgPicture.asset(
+              "lib/assets/icons/done.svg",
+              color: ColorFamily.white,
+            ),
+          )
+      ],
+    ),
+  );
 }

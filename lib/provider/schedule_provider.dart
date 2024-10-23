@@ -68,6 +68,7 @@ class HomeCalendarProvider extends ChangeNotifier {
 }
 
 class CalendarScreenProvider extends ChangeNotifier {
+  //캘린더 화면
 
   DateTime _focusedDay = DateTime.now();
   DateTime get focusedDay => _focusedDay;
@@ -84,5 +85,15 @@ class CalendarScreenProvider extends ChangeNotifier {
     _scheduleList = scheduleList;
     notifyListeners();
   }
-}
 
+  // 일정 추가 화면
+
+  int _selectedColorType = 3;
+  int get selectedColorType => _selectedColorType;
+
+  void setSelectedColorType(int colorType){
+    _selectedColorType = colorType;
+    notifyListeners();
+  }
+
+}

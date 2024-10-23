@@ -28,7 +28,7 @@ class _CalendarDetailScreenState extends State<CalendarDetailScreen> {
         centerTitle: true,
         scrolledUnderElevation: 0,
         title: const Text(
-          "일정 세부사항",
+          "일정 상세",
           style: TextStyleFamily.appBarTitleLightTextStyle
         ),
         leading: IconButton(
@@ -64,7 +64,6 @@ class _CalendarDetailScreenState extends State<CalendarDetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 30),
                     Row(
                       children: [
                         ElevatedButton(
@@ -107,12 +106,11 @@ class _CalendarDetailScreenState extends State<CalendarDetailScreen> {
                             ],
                           ),
                           const SizedBox(height: 45),
-                          const Text("메모", style: TextStyleFamily.normalTextStyle),
                           const SizedBox(height: 10),
                           Card(
                             color: ColorFamily.white,
                             surfaceTintColor: ColorFamily.white,
-                            elevation: 4,
+                            elevation: 1,
                             child: ConstrainedBox(
                               constraints: const BoxConstraints(
                                 minHeight: 320, // 위젯의 최소 크기

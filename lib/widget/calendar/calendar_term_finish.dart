@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
+import '../../provider/login_register_provider.dart';
 import '../../style/color.dart';
 import '../../style/font.dart';
+import '../../style/text_style.dart';
+import '../../utils.dart';
 
 class CalendarTermFinish extends StatefulWidget {
   final Function(DateTime) onDateChanged;
-  final TextDecoration textDecoration;
   final DateTime initialDate; // 초기 날짜
   final bool isTrue;
-  final bool checkTerm;
 
   const CalendarTermFinish({
     required this.onDateChanged,
-    required this.textDecoration,
     required this.initialDate,
     required this.isTrue,
-    required this.checkTerm,
     super.key
   });
 
@@ -43,26 +43,46 @@ class _CalendarTermFinishState extends State<CalendarTermFinish> {
     return Column(
       children: [
         widget.isTrue
-        ? InkWell(
+        // 하루 종일 일정인 경우 picker
+            ? InkWell(
           onTap: () {
-            DatePicker.showDatePicker(
+            picker.DatePicker.showDatePicker(
               context,
               showTitleActions: true,
-              onConfirm: (time) {
+              minTime: stringToDateLight(Provider.of<UserProvider>(context, listen: false).loveDday),
+              maxTime: DateTime(2099, 12, 31),
+              theme: const picker.DatePickerTheme(
+                titleHeight: 60,
+                containerHeight: 300,
+                itemHeight: 50,
+                headerColor: ColorFamily.white,
+                backgroundColor: ColorFamily.white,
+                itemStyle:
+                TextStyleFamily.smallTitleTextStyle,
+                cancelStyle: TextStyle(
+                  color: ColorFamily.black,
+                  fontSize: 18,
+                  fontFamily: FontFamily.mapleStoryLight,
+                ),
+                doneStyle: TextStyle(
+                  color: ColorFamily.black,
+                  fontSize: 18,
+                  fontFamily: FontFamily.mapleStoryLight,
+                ),
+              ),
+              locale: picker.LocaleType.ko,
+              currentTime: selectedDateTime,
+              onConfirm: (date) {
                 setState(() {
-                  selectedDateTime = time;
-                  // 부모 위젯에게 전달
+                  selectedDateTime = date;
                   widget.onDateChanged(selectedDateTime);
                 });
               },
-              currentTime: DateTime.now(),
-              locale: LocaleType.ko,
             );
           },
-          child: widget.checkTerm
-          ? Container(
-            padding: EdgeInsets.only(bottom: 1),
-            decoration: BoxDecoration(
+          child: Container(
+            padding: const EdgeInsets.only(bottom: 1),
+            decoration: const BoxDecoration(
               border: Border(
                 bottom: BorderSide(
                   color: ColorFamily.black,
@@ -71,74 +91,62 @@ class _CalendarTermFinishState extends State<CalendarTermFinish> {
               )
             ),
             child: Text(
-              "${DateFormat('yyyy. M. dd.(E) 하루 종일', 'ko_KR').format(selectedDateTime)}",
-              style: TextStyle(
-                fontSize: 14,
-                fontFamily: FontFamily.mapleStoryLight,
-                color: ColorFamily.black,
-                // 부모 위젯
-                decoration: widget.textDecoration,
-              ),
-            ),
-          )
-          : Text(
-            "${DateFormat('yyyy. M. dd.(E) 하루 종일', 'ko_KR').format(selectedDateTime)}",
-            style: TextStyle(
-              fontSize: 14,
-              fontFamily: FontFamily.mapleStoryLight,
-              color: ColorFamily.black,
-              // 부모 위젯
-              decoration: widget.textDecoration,
+              DateFormat('yyyy. M. d.(E)', 'ko_KR').format(selectedDateTime),
+              style: TextStyleFamily.normalTextStyle
             ),
           ),
         )
-        : InkWell(
+        // 하루 종일 일정이 아닌 경우 picker
+            : InkWell(
           onTap: () {
-            DatePicker.showDateTimePicker(
+            picker.DatePicker.showDateTimePicker(
               context,
               showTitleActions: true,
-              onConfirm: (time) {
+              minTime: stringToDateLight(Provider.of<UserProvider>(context, listen: false).loveDday),
+              maxTime: DateTime(2099, 12, 31),
+              onConfirm: (dateTime) {
                 setState(() {
-                  selectedDateTime = time;
-                  // 부모 위젯에게 전달
+                  selectedDateTime = dateTime;
                   widget.onDateChanged(selectedDateTime);
                 });
               },
-              currentTime: DateTime.now(),
-              locale: LocaleType.ko,
+              currentTime: selectedDateTime,
+              locale: picker.LocaleType.ko,
+              theme: const picker.DatePickerTheme(
+                  titleHeight: 60,
+                  containerHeight: 300,
+                  itemHeight: 50,
+                  headerColor: ColorFamily.white,
+                  backgroundColor:
+                  ColorFamily.white,
+                  itemStyle: TextStyleFamily
+                      .smallTitleTextStyle,
+                  cancelStyle: TextStyle(
+                      color: ColorFamily.black,
+                      fontSize: 18,
+                      fontFamily: FontFamily
+                          .mapleStoryLight),
+                  doneStyle: TextStyle(
+                      color: ColorFamily.black,
+                      fontSize: 18,
+                      fontFamily: FontFamily
+                          .mapleStoryLight)),
             );
           },
-          child: widget.checkTerm
-              ? Container(
-                padding: EdgeInsets.only(bottom: 1),
-                decoration: BoxDecoration(
-                    border: Border(
-                        bottom: BorderSide(
-                            color: ColorFamily.black,
-                            width: 1
-                        )
+          child: Container(
+            padding: EdgeInsets.only(bottom: 1),
+            decoration: const BoxDecoration(
+                border: Border(
+                    bottom: BorderSide(
+                        color: ColorFamily.black,
+                        width: 1
                     )
-                ),
-                child: Text(
-                  "${DateFormat('yyyy. M. dd.(E) HH:mm', 'ko_KR').format(selectedDateTime)}",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontFamily: FontFamily.mapleStoryLight,
-                    color: ColorFamily.black,
-                    // 부모 위젯
-                    decoration: widget.textDecoration,
-                  ),
-                ),
-              )
-              : Text(
-            "${DateFormat('yyyy. M. dd.(E) HH:mm', 'ko_KR').format(selectedDateTime)}",
-            style: TextStyle(
-              fontSize: 14,
-              fontFamily: FontFamily.mapleStoryLight,
-              color: ColorFamily.black,
-              // 부모 위젯
-              decoration: widget.textDecoration,
+                )
             ),
+            child: Text(
+              DateFormat('yyyy. M. d.(E) HH:mm', 'ko_KR').format(selectedDateTime),
+              style: TextStyleFamily.normalTextStyle
+              ),
           ),
         )
       ],

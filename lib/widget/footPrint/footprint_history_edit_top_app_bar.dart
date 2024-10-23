@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:woo_yeon_hi/dao/history_dao.dart';
-import 'package:woo_yeon_hi/model/enums.dart';
+import 'package:woo_yeon_hi/enums.dart';
 import 'package:woo_yeon_hi/model/history_model.dart';
 import 'package:woo_yeon_hi/provider/footprint_provider.dart';
 

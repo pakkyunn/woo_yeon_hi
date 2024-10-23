@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 
 enum MapType {
@@ -125,17 +127,18 @@ enum ScheduleState {
 }
 
 enum ScheduleColorType {
-  FIRST_COLOR(0),
-  SECOND_COLOR(1),
-  THIRD_COLOR(2),
-  FOURTH_COLOR(3),
-  FIFTH_COLOR(4),
-  SIXTH_COLOR(5),
-  SEVENTH_COLOR(6),
-  EIGHTH_COLOR(7);
+  RED_COLOR(0, Color(0xffFF806D)),
+  ORANGE_COLOR(1, Color(0xffFEBE98)),
+  YELLOW_COLOR(2, Color(0xffFFE08D)),
+  GREEN_COLOR(3, Color(0xffD2E4CC)),
+  BLUE_COLOR(4, Color(0xff66CBFF)),
+  NAVY_COLOR(5, Color(0xff6295EE)),
+  PURPLE_COLOR(6, Color(0xffCC99FE)),
+  BLACK_COLOR(7, Color(0xff564E5B));
 
-  final int state;
-  const ScheduleColorType(this.state);
+  final int typeIdx;
+  final Color colorCode;
+  const ScheduleColorType(this.typeIdx, this.colorCode);
 }
 
 enum DiarySortState{

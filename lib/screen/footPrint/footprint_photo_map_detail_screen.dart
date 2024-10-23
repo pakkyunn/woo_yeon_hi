@@ -18,7 +18,7 @@ import 'package:woo_yeon_hi/style/text_style.dart';
 import 'package:woo_yeon_hi/widget/footPrint/footprint_photo_map_detail_top_app_bar.dart';
 
 
-import '../../model/enums.dart';
+import '../../enums.dart';
 import '../../provider/footprint_provider.dart';
 import '../../style/color.dart';
 import '../../widget/footPrint/footprint_photo_map_marker.dart';

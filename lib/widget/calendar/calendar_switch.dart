@@ -23,6 +23,11 @@ class _CalendarSwitchState extends State<CalendarSwitch> {
       activeTrackColor: ColorFamily.pink,
       inactiveThumbColor: ColorFamily.gray,
       inactiveTrackColor: ColorFamily.white,
+      trackOutlineColor: isTrue
+          ? MaterialStateProperty.all(
+          Colors.transparent)
+          : MaterialStateProperty.all(
+          ColorFamily.gray),
       trackOutlineWidth: const MaterialStatePropertyAll(1),
       onChanged: (value) {
         setState(() {

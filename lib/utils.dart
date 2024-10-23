@@ -24,10 +24,21 @@ String dateToString(DateTime date) {
   return formattedDay;
 }
 
-/// 'yyyy.MM.dd.' 형태의 문자열 날짜 데이터를 DateTime으로 변환합니다.
+/// 'yyyy. M. d.' 형태의 문자열 날짜 데이터를 DateTime으로 변환합니다.
 DateTime stringToDate(String date) {
   List<String> splitDate = date.split(".");
   String year = splitDate[0];
+  String month = splitDate[1].replaceAll(" ", "");
+  String day = splitDate[2].replaceAll(" ", "");
+
+  return DateTime(int.parse(year), int.parse(month), int.parse(day));
+}
+
+/// 'yy. M. d.' 형태의 문자열 날짜 데이터를 DateTime으로 변환합니다.
+DateTime stringToDateLight(String date) {
+  List<String> splitDate = date.split(".");
+  int yearLight = int.parse(splitDate[0]);
+  String year = "${yearLight+2000}";
   String month = splitDate[1].replaceAll(" ", "");
   String day = splitDate[2].replaceAll(" ", "");
 

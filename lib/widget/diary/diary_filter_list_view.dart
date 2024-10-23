@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:woo_yeon_hi/model/enums.dart';
+import 'package:woo_yeon_hi/enums.dart';
 import 'package:woo_yeon_hi/provider/diary_provider.dart';
 
 import '../../style/color.dart';

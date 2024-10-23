@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:woo_yeon_hi/dao/photo_map_dao.dart';
 import 'package:woo_yeon_hi/dialogs.dart';
-import 'package:woo_yeon_hi/model/enums.dart';
+import 'package:woo_yeon_hi/enums.dart';
 import 'package:woo_yeon_hi/model/photo_map_model.dart';
 import 'package:woo_yeon_hi/screen/footPrint/footprint_photo_map_detail_screen.dart';
 import 'package:woo_yeon_hi/style/color.dart';

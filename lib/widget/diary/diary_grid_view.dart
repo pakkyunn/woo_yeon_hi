@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/dao/diary_dao.dart';
-import 'package:woo_yeon_hi/model/enums.dart';
+import 'package:woo_yeon_hi/enums.dart';
 import 'package:woo_yeon_hi/provider/diary_provider.dart';
 import 'package:woo_yeon_hi/provider/login_register_provider.dart';
 import 'package:woo_yeon_hi/style/color.dart';

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:woo_yeon_hi/dao/plan_dao.dart';
-import 'package:woo_yeon_hi/model/enums.dart';
+import 'package:woo_yeon_hi/enums.dart';
 import 'package:woo_yeon_hi/model/place_info.dart';
 
 import '../model/history_model.dart';

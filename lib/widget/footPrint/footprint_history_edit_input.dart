@@ -9,7 +9,7 @@ import 'package:woo_yeon_hi/provider/footprint_provider.dart';
 import 'package:woo_yeon_hi/screen/footPrint/footprint_history_edit_place_screen.dart';
 import 'package:woo_yeon_hi/style/text_style.dart';
 
-import '../../model/enums.dart';
+import '../../enums.dart';
 import '../../style/color.dart';
 import '../../style/font.dart';
 import '../../utils.dart';

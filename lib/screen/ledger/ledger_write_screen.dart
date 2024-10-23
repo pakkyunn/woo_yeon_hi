@@ -7,7 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/dao/ledger_dao.dart';
-import 'package:woo_yeon_hi/model/enums.dart';
+import 'package:woo_yeon_hi/enums.dart';
 import 'package:woo_yeon_hi/provider/ledger_provider.dart';
 import 'package:woo_yeon_hi/provider/login_register_provider.dart';
 import 'package:woo_yeon_hi/style/color.dart';
@@ -138,7 +138,6 @@ class _LedgerWriteScreenState extends State<LedgerWriteScreen> {
   // 최초 오류 메시지 false (유효성 검사)
   bool _showErrorMessages = false;
 
-  // DatePicker 기능
   void _showDateTimePickerWrite() {
     picker.DatePicker.showDateTimePicker(
       context,
@@ -175,7 +174,6 @@ class _LedgerWriteScreenState extends State<LedgerWriteScreen> {
             fontFamily: FontFamily
                 .mapleStoryLight)),
     );
-
   }
 
   @override

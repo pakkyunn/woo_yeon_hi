@@ -7,7 +7,7 @@ import 'package:scroll_date_picker/scroll_date_picker.dart';
 import 'package:woo_yeon_hi/model/schedule_model.dart';
 import 'package:woo_yeon_hi/utils.dart';
 
-import '../model/enums.dart';
+import '../enums.dart';
 import '../provider/login_register_provider.dart';
 
 

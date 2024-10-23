@@ -7,7 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/dao/plan_dao.dart';
 import 'package:woo_yeon_hi/dialogs.dart';
-import 'package:woo_yeon_hi/model/enums.dart';
+import 'package:woo_yeon_hi/enums.dart';
 import 'package:woo_yeon_hi/model/plan_model.dart';
 import 'package:woo_yeon_hi/screen/footPrint/footprint_date_plan_list_view_screen.dart';
 import 'package:woo_yeon_hi/style/color.dart';

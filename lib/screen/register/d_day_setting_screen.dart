@@ -9,7 +9,7 @@ import 'package:woo_yeon_hi/style/text_style.dart';
 
 import '../../dao/user_dao.dart';
 import '../../dialogs.dart';
-import '../../model/enums.dart';
+import '../../enums.dart';
 import '../../model/user_model.dart';
 import '../../provider/login_register_provider.dart';
 import '../../style/color.dart';
