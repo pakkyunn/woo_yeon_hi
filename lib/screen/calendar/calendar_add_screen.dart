@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/dao/schedule_dao.dart';
+import 'package:woo_yeon_hi/dialogs.dart';
 import 'package:woo_yeon_hi/enums.dart';
 import 'package:woo_yeon_hi/model/schedule_model.dart';
 import 'package:woo_yeon_hi/provider/login_register_provider.dart';
@@ -70,49 +71,6 @@ class _CalendarAddScreenState extends State<CalendarAddScreen> {
     });
   }
 
-  // // 종료일 상태 업데이트
-  // void updateFinishDateField() {
-  //   // 년, 월, 일
-  //   var startDay = termStart.year + termStart.month + termStart.day;
-  //   var finishDay = termFinish.year + termFinish.month + termFinish.day;
-  //
-  //   // 하루종일 - true
-  //   if (checkAllDay) {
-  //
-  //     // 년, 월, 일이 같다면
-  //     if (startDay == finishDay) {
-  //       checkTerm = true;
-  //       finishTextDecoration = TextDecoration.none;
-  //     }
-  //     else {
-  //       // 종료일이 시작일보다 먼저라면
-  //       if (termFinish.isBefore(termStart)) {
-  //         checkTerm = false;
-  //         finishTextDecoration = TextDecoration.lineThrough;
-  //       } else {
-  //         checkTerm = true;
-  //         finishTextDecoration = TextDecoration.none;
-  //       }
-  //     }
-  //   }
-  //   // 하루종일 - false
-  //   else {
-  //     // 종료일이 시작일보다 먼저라면
-  //     if (termFinish.isBefore(termStart)) {
-  //       checkTerm = false;
-  //       finishTextDecoration = TextDecoration.lineThrough;
-  //     } else {
-  //       checkTerm = true;
-  //       finishTextDecoration = TextDecoration.none;
-  //     }
-  //   }
-  // }
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  // }
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -132,86 +90,35 @@ class _CalendarAddScreenState extends State<CalendarAddScreen> {
               ),
               leading: IconButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  if(provider.titleController.text.isNotEmpty || provider.memoController.text.isNotEmpty){
+                    dialogTitleWithContent(
+                        context,
+                        "일정 추가 나가기",
+                        "작성된 내용은 저장되지 않습니다.",
+                            () {Navigator.pop(context, false);},
+                            () {Navigator.pop(context, true);
+                        Future.delayed(const Duration(milliseconds: 100), () {Navigator.of(context).pop();});}
+                    );
+                  } else {
+                    Navigator.pop(context);
+                  }
                 },
                 icon: SvgPicture.asset("lib/assets/icons/arrow_back.svg"),
               ),
               actions: [
                 IconButton(
                   onPressed: () async {
-                    // 일정 오류
-                    if (termFinish.isBefore(termStart)) {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return Dialog(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(28),
-                            ),
-                            surfaceTintColor: ColorFamily.white,
-                            backgroundColor: ColorFamily.white,
-                            child: Wrap(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(0, 30, 0, 20),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Column(
-                                        children: [
-                                          Text(
-                                            "오류가 발생했습니다",
-                                            style: TextStyleFamily.dialogTitleTextStyle,
-                                          ),
-                                          SizedBox(height: 15),
-                                          Text(
-                                            "시작일은 종료일의 이전이어야 합니다",
-                                            style: TextStyleFamily.hintTextStyle,
-                                          )
-                                        ],
-                                      ),
-                                      const SizedBox(height: 30),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          TextButton(
-                                            style: ButtonStyle(
-                                                overlayColor: MaterialStateProperty.all(ColorFamily.gray)
-                                            ),
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Text(
-                                              "취소",
-                                              style: TextStyleFamily.dialogButtonTextStyle,
-                                            ),
-                                          ),
-                                          TextButton(
-                                            style: ButtonStyle(
-                                                overlayColor: MaterialStateProperty.all(ColorFamily.gray)
-                                            ),
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Text(
-                                              "확인",
-                                              style: TextStyleFamily.dialogButtonTextStyle_pink,
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                      // 오류가 없을 경우
+                    // 입력 오류
+                    if(provider.titleController.text.replaceAll(' ', '').isEmpty) {
+                      showBlackToast("일정 제목을 입력해주세요");
+                    }
+                    // 시작/종료 일시 오류
+                    else if (termFinish.isBefore(termStart)) {
+                      showBlackToast("시작과 종료 일정을 확인해주세요");
                     } else {
-                      await onConfirm_done(context, provider);  // 저장처리
-                      Navigator.pop(context);    // 화면 종료
+                      await onConfirm_done(context, provider);
+                      Navigator.pop(context);
+                      showPinkSnackBar(context, "일정이 추가되었습니다");
                     }
                   },
                   icon: SvgPicture.asset("lib/assets/icons/done.svg"),
@@ -263,15 +170,12 @@ class _CalendarAddScreenState extends State<CalendarAddScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          child:
-                            Row(
-                              children: [
-                                const Text("하루 종일", style: TextStyleFamily.normalTextStyle),
-                                const Spacer(),
-                                CalendarSwitch(onSwitchChanged: isAllDay), // 스위치 버튼
-                              ],
-                            ),
+                        Row(
+                          children: [
+                            const Text("하루 종일", style: TextStyleFamily.normalTextStyle),
+                            const Spacer(),
+                            CalendarSwitch(onSwitchChanged: isAllDay), // 스위치 버튼
+                          ],
                         ),
                         const SizedBox(height: 30),
                         Row(
@@ -324,7 +228,7 @@ class _CalendarAddScreenState extends State<CalendarAddScreen> {
                                       FocusManager.instance.primaryFocus?.unfocus(),
                                   maxLines: null,
                                   decoration: const InputDecoration(
-                                      hintText: "메모를 입력해주세요",
+                                      hintText: "메모 작성",
                                       hintStyle: TextStyleFamily.hintTextStyle,
                                       border: InputBorder.none
                                   ),

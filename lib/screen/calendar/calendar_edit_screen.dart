@@ -39,10 +39,6 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
   DateTime termStart = DateTime.now();
   // 종료일 날짜
   DateTime termFinish = DateTime.now();
-  // 종료일 텍스트 데코
-  TextDecoration finishTextDecoration = TextDecoration.none;
-  // 종료일 체크 참거짓
-  bool checkTerm = true;
 
   // 색 업데이트 함수
   void updateColor(Color color){
@@ -141,19 +137,33 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
           style: TextStyleFamily.appBarTitleLightTextStyle,
         ),
         leading: IconButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            if(titleController.text != _scheduleData['schedule_title']
+               || memoController.text != _scheduleData['schedule_memo']
+               || termStart != stringToDateForStart(_scheduleData['schedule_start_date'])
+               || termFinish != stringToDateForFinish(_scheduleData['schedule_finish_date'])){
+              dialogTitleWithContent(
+                  context,
+                  "일정 편집 나가기",
+                  "편집된 내용은 저장되지 않습니다.",
+                      () {Navigator.pop(context, false);},
+                      () {Navigator.pop(context, true);
+                  Future.delayed(const Duration(milliseconds: 100), () {Navigator.of(context).pop();});}
+              );
+            } else{
+              Navigator.pop(context);
+            }
+          },
           icon: SvgPicture.asset('lib/assets/icons/arrow_back.svg'),
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 20),
-            child: IconButton(
-              onPressed: () {
-                //TODO 저장처리
-                Navigator.pop(context);
-              },
-              icon: SvgPicture.asset('lib/assets/icons/done.svg'),
-            ),
+          IconButton(
+            onPressed: () {
+              //TODO 저장처리
+              Navigator.pop(context);
+              showPinkSnackBar(context, "일정이 편집되었습니다");
+            },
+            icon: SvgPicture.asset('lib/assets/icons/done.svg'),
           )
         ],
       ),
@@ -257,7 +267,7 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
                                     onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
                                     maxLines: null,
                                     decoration: const InputDecoration(
-                                      hintText: "메모를 입력해주세요",
+                                      hintText: "메모 작성",
                                       hintStyle: TextStyleFamily.hintTextStyle,
                                       border: InputBorder.none,
                                     ),
@@ -301,7 +311,7 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
                                           // 텍스트마다 각각 속성을 부여하는 RichText - TextSpan
                                           RichText(
                                             text: const TextSpan(
-                                                text: "정말 ",
+                                                text: "해당 일정을 ",
                                                 style: TextStyle(
                                                   fontSize: 16,
                                                   fontFamily: FontFamily.mapleStoryLight,
@@ -346,8 +356,8 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
                                                   //TODO 삭제 처리 코드
 
                                                   Navigator.pop(context); // 다이얼로그
-                                                  Navigator.pop(context); // 일정 편집화면
-                                                  Navigator.pop(context); // 일정 세부사항 화면
+                                                  Navigator.pop(context); // 일정 편집 화면
+                                                  Navigator.pop(context); // 일정 상세 화면
                                                   showPinkSnackBar(context, "일정이 삭제되었습니다");
                                                 },
                                                 child: const Text(
