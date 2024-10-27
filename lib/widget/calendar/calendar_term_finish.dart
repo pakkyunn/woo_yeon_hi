@@ -74,7 +74,7 @@ class _CalendarTermFinishState extends State<CalendarTermFinish> {
               currentTime: selectedDateTime,
               onConfirm: (date) {
                 setState(() {
-                  selectedDateTime = date;
+                  selectedDateTime = DateTime(date.year, date.month, date.day, 23, 59);
                   widget.onDateChanged(selectedDateTime);
                 });
               },

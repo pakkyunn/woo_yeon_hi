@@ -24,83 +24,120 @@ class _CalendarScreenState extends State<CalendarScreen> {
   bool isDataLoaded = false;
   bool _isCalendar = true;
 
-  @override
-  void initState() {
-    super.initState();
-    _loadData();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _loadData();
+  // }
 
-  Future<void> _loadData() async {
-    await getScheduleData(); // 비동기로 데이터를 가져옵니다.
+  // Future<void> _loadData() async {
+  //   await getScheduleData(); // 비동기로 데이터를 가져옵니다.
+  //
+  //   // 데이터를 가져온 후 setState를 호출하여 상태를 업데이트
+  //   setState(() {
+  //     isDataLoaded = true;
+  //   });
+  // }
 
-    // 데이터를 가져온 후 setState를 호출하여 상태를 업데이트
-    setState(() {
-      isDataLoaded = true;
-    });
-  }
-
-  // 데이터를 가져옴
-  Future<void> getScheduleData() async {
-    // 캘린더 데이터 가져오기
-    var calendarScreenProvider = Provider.of<CalendarScreenProvider>(context, listen: false);
-    var scheduleList = await getCalendarScreenScheduleList(context);
-    calendarScreenProvider.setScheduleList(scheduleList);
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //
+  //   getScheduleData();
+  // }
+  //
+  // // 데이터를 가져옴
+  // Future<bool> getScheduleData() async {
+  //   // 캘린더 데이터 가져오기
+  //   var calendarScreenProvider = Provider.of<CalendarScreenProvider>(context, listen: false);
+  //   calendarScreenProvider.setScheduleList(await getCalendarScreenScheduleList(context));
+  //
+  //   return true;
+  // }
 
   @override
   Widget build(BuildContext context) {
       return Consumer<CalendarScreenProvider>(builder: (context, provider, child) {
         return Scaffold(
-          backgroundColor: ColorFamily.cream,
-          appBar: AppBar(
             backgroundColor: ColorFamily.cream,
-            surfaceTintColor: ColorFamily.cream,
-            centerTitle: true,
-            scrolledUnderElevation: 0,
-            title: _isCalendar
-                ? Text(_setFocusedMonthTitle(provider.focusedDay),
-                style: TextStyleFamily.appBarTitleBoldTextStyle)
-                : const Text("일정 목록",
-                style: TextStyleFamily.appBarTitleBoldTextStyle),
-            leading: IconButton(
-              splashColor: Colors.transparent,
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: SvgPicture.asset("lib/assets/icons/arrow_back.svg"),
-            ),
-            actions: [
-              IconButton(
+            appBar: AppBar(
+              backgroundColor: ColorFamily.cream,
+              surfaceTintColor: ColorFamily.cream,
+              centerTitle: true,
+              scrolledUnderElevation: 0,
+              title: _isCalendar
+                  ? Text(_setFocusedMonthTitle(provider.focusedDay),
+                  style: TextStyleFamily.appBarTitleBoldTextStyle)
+                  : const Text("일정 목록",
+                  style: TextStyleFamily.appBarTitleBoldTextStyle),
+              leading: IconButton(
+                splashColor: Colors.transparent,
                 onPressed: () {
-                  setState(() {
-                    _isCalendar = !_isCalendar;
-                  });
+                  Navigator.pop(context);
                 },
-                icon: _isCalendar
-                    ? SvgPicture.asset("lib/assets/icons/list.svg")
-                    : SvgPicture.asset("lib/assets/icons/calendar.svg"),
+                icon: SvgPicture.asset("lib/assets/icons/arrow_back.svg"),
               ),
-              IconButton(
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const CalendarAddScreen()));
-                },
-                icon: SvgPicture.asset('lib/assets/icons/add.svg'),
-              ),
-            ],
-          ),
-          body: isDataLoaded
-            ? _isCalendar
-              ? CalendarDate(provider.scheduleList)
-              : CalendarList(provider.scheduleList)
-            : const Center(
-                child: CircularProgressIndicator(
-                  color: ColorFamily.pink,
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _isCalendar = !_isCalendar;
+                    });
+                  },
+                  icon: _isCalendar
+                      ? SvgPicture.asset("lib/assets/icons/list.svg")
+                      : SvgPicture.asset("lib/assets/icons/calendar.svg"),
                 ),
-              )
+                IconButton(
+                  onPressed: () async {
+                    bool? result = await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CalendarAddScreen()),
+                    );
+                    if (result == true) {
+                      // 데이터 갱신 로직
+                      final provider = Provider.of<CalendarScreenProvider>(context, listen: false);
+                      var scheduleList = await getCalendarScreenScheduleList(context); // 데이터를 불러오는 메서드 호출
+                      provider.setScheduleList(scheduleList);
+                    }
+                    // Navigator.of(context).push(MaterialPageRoute(
+                    //     builder: (context) => const CalendarAddScreen()));
+                  },
+                  icon: SvgPicture.asset('lib/assets/icons/add.svg'),
+                ),
+              ],
+            ),
+            body:
+            // isDataLoaded ?
+            _isCalendar
+                ? CalendarDate()
+                : CalendarList()
+          //     : const Center(
+          //   child: CircularProgressIndicator(
+          //     color: ColorFamily.pink,
+          //   ),
+          // )
         );
-      });
-  }
+      //   return FutureBuilder(
+      //       future: getScheduleData(),
+      //       builder: (context, snapshot) {
+      //         if (snapshot.hasData == false) {
+      //           return const Center(
+      //             child: CircularProgressIndicator(
+      //               color: ColorFamily.pink,
+      //             ),
+      //           );
+      //         } else if (snapshot.hasError) {
+      //           return const Text(
+      //             "오류 발생",
+      //             style: TextStyleFamily.normalTextStyle,
+      //           );
+      //         } else {
+      //
+      //         }
+      //
+      // });
+  });}
 
   String _setFocusedMonthTitle(DateTime selectedDate) {
     DateFormat formatter = DateFormat('yy년 M월');

@@ -1,26 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:woo_yeon_hi/enums.dart';
+import 'package:woo_yeon_hi/provider/schedule_provider.dart';
 import 'package:woo_yeon_hi/screen/calendar/calendar_edit_screen.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/style/font.dart';
 import 'package:woo_yeon_hi/style/text_style.dart';
 
 class CalendarDetailScreen extends StatefulWidget {
-  Map<String, dynamic> scheduleData;
-  CalendarDetailScreen(this.scheduleData, {super.key});
+  CalendarDetailScreen({super.key});
 
   @override
   State<CalendarDetailScreen> createState() => _CalendarDetailScreenState();
 }
 
 class _CalendarDetailScreenState extends State<CalendarDetailScreen> {
-
-  Color currentColor = ColorFamily.green;
+  // final Map<String, dynamic> _selectedSchedule = {}; // 일정 데이터를 담을 변수
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Consumer<CalendarScreenProvider>(builder: (context, provider, child) {
+      return Scaffold(
       backgroundColor: ColorFamily.cream,
       appBar: AppBar(
         surfaceTintColor: ColorFamily.cream,
@@ -38,18 +40,12 @@ class _CalendarDetailScreenState extends State<CalendarDetailScreen> {
           icon: SvgPicture.asset("lib/assets/icons/arrow_back.svg"),
         ),
         actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 20),
-            child: IconButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) {
-                    return CalendarEditScreen(widget.scheduleData);
-                  }),
-                );
-              },
-              icon: SvgPicture.asset("lib/assets/icons/edit.svg"),
-            ),
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => CalendarEditScreen()));
+            },
+            icon: SvgPicture.asset("lib/assets/icons/edit.svg"),
           )
         ],
       ),
@@ -68,15 +64,16 @@ class _CalendarDetailScreenState extends State<CalendarDetailScreen> {
                       children: [
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
+                              splashFactory: NoSplash.splashFactory,
                                 shape: CircleBorder(),
-                                backgroundColor: currentColor // 선택된 색상
+                                backgroundColor: ScheduleColorType.values.firstWhere((e) => e.typeIdx == provider.selectedDaySchedule['schedule_color']).colorCode, // 선택된 색상
                             ),
                             onPressed: () {},
                             child: Icon(null)
                         ),
                         Expanded(
                           child: Text(
-                            widget.scheduleData['schedule_title'],
+                            provider.selectedDaySchedule['schedule_title'],
                             style: TextStyleFamily.appBarTitleBoldTextStyle,
                           ),
                         )
@@ -89,23 +86,30 @@ class _CalendarDetailScreenState extends State<CalendarDetailScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // 일정 날짜
-                          Text(
-                            widget.scheduleData['schedule_start_date'] == widget.scheduleData['schedule_finish_date']
-                              ? "${widget.scheduleData['schedule_start_date']}"
-                              : "${widget.scheduleData['schedule_start_date']} ~ ${widget.scheduleData['schedule_finish_date']}",
-                            style: TextStyleFamily.normalTextStyle,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Text(
+                              provider.selectedDaySchedule['schedule_start_date'] == provider.selectedDaySchedule['schedule_finish_date']
+                                ? "${provider.selectedDaySchedule['schedule_start_date']}"
+                                : "${provider.selectedDaySchedule['schedule_start_date']} ~ ${provider.selectedDaySchedule['schedule_finish_date']}",
+                              style: const TextStyle(fontFamily: FontFamily.mapleStoryLight, fontSize: 16),
+                            ),
                           ),
-                          const SizedBox(height: 5),
-                          Row(
-                            children: [
-                              // 일정
-                              Text(
-                                "${widget.scheduleData['schedule_start_time']} ~ ${widget.scheduleData['schedule_finish_time']}",
-                                style: TextStyleFamily.normalTextStyle,
-                              ),
-                            ],
+                          const SizedBox(height: 10),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Row(
+                              children: [
+                                // 일정 시각
+                                // 하루종일 일정인 경우
+                                provider.selectedDaySchedule['schedule_start_time']=="00:00" && provider.selectedDaySchedule['schedule_finish_time']=="23:59"
+                                    ? const Text("하루 종일", style: TextStyleFamily.normalTextStyle)
+                                    : Text(
+                                      "${provider.selectedDaySchedule['schedule_start_time']} - ${provider.selectedDaySchedule['schedule_finish_time']}",
+                                      style: TextStyleFamily.normalTextStyle),
+                              ],
+                            ),
                           ),
-                          const SizedBox(height: 45),
                           const SizedBox(height: 10),
                           Card(
                             color: ColorFamily.white,
@@ -126,7 +130,7 @@ class _CalendarDetailScreenState extends State<CalendarDetailScreen> {
                                   padding: EdgeInsets.all(15),
                                   child: SingleChildScrollView(
                                     child: Text(
-                                      widget.scheduleData['schedule_memo'],
+                                      provider.selectedDaySchedule['schedule_memo'],
                                       style: TextStyleFamily.normalTextStyle,
                                     ),
                                   ),
@@ -145,6 +149,6 @@ class _CalendarDetailScreenState extends State<CalendarDetailScreen> {
           );
         },
       )
-    );
+    );});
   }
 }

@@ -31,7 +31,7 @@ Future<void> setScheduleSequence(int sequence) async {
 }
 
 // Firebase - ScheduleData 에 저장
-Future<void> addSchedule(Schedule schedule) async {
+Future<void> addScheduleData(Schedule schedule) async {
   await FirebaseFirestore.instance.collection("ScheduleData").add({
     "schedule_idx" : schedule.scheduleIdx,
     "schedule_user_idx" : schedule.scheduleUserIdx,
@@ -46,6 +46,35 @@ Future<void> addSchedule(Schedule schedule) async {
   });
 }
 
+Future<void> updateScheduleData(Schedule schedule) async {
+  var querySnapshot = await FirebaseFirestore.instance
+      .collection('ScheduleData')
+      .where('schedule_idx', isEqualTo: schedule.scheduleIdx)
+      .get();
+
+  var document = querySnapshot.docs.first;
+  document.reference.update({"schedule_user_idx": schedule.scheduleUserIdx});
+  document.reference.update({"schedule_start_date": schedule.scheduleStartDate});
+  document.reference.update({"schedule_finish_date": schedule.scheduleFinishDate});
+  document.reference.update({"schedule_start_time": schedule.scheduleStartTime});
+  document.reference.update({"schedule_finish_time": schedule.scheduleFinishTime});
+  document.reference.update({"schedule_title": schedule.scheduleTitle});
+  document.reference.update({"schedule_color": schedule.scheduleColor});
+  document.reference.update({"schedule_memo": schedule.scheduleMemo});
+}
+
+Future<void> deleteScheduleData(int scheduleIdx) async {
+  var querySnapshot = await FirebaseFirestore.instance
+      .collection('ScheduleData')
+      .where('schedule_idx', isEqualTo: scheduleIdx)
+      .get();
+
+  await FirebaseFirestore.instance
+      .collection('ScheduleData')
+      .doc(querySnapshot.docs.first.id)
+      .update({"schedule_state": ScheduleState.STATE_DELETE.state});
+}
+
 // 캘린더 화면에서 데이터를 가져오는 메서드
 Future<List<Map<String, dynamic>>> getCalendarScreenScheduleList(BuildContext context) async {
   var userProvider = Provider.of<UserProvider>(context, listen: false);
@@ -53,7 +82,9 @@ Future<List<Map<String, dynamic>>> getCalendarScreenScheduleList(BuildContext co
   var userIdx = userProvider.userIdx;
   var loverIdx = userProvider.loverIdx;
 
-  var query = FirebaseFirestore.instance.collection('ScheduleData').where('schedule_user_idx', whereIn: [userIdx, loverIdx]);
+  var query = FirebaseFirestore.instance.collection('ScheduleData')
+      .where('schedule_user_idx', whereIn: [userIdx, loverIdx])
+      .where('schedule_state', isEqualTo: ScheduleState.STATE_NORMAL.state);
   var querySnapshot = await query.get();
 
   List<Map<String, dynamic>> results = [];
@@ -75,7 +106,9 @@ Future<List<List<Map<String, dynamic>>>> getHomeCalendarScheduleList(BuildContex
   var userIdx = userProvider.userIdx;
   var loverIdx = userProvider.loverIdx;
 
-  var query = FirebaseFirestore.instance.collection('ScheduleData').where('schedule_user_idx', whereIn: [userIdx, loverIdx]);
+  var query = FirebaseFirestore.instance.collection('ScheduleData')
+      .where('schedule_user_idx', whereIn: [userIdx, loverIdx])
+      .where('schedule_state', isEqualTo: ScheduleState.STATE_NORMAL.state);
   var querySnapshot = await query.get();
 
   List<Map<String, dynamic>> results = querySnapshot.docs.map((doc) => doc.data()).toList();
@@ -243,6 +276,7 @@ Future<bool> isExistOnSchedule(DateTime date, BuildContext context) async {
   var querySnapShot = await FirebaseFirestore.instance
       .collection('ScheduleData')
       .where('schedule_user_idx', whereIn: [userIdx, loverIdx])
+      .where('schedule_state', isEqualTo: ScheduleState.STATE_NORMAL.state)
       .get();
 
   for (var doc in querySnapShot.docs) {

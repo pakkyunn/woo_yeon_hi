@@ -73,7 +73,7 @@ class _CalendarTermStartState extends State<CalendarTermStart> {
               currentTime: selectedDateTime,
               onConfirm: (date) {
                 setState(() {
-                  selectedDateTime = date;
+                  selectedDateTime = DateTime(date.year, date.month, date.day, 00, 00);
                   widget.onDateChanged(selectedDateTime);
                 });
               },
@@ -90,8 +90,7 @@ class _CalendarTermStartState extends State<CalendarTermStart> {
               )
             ),
             child: Text(
-              DateFormat('yyyy. M. d.(E)', 'ko_KR').format(selectedDateTime),
-              style: TextStyleFamily.normalTextStyle,
+              dateToStringWithDay(selectedDateTime), style: TextStyleFamily.normalTextStyle
             ),
           ),
         )

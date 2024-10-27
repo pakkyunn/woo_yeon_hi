@@ -6,16 +6,18 @@ import 'package:woo_yeon_hi/dialogs.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/style/font.dart';
 import 'package:woo_yeon_hi/style/text_style.dart';
+import 'package:woo_yeon_hi/utils.dart';
 import 'package:woo_yeon_hi/widget/calendar/calendar_switch.dart';
 import 'package:woo_yeon_hi/widget/calendar/calendar_term_finish.dart';
 import 'package:woo_yeon_hi/widget/calendar/calendar_term_start.dart';
 
+import '../../dao/schedule_dao.dart';
 import '../../enums.dart';
+import '../../model/schedule_model.dart';
 import '../../provider/schedule_provider.dart';
 
 class CalendarEditScreen extends StatefulWidget {
-  Map<String, dynamic> scheduleData;
-  CalendarEditScreen(this.scheduleData, {super.key});
+  CalendarEditScreen({super.key});
 
   @override
   State<CalendarEditScreen> createState() => _CalendarEditScreenState();
@@ -23,10 +25,15 @@ class CalendarEditScreen extends StatefulWidget {
 
 class _CalendarEditScreenState extends State<CalendarEditScreen> {
 
-  Map<String, dynamic> _scheduleData = {};
+  // Map<String, dynamic> _scheduleData = {};
+
+  // 제목
+  late TextEditingController titleController;
+  // 메모 내용
+  late TextEditingController memoController;
 
   // 현재 선택된 색상
-  Color currentColor = ScheduleColorType.GREEN_COLOR.colorCode;
+  late Color currentColor;
 
   // 하루 종일 체크여부
   bool checkAllDay = false;
@@ -71,19 +78,32 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
   @override
   void initState() {
     super.initState();
-
-    _scheduleData = widget.scheduleData;
+    var provider = Provider.of<CalendarScreenProvider>(context, listen: false);
 
     // 시작일
-    termStart = stringToDateForStart(_scheduleData['schedule_start_date']);
+    termStart = stringToDateForStart(provider.selectedDaySchedule['schedule_start_date']);
     // 종료일
-    termFinish = stringToDateForFinish(_scheduleData['schedule_finish_date']);
+    termFinish = stringToDateForFinish(provider.selectedDaySchedule['schedule_finish_date']);
+
+    // 제목
+    titleController = TextEditingController(text: "${provider.selectedDaySchedule['schedule_title']}");
+    // 메모 내용
+    memoController = TextEditingController(text: "${provider.selectedDaySchedule['schedule_memo']}");
+
+    // 일정 색상
+    currentColor = ScheduleColorType.values.firstWhere((e) => e.typeIdx == provider.selectedDaySchedule['schedule_color']).colorCode;
+
+    if(provider.selectedDaySchedule['schedule_start_time']=="00:00" && provider.selectedDaySchedule['schedule_finish_time']=="23:59"){
+        checkAllDay = true;
+    }
   }
 
   // 시작일을 DateTime 타입으로 변경
   DateTime stringToDateForStart(String strDateTime) {
-    var date = _scheduleData['schedule_start_date'];
-    var time = _scheduleData['schedule_start_time'];
+    var provider = Provider.of<CalendarScreenProvider>(context, listen: false);
+
+    var date = provider.selectedDaySchedule['schedule_start_date'];
+    var time = provider.selectedDaySchedule['schedule_start_time'];
 
     strDateTime = "$date $time";
 
@@ -95,8 +115,10 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
 
   // 종료일을 DateTime 타입으로 변경
   DateTime stringToDateForFinish(String strDateTime) {
-    var date = _scheduleData['schedule_finish_date'];
-    var time = _scheduleData['schedule_finish_time'];
+    var provider = Provider.of<CalendarScreenProvider>(context, listen: false);
+
+    var date = provider.selectedDaySchedule['schedule_finish_date'];
+    var time = provider.selectedDaySchedule['schedule_finish_time'];
 
     strDateTime = "$date $time";
 
@@ -106,26 +128,28 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
     return dateTime;
   }
 
+  Schedule updatedScheduleModel(){
+    var provider = Provider.of<CalendarScreenProvider>(context, listen: false);
 
-  /*
+    Schedule scheduleModel = Schedule(
+        scheduleIdx: provider.selectedDaySchedule["schedule_idx"],
+        scheduleUserIdx: provider.selectedDaySchedule["schedule_user_idx"],
+        scheduleStartDate: dateToStringWithDay(termStart),
+        scheduleFinishDate: dateToStringWithDay(termFinish),
+        scheduleStartTime: DateFormat('HH:mm').format(termStart),
+        scheduleFinishTime: DateFormat('HH:mm').format(termFinish),
+        scheduleTitle: titleController.text,
+        scheduleColor: Provider.of<CalendarScreenProvider>(context, listen: false).selectedColorType,
+        scheduleMemo: memoController.text,
+        scheduleState: 0);
 
-
-      수정 완료 처리
-
-
-   */
-
-
+    return scheduleModel;
+  }
 
   @override
   Widget build(BuildContext context) {
-
-    // 제목
-    TextEditingController titleController = TextEditingController(text: "${_scheduleData['schedule_title']}");
-    // 메모 내용
-    TextEditingController memoController = TextEditingController(text: "${_scheduleData['schedule_memo']}");
-
-    return Scaffold(
+    return Consumer<CalendarScreenProvider>(builder: (context, provider, child) {
+      return Scaffold(
       backgroundColor: ColorFamily.cream,
       appBar: AppBar(
         backgroundColor: ColorFamily.cream,
@@ -138,10 +162,10 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
         ),
         leading: IconButton(
           onPressed: () {
-            if(titleController.text != _scheduleData['schedule_title']
-               || memoController.text != _scheduleData['schedule_memo']
-               || termStart != stringToDateForStart(_scheduleData['schedule_start_date'])
-               || termFinish != stringToDateForFinish(_scheduleData['schedule_finish_date'])){
+            if(titleController.text != provider.selectedDaySchedule['schedule_title']
+               || memoController.text != provider.selectedDaySchedule['schedule_memo']
+               || termStart != stringToDateForStart(provider.selectedDaySchedule['schedule_start_date'])
+               || termFinish != stringToDateForFinish(provider.selectedDaySchedule['schedule_finish_date'])){
               dialogTitleWithContent(
                   context,
                   "일정 편집 나가기",
@@ -158,8 +182,9 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
         ),
         actions: [
           IconButton(
-            onPressed: () {
-              //TODO 저장처리
+            onPressed: () async {
+              provider.updateSchedule(updatedScheduleModel());
+              await updateScheduleData(updatedScheduleModel());
               Navigator.pop(context);
               showPinkSnackBar(context, "일정이 편집되었습니다");
             },
@@ -215,7 +240,24 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
                             children: [
                               const Text("하루 종일", style: TextStyleFamily.normalTextStyle),
                               const Spacer(),
-                              CalendarSwitch(onSwitchChanged: isAllTime)
+                              Switch(
+                                value: checkAllDay,
+                                activeColor: ColorFamily.white,
+                                activeTrackColor: ColorFamily.pink,
+                                inactiveThumbColor: ColorFamily.gray,
+                                inactiveTrackColor: ColorFamily.white,
+                                trackOutlineColor: checkAllDay
+                                    ? MaterialStateProperty.all(
+                                    Colors.transparent)
+                                    : MaterialStateProperty.all(
+                                    ColorFamily.gray),
+                                trackOutlineWidth: const MaterialStatePropertyAll(1),
+                                onChanged: (value) {
+                                  setState(() {
+                                    checkAllDay = !checkAllDay;
+                                  });
+                                },
+                              )
                             ],
                           ),
                           const SizedBox(height: 30),
@@ -303,9 +345,8 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
                                 child: Wrap(
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.fromLTRB(0, 30, 0, 20),
+                                      padding: const EdgeInsets.fromLTRB(0, 40, 0, 20),
                                       child: Column(
-                                        // 공간을 차지하지 않고 각 끝으로
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           // 텍스트마다 각각 속성을 부여하는 RichText - TextSpan
@@ -339,7 +380,6 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
                                           ),
                                           const SizedBox(height: 40),
                                           Row(
-                                            // 같은 크기만큼 양 옆 공간차지
                                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                             children: [
                                               TextButton(
@@ -352,9 +392,9 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
                                                 ),
                                               ),
                                               TextButton(
-                                                onPressed: () {
-                                                  //TODO 삭제 처리 코드
-
+                                                onPressed: () async {
+                                                  await deleteScheduleData(provider.selectedDaySchedule['schedule_idx']);
+                                                  await provider.updateScheduleList(context);
                                                   Navigator.pop(context); // 다이얼로그
                                                   Navigator.pop(context); // 일정 편집 화면
                                                   Navigator.pop(context); // 일정 상세 화면
@@ -394,7 +434,7 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
           );
         }
       ),
-    );
+    );});
   }
   void _showColorPickerDialog(BuildContext context, Color currentColor, ValueChanged<Color> onColorChanged) {
     WidgetsBinding.instance.addPostFrameCallback((_) {

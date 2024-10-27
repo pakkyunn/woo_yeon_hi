@@ -39,9 +39,18 @@ class _CalendarAddScreenState extends State<CalendarAddScreen> {
   bool checkAllDay = false;
 
   // 시작일 날짜
-  DateTime termStart = DateTime.now().subtract(Duration(minutes: DateTime.now().minute));
+  late DateTime termStart;
   // 종료일 날짜 +1 hour
-  DateTime termFinish = DateTime.now().add(const Duration(hours: 1)).subtract(Duration(minutes: DateTime.now().minute));
+  late DateTime termFinish;
+
+  @override
+  void initState() {
+    super.initState();
+
+    var provider = Provider.of<CalendarScreenProvider>(context, listen: false);
+    termStart = provider.selectedDay.add(const Duration(hours: 1)).subtract(Duration(minutes: provider.selectedDay.minute));
+    termFinish = provider.selectedDay.add(const Duration(hours: 2)).subtract(Duration(minutes: provider.selectedDay.minute));
+  }
 
   // 색 업데이트 함수
   void updateColor(Color color) {
@@ -117,7 +126,7 @@ class _CalendarAddScreenState extends State<CalendarAddScreen> {
                       showBlackToast("시작과 종료 일정을 확인해주세요");
                     } else {
                       await onConfirm_done(context, provider);
-                      Navigator.pop(context);
+                      Navigator.pop(context, true);
                       showPinkSnackBar(context, "일정이 추가되었습니다");
                     }
                   },
@@ -313,6 +322,8 @@ class _CalendarAddScreenState extends State<CalendarAddScreen> {
 
   // 완료 작업
   Future<void> onConfirm_done(BuildContext context, ScheduleProvider provider) async {
+    var calendarScreenProvider = Provider.of<CalendarScreenProvider>(context, listen: false);
+
     var schedule_idx = await getScheduleSequence() + 1; // 저장할 때 idx 값 1씩 증가
     var schedule_user_idx = Provider.of<UserProvider>(context, listen: false).userIdx;
     await setScheduleSequence(schedule_idx);
@@ -322,7 +333,7 @@ class _CalendarAddScreenState extends State<CalendarAddScreen> {
           ? '00:00'
           : DateFormat('HH:mm').format(termStart);
     var schedule_finish_time = checkAllDay
-          ? '11:59'
+          ? '23:59'
           : DateFormat('HH:mm').format(termFinish);
     var schedule = Schedule(
       scheduleIdx: schedule_idx,
@@ -332,13 +343,13 @@ class _CalendarAddScreenState extends State<CalendarAddScreen> {
       scheduleStartTime: schedule_start_time,
       scheduleFinishTime: schedule_finish_time,
       scheduleTitle: provider.titleController.text,
-      scheduleColor: Provider.of<CalendarScreenProvider>(context, listen: false).selectedColorType,
+      scheduleColor: calendarScreenProvider.selectedColorType,
       scheduleMemo: provider.memoController.text,
       scheduleState: ScheduleState.STATE_NORMAL.state
     );
 
-    await addSchedule(schedule); // 컬렉션에 저장
-    provider.providerNotify();
+    await addScheduleData(schedule); // 컬렉션에 저장
+    await calendarScreenProvider.updateScheduleList(context);
   }
 }
 

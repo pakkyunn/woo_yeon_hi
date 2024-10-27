@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
 import '../dao/schedule_dao.dart';
+import '../model/schedule_model.dart';
 
 class ScheduleProvider extends ChangeNotifier {
   final TextEditingController _titleController = TextEditingController(); // 일정 제목
@@ -70,11 +71,25 @@ class HomeCalendarProvider extends ChangeNotifier {
 class CalendarScreenProvider extends ChangeNotifier {
   //캘린더 화면
 
+  DateTime _selectedDay = DateTime.now();
+  DateTime get selectedDay => _selectedDay;
+
   DateTime _focusedDay = DateTime.now();
   DateTime get focusedDay => _focusedDay;
 
   List<Map<String, dynamic>> _scheduleList = [];
   List<Map<String, dynamic>> get scheduleList => _scheduleList;
+
+  List<Map<String, dynamic>> _selectedDayScheduleList = [];
+  List<Map<String, dynamic>> get selectedDayScheduleList => _selectedDayScheduleList;
+
+  Map<String, dynamic> _selectedDaySchedule = {};
+  Map<String, dynamic> get selectedDaySchedule => _selectedDaySchedule;
+
+  void setSelectedDay(DateTime selectedDay){
+    _selectedDay = selectedDay;
+    notifyListeners();
+  }
 
   void setFocusedDay(DateTime focusedDay){
     _focusedDay = focusedDay;
@@ -83,6 +98,38 @@ class CalendarScreenProvider extends ChangeNotifier {
 
   void setScheduleList(List<Map<String, dynamic>> scheduleList){
     _scheduleList = scheduleList;
+    notifyListeners();
+  }
+
+  void setSelectedDayScheduleList(List<Map<String, dynamic>> scheduleList){
+    _selectedDayScheduleList = scheduleList;
+    notifyListeners();
+  }
+
+  void setSelectedSchedule(Map<String, dynamic> schedule){
+    _selectedDaySchedule = schedule;
+    notifyListeners();
+  }
+
+  void setSelectedScheduleFromIndex(int index){
+    _selectedDaySchedule = _selectedDayScheduleList[index];
+    notifyListeners();
+  }
+
+  Future<void> updateScheduleList(BuildContext context) async {
+    _scheduleList = await getCalendarScreenScheduleList(context);
+    notifyListeners();
+  }
+
+  void updateSchedule(Schedule updatedModel){
+    _selectedDaySchedule['schedule_start_date'] = updatedModel.scheduleStartDate;
+    _selectedDaySchedule['schedule_finish_date'] = updatedModel.scheduleFinishDate;
+    _selectedDaySchedule['schedule_start_time'] = updatedModel.scheduleStartTime;
+    _selectedDaySchedule['schedule_finish_time'] = updatedModel.scheduleFinishTime;
+    _selectedDaySchedule['schedule_title'] = updatedModel.scheduleTitle;
+    _selectedDaySchedule['schedule_color'] = updatedModel.scheduleColor;
+    _selectedDaySchedule['schedule_memo'] = updatedModel.scheduleMemo;
+
     notifyListeners();
   }
 
