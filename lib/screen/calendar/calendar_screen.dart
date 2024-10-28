@@ -66,7 +66,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
               centerTitle: true,
               scrolledUnderElevation: 0,
               title: _isCalendar
-                  ? Text(_setFocusedMonthTitle(provider.focusedDay),
+                  ? Text(_setSelectedMonthTitle(provider.focusedDay),
                   style: TextStyleFamily.appBarTitleBoldTextStyle)
                   : const Text("일정 목록",
                   style: TextStyleFamily.appBarTitleBoldTextStyle),
@@ -83,6 +83,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     setState(() {
                       _isCalendar = !_isCalendar;
                     });
+                    provider.setFocusedDay(DateTime.now());
                   },
                   icon: _isCalendar
                       ? SvgPicture.asset("lib/assets/icons/list.svg")
@@ -92,7 +93,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   onPressed: () async {
                     bool? result = await Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => CalendarAddScreen()),
+                      MaterialPageRoute(builder: (context) => const CalendarAddScreen()),
                     );
                     if (result == true) {
                       // 데이터 갱신 로직
@@ -139,7 +140,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
       // });
   });}
 
-  String _setFocusedMonthTitle(DateTime selectedDate) {
+  String _setSelectedMonthTitle(DateTime selectedDate) {
     DateFormat formatter = DateFormat('yy년 M월');
     return formatter.format(selectedDate);
   }

@@ -138,8 +138,24 @@ class CalendarScreenProvider extends ChangeNotifier {
   int _selectedColorType = 3;
   int get selectedColorType => _selectedColorType;
 
+  DateTime _termStart = DateTime.now();
+  DateTime get termStart => _termStart;
+
+  DateTime _termFinish = DateTime.now().add(const Duration(hours: 1));
+  DateTime get termFinish => _termFinish;
+
   void setSelectedColorType(int colorType){
     _selectedColorType = colorType;
+    notifyListeners();
+  }
+
+  void setTermStart(DateTime date){
+    _termStart = date;
+    notifyListeners();
+  }
+
+  void setTermFinish(DateTime date){
+    _termFinish = date;
     notifyListeners();
   }
 

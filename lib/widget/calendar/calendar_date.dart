@@ -349,8 +349,10 @@ class _CalendarDateState extends State<CalendarDate> {
                           },
                           onPageChanged: (focusedDay) {
                             setState(() {
+                              _selectedDay = focusedDay;
                               _focusedDay = focusedDay;
                             });
+                            provider.setSelectedDay(focusedDay);
                             provider.setFocusedDay(focusedDay);
                           },
                         ),

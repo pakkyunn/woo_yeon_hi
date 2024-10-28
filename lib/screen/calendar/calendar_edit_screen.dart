@@ -42,11 +42,6 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
   double? left;
   double? top;
 
-  // 시작일 날짜
-  DateTime termStart = DateTime.now();
-  // 종료일 날짜
-  DateTime termFinish = DateTime.now();
-
   // 색 업데이트 함수
   void updateColor(Color color){
     setState(() {
@@ -61,29 +56,16 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
     });
   }
 
-  // 시작일이 변경될 때
-  void onTermStartChanged(DateTime date){
-    setState(() {
-      termStart = date;
-    });
-  }
-
-  // 종료일이 변경될 때
-  void onTermFinishChanged(DateTime date){
-    setState(() {
-      termFinish = date;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
+
     var provider = Provider.of<CalendarScreenProvider>(context, listen: false);
 
-    // 시작일
-    termStart = stringToDateForStart(provider.selectedDaySchedule['schedule_start_date']);
-    // 종료일
-    termFinish = stringToDateForFinish(provider.selectedDaySchedule['schedule_finish_date']);
+    // 시작 일시
+    provider.setTermStart(stringToDateForStart(provider.selectedDaySchedule['schedule_start_date']));
+    // 종료 일시
+    provider.setTermFinish(stringToDateForFinish(provider.selectedDaySchedule['schedule_finish_date']));
 
     // 제목
     titleController = TextEditingController(text: "${provider.selectedDaySchedule['schedule_title']}");
@@ -134,10 +116,10 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
     Schedule scheduleModel = Schedule(
         scheduleIdx: provider.selectedDaySchedule["schedule_idx"],
         scheduleUserIdx: provider.selectedDaySchedule["schedule_user_idx"],
-        scheduleStartDate: dateToStringWithDay(termStart),
-        scheduleFinishDate: dateToStringWithDay(termFinish),
-        scheduleStartTime: DateFormat('HH:mm').format(termStart),
-        scheduleFinishTime: DateFormat('HH:mm').format(termFinish),
+        scheduleStartDate: dateToStringWithDay(provider.termStart),
+        scheduleFinishDate: dateToStringWithDay(provider.termFinish),
+        scheduleStartTime: DateFormat('HH:mm').format(provider.termStart),
+        scheduleFinishTime: DateFormat('HH:mm').format(provider.termFinish),
         scheduleTitle: titleController.text,
         scheduleColor: Provider.of<CalendarScreenProvider>(context, listen: false).selectedColorType,
         scheduleMemo: memoController.text,
@@ -164,8 +146,8 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
           onPressed: () {
             if(titleController.text != provider.selectedDaySchedule['schedule_title']
                || memoController.text != provider.selectedDaySchedule['schedule_memo']
-               || termStart != stringToDateForStart(provider.selectedDaySchedule['schedule_start_date'])
-               || termFinish != stringToDateForFinish(provider.selectedDaySchedule['schedule_finish_date'])){
+               || provider.termStart != stringToDateForStart(provider.selectedDaySchedule['schedule_start_date'])
+               || provider.termFinish != stringToDateForFinish(provider.selectedDaySchedule['schedule_finish_date'])){
               dialogTitleWithContent(
                   context,
                   "일정 편집 나가기",
@@ -204,16 +186,19 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
                   children: [
                     Row(
                       children: [
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            shape: const CircleBorder(),
-                            backgroundColor: currentColor,
-                          ),
-                          onPressed: () {
-                            _showColorPickerDialog(context, currentColor, updateColor);
-                          },
-                          // => showColorPickerDialog(context, currentColor, updateColor),
-                          child: const Icon(null),
+                        Builder(
+                          builder: (buttonContext) {
+                            return ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                shape: const CircleBorder(),
+                                backgroundColor: currentColor,
+                              ),
+                              onPressed: () {
+                                _showColorPickerDialog(buttonContext, currentColor, updateColor);
+                              },
+                              child: const Icon(null),
+                            );
+                          }
                         ),
                         Expanded(
                           child: TextField(
@@ -266,8 +251,6 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
                               const Text("시작", style: TextStyleFamily.normalTextStyle),
                               const Spacer(),
                               CalendarTermStart(
-                                onDateChanged: onTermStartChanged,
-                                initialDate: termStart,
                                 isTrue: checkAllDay,
                               ),
                             ],
@@ -278,8 +261,6 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
                               const Text("종료", style: TextStyleFamily.normalTextStyle),
                               const Spacer(),
                               CalendarTermFinish(
-                                onDateChanged: onTermFinishChanged,
-                                initialDate: termFinish,
                                 isTrue: checkAllDay,
                               )
                             ],
@@ -436,64 +417,96 @@ class _CalendarEditScreenState extends State<CalendarEditScreen> {
       ),
     );});
   }
-  void _showColorPickerDialog(BuildContext context, Color currentColor, ValueChanged<Color> onColorChanged) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final renderObject = context.findRenderObject();
-      if (renderObject is RenderBox) {
-        final RenderBox renderBox = renderObject;
-        final offset = renderBox.localToGlobal(Offset.zero);
+  void _showColorPickerDialog(BuildContext buttonContext, Color currentColor, ValueChanged<Color> onColorChanged) {
+    final renderBox = buttonContext.findRenderObject() as RenderBox?;
+    if (renderBox != null) {
+      // 버튼의 중앙 좌표 계산
+      final offset = renderBox.localToGlobal(Offset.zero);
+      final buttonCenterX = offset.dx + renderBox.size.width / 2;
+      final buttonCenterY = offset.dy + renderBox.size.height / 2;
 
-        setState(() {
-          left = offset.dx - 10; // x 좌표
-          top = offset.dy - 15;  // y 좌표
-        });
+      // 화면 크기
+      final screenWidth = MediaQuery.of(buttonContext).size.width;
+      final screenHeight = MediaQuery.of(buttonContext).size.height;
+      final statusBarHeight = MediaQuery.of(buttonContext).padding.top;  // 상태 바 높이
+      final navigationBarHeight = MediaQuery.of(buttonContext).padding.bottom;  // 내비게이션 바 높이
 
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return Stack(
-              children: [
-                Positioned(
-                  left: left ?? 0,
-                  top: top ?? 0,
-                  child: Dialog(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    child: Container(
-                      padding: EdgeInsets.all(16.0),
-                      width: 200,
-                      height: 140,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Wrap(
-                            direction: Axis.horizontal, // 정렬 방향
-                            alignment: WrapAlignment.start, // 정렬 방식
-                            spacing: 10, // 좌우 간격
-                            runSpacing: 5,  // 상하 간격
+      // 유효 높이 계산 (상태 바와 내비게이션 바를 제외한 높이)
+      final availableHeight = screenHeight - statusBarHeight - navigationBarHeight;
+
+      // 다이얼로그 크기
+      final dialogWidth = screenWidth*0.2;
+      final dialogHeight = availableHeight*0.15;
+
+      // 다이얼로그의 왼쪽 상단 모서리를 버튼 중앙에 맞추기 위해 보정
+      final left = buttonCenterX - (dialogWidth / 2);
+      final top = buttonCenterY - (dialogHeight / 2);
+
+      showDialog(
+        context: buttonContext,
+        builder: (BuildContext context) {
+          return Stack(
+            children: [
+              Positioned(
+                left: left,
+                top: top,
+                child: Dialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(15,10,15,0),
+                    width: dialogWidth,
+                    height: dialogHeight,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Expanded(
+                          child: Wrap(
+                            direction: Axis.horizontal,
+                            alignment: WrapAlignment.start,
+                            spacing: 10,
+                            runSpacing: 5,
                             children: [
-                              _buildColorOption(context, ScheduleColorType.RED_COLOR, currentColor, onColorChanged),
-                              _buildColorOption(context, ScheduleColorType.ORANGE_COLOR, currentColor, onColorChanged),
-                              _buildColorOption(context, ScheduleColorType.YELLOW_COLOR, currentColor, onColorChanged),
-                              _buildColorOption(context, ScheduleColorType.GREEN_COLOR, currentColor, onColorChanged),
-                              _buildColorOption(context, ScheduleColorType.BLUE_COLOR, currentColor, onColorChanged),
-                              _buildColorOption(context, ScheduleColorType.NAVY_COLOR, currentColor, onColorChanged),
-                              _buildColorOption(context, ScheduleColorType.PURPLE_COLOR, currentColor, onColorChanged),
-                              _buildColorOption(context, ScheduleColorType.BLACK_COLOR, currentColor, onColorChanged),
+                              _buildColorOption(
+                                  context, ScheduleColorType.RED_COLOR,
+                                  currentColor, onColorChanged),
+                              _buildColorOption(
+                                  context, ScheduleColorType.ORANGE_COLOR,
+                                  currentColor, onColorChanged),
+                              _buildColorOption(
+                                  context, ScheduleColorType.YELLOW_COLOR,
+                                  currentColor, onColorChanged),
+                              _buildColorOption(
+                                  context, ScheduleColorType.GREEN_COLOR,
+                                  currentColor, onColorChanged),
+                              _buildColorOption(
+                                  context, ScheduleColorType.BLUE_COLOR,
+                                  currentColor, onColorChanged),
+                              _buildColorOption(
+                                  context, ScheduleColorType.NAVY_COLOR,
+                                  currentColor, onColorChanged),
+                              _buildColorOption(
+                                  context, ScheduleColorType.PURPLE_COLOR,
+                                  currentColor, onColorChanged),
+                              _buildColorOption(
+                                  context, ScheduleColorType.BLACK_COLOR,
+                                  currentColor, onColorChanged),
                             ],
-                          )
-                        ],
-                      ),
+                          ),
+                        )
+                      ],
                     ),
                   ),
                 ),
-              ],
-            );
-          },
-        );
-      }
-    });
+              ),
+            ],
+          );
+        },
+      );
+    }else{
+      print("RenderBox is null.");
+    }
   }
 }
 

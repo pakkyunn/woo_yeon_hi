@@ -38,18 +38,13 @@ class _CalendarAddScreenState extends State<CalendarAddScreen> {
   // 하루 종일 체크여부
   bool checkAllDay = false;
 
-  // 시작일 날짜
-  late DateTime termStart;
-  // 종료일 날짜 +1 hour
-  late DateTime termFinish;
-
   @override
   void initState() {
     super.initState();
 
     var provider = Provider.of<CalendarScreenProvider>(context, listen: false);
-    termStart = provider.selectedDay.add(const Duration(hours: 1)).subtract(Duration(minutes: provider.selectedDay.minute));
-    termFinish = provider.selectedDay.add(const Duration(hours: 2)).subtract(Duration(minutes: provider.selectedDay.minute));
+    provider.setTermStart(provider.selectedDay.add(const Duration(hours: 1)).subtract(Duration(minutes: provider.selectedDay.minute)));
+    provider.setTermFinish(provider.termStart.add(const Duration(hours: 1)));
   }
 
   // 색 업데이트 함수
@@ -66,26 +61,12 @@ class _CalendarAddScreenState extends State<CalendarAddScreen> {
     });
   }
 
-  // 시작일이 변경될 때
-  void onTermStartChanged(DateTime date) {
-    setState(() {
-      termStart = date;
-    });
-  }
-
-  // 종료일이 변경될 때
-  void onTermFinishChanged(DateTime date) {
-    setState(() {
-      termFinish = date;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => ScheduleProvider(),
-      child: Consumer<ScheduleProvider>(
-        builder: (context, provider, _) {
+      child: Consumer2<ScheduleProvider, CalendarScreenProvider>(
+        builder: (context, scheduleProvider, calendarScreenProvider, _) {
           return Scaffold(
             backgroundColor: ColorFamily.cream,
             appBar: AppBar(
@@ -99,7 +80,7 @@ class _CalendarAddScreenState extends State<CalendarAddScreen> {
               ),
               leading: IconButton(
                 onPressed: () {
-                  if(provider.titleController.text.isNotEmpty || provider.memoController.text.isNotEmpty){
+                  if(scheduleProvider.titleController.text.isNotEmpty || scheduleProvider.memoController.text.isNotEmpty){
                     dialogTitleWithContent(
                         context,
                         "일정 추가 나가기",
@@ -116,16 +97,17 @@ class _CalendarAddScreenState extends State<CalendarAddScreen> {
               ),
               actions: [
                 IconButton(
+                  splashColor: Colors.transparent,
                   onPressed: () async {
                     // 입력 오류
-                    if(provider.titleController.text.replaceAll(' ', '').isEmpty) {
+                    if(scheduleProvider.titleController.text.replaceAll(' ', '').isEmpty) {
                       showBlackToast("일정 제목을 입력해주세요");
                     }
                     // 시작/종료 일시 오류
-                    else if (termFinish.isBefore(termStart)) {
+                    else if (calendarScreenProvider.termFinish.isBefore(calendarScreenProvider.termStart)) {
                       showBlackToast("시작과 종료 일정을 확인해주세요");
                     } else {
-                      await onConfirm_done(context, provider);
+                      await onConfirm_done(context, scheduleProvider, calendarScreenProvider);
                       Navigator.pop(context, true);
                       showPinkSnackBar(context, "일정이 추가되었습니다");
                     }
@@ -156,7 +138,7 @@ class _CalendarAddScreenState extends State<CalendarAddScreen> {
                       ),
                       Expanded(
                         child: TextField(
-                          controller: provider.titleController,
+                          controller: scheduleProvider.titleController,
                           style: TextStyleFamily.appBarTitleBoldTextStyle,
                           keyboardType: TextInputType.text,
                           cursorColor: ColorFamily.black,
@@ -193,8 +175,6 @@ class _CalendarAddScreenState extends State<CalendarAddScreen> {
                             const Spacer(),
                             // 시작 날짜를 선택하는 위젯
                             CalendarTermStart(
-                              onDateChanged: onTermStartChanged,
-                              initialDate: termStart,
                               isTrue: checkAllDay,
                             ),
                           ],
@@ -206,8 +186,6 @@ class _CalendarAddScreenState extends State<CalendarAddScreen> {
                             const Spacer(),
                             // 종료 날짜를 선택하는 위젯
                             CalendarTermFinish(
-                              onDateChanged: onTermFinishChanged,
-                              initialDate: termFinish,
                               isTrue: checkAllDay,
                             ),
                           ],
@@ -230,7 +208,7 @@ class _CalendarAddScreenState extends State<CalendarAddScreen> {
                               child: Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 15),
                                 child: TextField(
-                                  controller: provider.memoController,
+                                  controller: scheduleProvider.memoController,
                                   keyboardType: TextInputType.multiline,
                                   cursorColor: ColorFamily.black,
                                   onTapOutside: (event) =>
@@ -260,52 +238,67 @@ class _CalendarAddScreenState extends State<CalendarAddScreen> {
     );
   }
 
-  void _showColorPickerDialog(BuildContext context, Color currentColor, ValueChanged<Color> onColorChanged) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final renderObject = context.findRenderObject();
-      if (renderObject is RenderBox) {
-        final RenderBox renderBox = renderObject;
-        final offset = renderBox.localToGlobal(Offset.zero);
+  void _showColorPickerDialog(BuildContext buttonContext, Color currentColor, ValueChanged<Color> onColorChanged) {
+    final renderBox = buttonContext.findRenderObject() as RenderBox?;
+    if (renderBox != null) {
+      // 버튼의 중앙 좌표 계산
+      final offset = renderBox.localToGlobal(Offset.zero);
+      final buttonCenterX = offset.dx + renderBox.size.width / 2;
+      final buttonCenterY = offset.dy + renderBox.size.height / 2;
 
-        setState(() {
-          left = offset.dx - 10; // x 좌표
-          top = offset.dy - 15;  // y 좌표
-        });
+      // 화면 크기
+      final screenWidth = MediaQuery.of(buttonContext).size.width;
+      final screenHeight = MediaQuery.of(buttonContext).size.height;
+      final statusBarHeight = MediaQuery.of(buttonContext).padding.top;  // 상태 바 높이
+      final navigationBarHeight = MediaQuery.of(buttonContext).padding.bottom;  // 내비게이션 바 높이
+
+      // 유효 높이 계산 (상태 바와 내비게이션 바를 제외한 높이)
+      final availableHeight = screenHeight - statusBarHeight - navigationBarHeight;
+
+      // 다이얼로그 크기
+      final dialogWidth = screenWidth*0.2;
+      final dialogHeight = availableHeight*0.15;
+
+      // 다이얼로그의 왼쪽 상단 모서리를 버튼 중앙에 맞추기 위해 보정
+      final left = buttonCenterX - (dialogWidth / 2);
+      final top = buttonCenterY - (dialogHeight / 2);
 
         showDialog(
-          context: context,
+          context: buttonContext,
           builder: (BuildContext context) {
             return Stack(
               children: [
                 Positioned(
-                  left: left ?? 0,
-                  top: top ?? 0,
+                  left: left,
+                  top: top,
                   child: Dialog(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),
                     ),
                     child: Container(
-                      padding: EdgeInsets.all(16.0),
-                      width: 200,
-                      height: 140,
+                      padding: const EdgeInsets.fromLTRB(15,10,15,0),
+                      width: dialogWidth,
+                      height: dialogHeight,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Wrap(
-                            direction: Axis.horizontal, // 정렬 방향
-                            alignment: WrapAlignment.start, // 정렬 방식
-                            spacing: 10, // 좌우 간격
-                            runSpacing: 5,  // 상하 간격
-                            children: [
-                              _buildColorOption(context, ScheduleColorType.RED_COLOR, currentColor, onColorChanged),
-                              _buildColorOption(context, ScheduleColorType.ORANGE_COLOR, currentColor, onColorChanged),
-                              _buildColorOption(context, ScheduleColorType.YELLOW_COLOR, currentColor, onColorChanged),
-                              _buildColorOption(context, ScheduleColorType.GREEN_COLOR, currentColor, onColorChanged),
-                              _buildColorOption(context, ScheduleColorType.BLUE_COLOR, currentColor, onColorChanged),
-                              _buildColorOption(context, ScheduleColorType.NAVY_COLOR, currentColor, onColorChanged),
-                              _buildColorOption(context, ScheduleColorType.PURPLE_COLOR, currentColor, onColorChanged),
-                              _buildColorOption(context, ScheduleColorType.BLACK_COLOR, currentColor, onColorChanged),
-                            ],
+                          Expanded(
+                            child: Wrap(
+                              direction: Axis.horizontal, // 정렬 방향
+                              alignment: WrapAlignment.start, // 정렬 방식
+                              spacing: 10, // 좌우 간격
+                              runSpacing: 5,  // 상하 간격
+                              children: [
+                                _buildColorOption(context, ScheduleColorType.RED_COLOR, currentColor, onColorChanged),
+                                _buildColorOption(context, ScheduleColorType.ORANGE_COLOR, currentColor, onColorChanged),
+                                _buildColorOption(context, ScheduleColorType.YELLOW_COLOR, currentColor, onColorChanged),
+                                _buildColorOption(context, ScheduleColorType.GREEN_COLOR, currentColor, onColorChanged),
+                                _buildColorOption(context, ScheduleColorType.BLUE_COLOR, currentColor, onColorChanged),
+                                _buildColorOption(context, ScheduleColorType.NAVY_COLOR, currentColor, onColorChanged),
+                                _buildColorOption(context, ScheduleColorType.PURPLE_COLOR, currentColor, onColorChanged),
+                                _buildColorOption(context, ScheduleColorType.BLACK_COLOR, currentColor, onColorChanged),
+                              ],
+                            ),
                           )
                         ],
                       ),
@@ -316,25 +309,22 @@ class _CalendarAddScreenState extends State<CalendarAddScreen> {
             );
           },
         );
-      }
-    });
+    }
   }
 
   // 완료 작업
-  Future<void> onConfirm_done(BuildContext context, ScheduleProvider provider) async {
-    var calendarScreenProvider = Provider.of<CalendarScreenProvider>(context, listen: false);
-
+  Future<void> onConfirm_done(BuildContext context, ScheduleProvider scheduleProvider, CalendarScreenProvider calendarScreenProvider) async {
     var schedule_idx = await getScheduleSequence() + 1; // 저장할 때 idx 값 1씩 증가
     var schedule_user_idx = Provider.of<UserProvider>(context, listen: false).userIdx;
     await setScheduleSequence(schedule_idx);
-    var schedule_start_date = dateToStringWithDay(termStart);
-    var schedule_finish_date = dateToStringWithDay(termFinish);
+    var schedule_start_date = dateToStringWithDay(calendarScreenProvider.termStart);
+    var schedule_finish_date = dateToStringWithDay(calendarScreenProvider.termFinish);
     var schedule_start_time = checkAllDay
           ? '00:00'
-          : DateFormat('HH:mm').format(termStart);
+          : DateFormat('HH:mm').format(calendarScreenProvider.termStart);
     var schedule_finish_time = checkAllDay
           ? '23:59'
-          : DateFormat('HH:mm').format(termFinish);
+          : DateFormat('HH:mm').format(calendarScreenProvider.termFinish);
     var schedule = Schedule(
       scheduleIdx: schedule_idx,
       scheduleUserIdx: schedule_user_idx,
@@ -342,9 +332,9 @@ class _CalendarAddScreenState extends State<CalendarAddScreen> {
       scheduleFinishDate: schedule_finish_date,
       scheduleStartTime: schedule_start_time,
       scheduleFinishTime: schedule_finish_time,
-      scheduleTitle: provider.titleController.text,
+      scheduleTitle: scheduleProvider.titleController.text,
       scheduleColor: calendarScreenProvider.selectedColorType,
-      scheduleMemo: provider.memoController.text,
+      scheduleMemo: scheduleProvider.memoController.text,
       scheduleState: ScheduleState.STATE_NORMAL.state
     );
 
