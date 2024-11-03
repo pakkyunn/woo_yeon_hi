@@ -16,20 +16,20 @@ import '../../provider/footprint_provider.dart';
 import '../../retrofit_interface/reverse_geo_coding_api.dart';
 import '../../style/font.dart';
 import '../../style/text_style.dart';
-import '../../widget/footPrint/footprint_history_edit_place_info.dart';
+import '../../widget/footPrint/footprint_history_write_place_info.dart';
 
-class FootprintHistoryEditPlaceScreen extends StatefulWidget {
-  FootprintHistoryEditPlaceScreen(this.provider, this.mapType, {super.key});
-  FootprintHistoryEditProvider provider;
+class FootprintHistoryWritePlaceScreen extends StatefulWidget {
+  FootprintHistoryWritePlaceScreen(this.provider, this.mapType, {super.key});
+  FootprintHistoryWriteProvider provider;
   int mapType;
 
   @override
-  State<FootprintHistoryEditPlaceScreen> createState() =>
-      _FootprintHistoryEditPlaceScreenState();
+  State<FootprintHistoryWritePlaceScreen> createState() =>
+      _FootprintHistoryWritePlaceScreenState();
 }
 
-class _FootprintHistoryEditPlaceScreenState
-    extends State<FootprintHistoryEditPlaceScreen> {
+class _FootprintHistoryWritePlaceScreenState
+    extends State<FootprintHistoryWritePlaceScreen> {
   late NaverMapController _mapController;
   final searchBarController = FloatingSearchBarController();
   final Dio _searchDio = Dio();
@@ -41,6 +41,7 @@ class _FootprintHistoryEditPlaceScreenState
   @override
   Widget build(BuildContext context) {
     setHttp();
+
     return ChangeNotifierProvider(
       create: (context) => FootprintPhotoMapOverlayProvider(widget.mapType),
       child: Consumer<FootprintPhotoMapOverlayProvider>(
@@ -138,7 +139,7 @@ class _FootprintHistoryEditPlaceScreenState
                         bottom: 40,
                         left: 20,
                         right: 20,
-                        child: FootprintHistoryEditPlaceInfo(widget.provider))
+                        child: FootprintHistoryWritePlaceInfo(widget.provider))
                     : const SizedBox()
               ],
             ));
@@ -160,7 +161,7 @@ class _FootprintHistoryEditPlaceScreenState
 
 
     final iconImage = await NOverlayImage.fromWidget(
-        widget: SvgPicture.asset('lib/assets/icons/marker_fill.svg'),
+        widget: SvgPicture.asset('lib/assets/icons/marker_fill_white.svg'),
         size: const Size(55, 55),
         context: context);
 
@@ -179,8 +180,8 @@ class _FootprintHistoryEditPlaceScreenState
     _placeSearchApi = PlaceSearchApi(_searchDio);
     
     _reverseGCDio.options.headers = {
-      'X-NCP-APIGW-API-KEY-ID' : dotenv.env['X-NCP-APIGW-API-KEY-ID'],
-      'X-NCP-APIGW-API-KEY': dotenv.env['X-NCP-APIGW-API-KEY'],
+      'X-NCP-APIGW-API-KEY-ID' : dotenv.env['X_NCP_APIGW_API_KEY_ID'],
+      'X-NCP-APIGW-API-KEY': dotenv.env['X_NCP_APIGW_API_KEY'],
     };
     _reverseGCApi = ReverseGeoCodingApi(_reverseGCDio);
   }

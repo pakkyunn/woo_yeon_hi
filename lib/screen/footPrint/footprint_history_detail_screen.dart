@@ -8,7 +8,7 @@ import 'package:woo_yeon_hi/dialogs.dart';
 import 'package:woo_yeon_hi/model/history_model.dart';
 import 'package:woo_yeon_hi/model/photo_map_model.dart';
 import 'package:woo_yeon_hi/provider/footprint_provider.dart';
-import 'package:woo_yeon_hi/screen/footPrint/footprint_history_edit_screen.dart';
+import 'package:woo_yeon_hi/screen/footPrint/footprint_history_write_screen.dart';
 import 'package:woo_yeon_hi/screen/footPrint/footprint_history_modify_screen.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/style/text_style.dart';
@@ -176,7 +176,7 @@ class _FootprintHistoryDetailScreenState
                               }
                             },
                           )),
-                  options: CarouselOptions(
+                  options: FlutterCarouselOptions(
                       viewportFraction: 1.0,
                       showIndicator: true,
                       floatingIndicator: false,
@@ -298,7 +298,7 @@ class _FootprintHistoryDetailScreenState
                     highlightColor: Colors.transparent,
                     splashColor: Colors.transparent,
                     onTap: () {
-                      _showDoneDialog(context, history);
+                      _showDeleteDialog(context, history);
                     },
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(30, 20, 30, 25),
@@ -330,7 +330,7 @@ class _FootprintHistoryDetailScreenState
         });
   }
 
-  void _showDoneDialog(BuildContext context, History history) {
+  void _showDeleteDialog(BuildContext context, History history) {
     showDialog(
         context: context,
         builder: (context) {

@@ -20,7 +20,7 @@ bool isWeekend(DateTime day) {
 }
 
 void showCalendarBottomSheet(BuildContext context, String flag, DiaryProvider provider) {
-  DateTime? _selectedDay;
+  DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
   var deviceWidth = MediaQuery.of(context).size.width;
 
@@ -215,36 +215,20 @@ void showCalendarBottomSheet(BuildContext context, String flag, DiaryProvider pr
                                   backgroundColor: ColorFamily.beige,
                                   surfaceTintColor: ColorFamily.white),
                               onPressed: () {
-                                if (_selectedDay != null) {
-                                  String formattedDate =
-                                  dateToString(_selectedDay!);
-                                  if (flag == "start") {
-                                    provider.setStartPeriod(formattedDate);
-                                    provider.setStartControllerText(
-                                        formattedDate);
-                                    Navigator.pop(context, "start");
-                                  } else {
-                                    provider.setEndPeriod(formattedDate);
-                                    provider
-                                        .setEndControllerText(formattedDate);
-                                    Navigator.pop(context, "end");
-                                  }
+                                String formattedDate =
+                                dateToString(_selectedDay);
+                                if (flag == "start") {
+                                  provider.setStartPeriod(formattedDate);
+                                  provider.setStartControllerText(
+                                      formattedDate);
+                                  Navigator.pop(context, "start");
                                 } else {
-                                  String formattedDate =
-                                  dateToString(_focusedDay);
-                                  if (flag == "start") {
-                                    provider.setStartPeriod(formattedDate);
-                                    provider.setStartControllerText(
-                                        formattedDate);
-                                    Navigator.pop(context, "start");
-                                  } else {
-                                    provider.setEndPeriod(formattedDate);
-                                    provider
-                                        .setEndControllerText(formattedDate);
-                                    Navigator.pop(context, "end");
-                                  }
+                                  provider.setEndPeriod(formattedDate);
+                                  provider
+                                      .setEndControllerText(formattedDate);
+                                  Navigator.pop(context, "end");
                                 }
-                              },
+                                                            },
                               child: const Text(
                                 "확인",
                                 style: TextStyleFamily.normalTextStyle,

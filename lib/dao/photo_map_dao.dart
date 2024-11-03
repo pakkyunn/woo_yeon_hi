@@ -5,7 +5,10 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/model/photo_map_model.dart';
+
+import '../provider/login_register_provider.dart';
 
 Future<int> getPhotoMapSequence() async {
   var querySnapShot = await FirebaseFirestore.instance
@@ -34,10 +37,15 @@ Future<void> addPhotoMap(PhotoMap photoMap) async {
   });
 }
 
-Future<List<PhotoMap>> getPhotoMap(int userIdx) async {
+Future<List<PhotoMap>> getPhotoMap(BuildContext context) async {
+  var userProvider = Provider.of<UserProvider>(context, listen: false);
+
+  var userIdx = userProvider.userIdx;
+  var loverIdx = userProvider.loverIdx;
+
   List<PhotoMap> results = [];
   var querySnapshot = await FirebaseFirestore.instance.collection('PhotoMapData')
-      .where('map_user_idx', isEqualTo: userIdx)
+      .where('map_user_idx', whereIn: [userIdx, loverIdx])
       .get();
 
   for(var doc in querySnapshot.docs){

@@ -9,7 +9,7 @@ import 'package:woo_yeon_hi/enums.dart';
 import 'package:woo_yeon_hi/model/history_model.dart';
 import 'package:woo_yeon_hi/model/photo_map_model.dart';
 import 'package:woo_yeon_hi/screen/footPrint/footprint_history_detail_screen.dart';
-import 'package:woo_yeon_hi/screen/footPrint/footprint_history_edit_screen.dart';
+import 'package:woo_yeon_hi/screen/footPrint/footprint_history_write_screen.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/style/font.dart';
 import 'package:woo_yeon_hi/widget/footPrint/footprint_history_top_app_bar.dart';
@@ -51,13 +51,13 @@ class FootprintHistoryScreenState extends State<FootprintHistoryScreen> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          FootprintHistoryEditScreen(widget.photoMap)))
+                          FootprintHistoryWriteScreen(widget.photoMap)))
               .then((value) => setState(() {}));
         },
       ),
       body: FutureBuilder(
           future:
-              getHisotryCategorization(widget.userIdx, widget.photoMap.mapIdx),
+              getHisotryCategorization(widget.photoMap.mapIdx),
           builder: (context, snapshot) {
             if (snapshot.hasData == false) {
               return const Center(
@@ -127,7 +127,6 @@ class FootprintHistoryScreenState extends State<FootprintHistoryScreen> {
             }
           }),
     );
-    ;
   }
 
   Widget makeHistory(BuildContext context, int index,
@@ -266,16 +265,16 @@ class FootprintHistoryScreenState extends State<FootprintHistoryScreen> {
   Future<void> setHttp() async {
     await dotenv.load(fileName: ".env");
     _reverseGCDio.options.headers = {
-      'X-NCP-APIGW-API-KEY-ID': dotenv.env['X-NCP-APIGW-API-KEY-ID'],
-      'X-NCP-APIGW-API-KEY': dotenv.env['X-NCP-APIGW-API-KEY'],
+      'X-NCP-APIGW-API-KEY-ID': dotenv.env['X_NCP_APIGW_API_KEY_ID'],
+      'X-NCP-APIGW-API-KEY': dotenv.env['X_NCP_APIGW_API_KEY'],
     };
     _reverseGCApi = ReverseGeoCodingApi(_reverseGCDio);
   }
 
-  Future<Map> getHisotryCategorization(int userIdx, int mapIdx) async {
+  Future<Map> getHisotryCategorization(int mapIdx) async {
     Map<String, List<History>> historyCategory = {};
 
-    var historyList = await getHistory(userIdx, mapIdx);
+    var historyList = await getHistory(context, mapIdx);
 
     for (var history in historyList) {
       var map = await getPhotoMapByMapIdx(mapIdx);

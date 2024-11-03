@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -29,16 +31,16 @@ Future<void> main() async {
 
   // .env 환경변수 파일 로드
   await dotenv.load(fileName: ".env");
+
   KakaoSdk.init(
     nativeAppKey: dotenv.env['KAKAO_NATIVE_APP_KEY'],
   );
   await NaverMapSdk.instance.initialize(
       clientId: dotenv.env['NAVER_MAP_CLIENT_ID'],
-      onAuthFailed: (ex) {
-        print(ex);
-      });
+      onAuthFailed: (ex) => log("********* 네이버맵 인증오류 : $ex *********"));
+
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+    options: DefaultFirebaseOptions.currentPlatform
   );
 
   await HomeWidget.registerBackgroundCallback(backgroundCallback);

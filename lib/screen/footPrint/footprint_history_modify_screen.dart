@@ -5,9 +5,9 @@ import 'package:woo_yeon_hi/provider/footprint_provider.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 
 import '../../model/history_model.dart';
-import '../../widget/footPrint/FootprintHistoryModifyAlbum.dart';
-import '../../widget/footPrint/FootprintHistoryModifyTopAppBar.dart';
-import '../../widget/footPrint/footprint_history_modify_input.dart';
+import '../../widget/footPrint/footprint_history_modify_album.dart';
+import '../../widget/footPrint/footprint_history_modify_top_app_bar.dart';
+import '../../widget/footPrint/footprint_history_modify_content.dart';
 
 class FootprintHistoryModifyScreen extends StatefulWidget {
   FootprintHistoryModifyScreen(this.history, {super.key});
@@ -23,8 +23,8 @@ class _FootprintHistoryModifyScreenState
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => FootprintHistoryEditProvider(),
-      child: Consumer<FootprintHistoryEditProvider>(
+      create: (context) => FootprintHistoryWriteProvider(),
+      child: Consumer<FootprintHistoryWriteProvider>(
         builder: (context, provider, _) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             provider.modifySetting(widget.history);
@@ -38,7 +38,7 @@ class _FootprintHistoryModifyScreenState
                 child: Column(
                   children: [
                     FootprintHistoryModifyAlbum(provider, widget.history),
-                    FootprintHistoryModifyInput(provider, widget.history)
+                    FootprintHistoryModifyContent(provider, widget.history)
                   ],
                 ),
               ),

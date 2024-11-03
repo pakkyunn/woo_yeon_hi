@@ -6,22 +6,22 @@ import 'package:woo_yeon_hi/model/history_model.dart';
 
 import '../../enums.dart';
 import '../../provider/footprint_provider.dart';
-import '../../screen/footPrint/footprint_history_edit_place_screen.dart';
+import '../../screen/footPrint/footprint_history_write_place_screen.dart';
 import '../../style/color.dart';
 import '../../style/font.dart';
 import '../../style/text_style.dart';
 import '../../utils.dart';
 
-class FootprintHistoryModifyInput extends StatefulWidget {
-  FootprintHistoryModifyInput(this.provider, this.history, {super.key});
-  FootprintHistoryEditProvider provider;
+class FootprintHistoryModifyContent extends StatefulWidget {
+  FootprintHistoryModifyContent(this.provider, this.history, {super.key});
+  FootprintHistoryWriteProvider provider;
   History history;
 
   @override
-  State<FootprintHistoryModifyInput> createState() => _FootprintHistoryModifyInputState();
+  State<FootprintHistoryModifyContent> createState() => _FootprintHistoryModifyContentState();
 }
 
-class _FootprintHistoryModifyInputState extends State<FootprintHistoryModifyInput> {
+class _FootprintHistoryModifyContentState extends State<FootprintHistoryModifyContent> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -38,14 +38,14 @@ class _FootprintHistoryModifyInputState extends State<FootprintHistoryModifyInpu
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => FootprintHistoryEditPlaceScreen(
+                        builder: (context) => FootprintHistoryWritePlaceScreen(
                             widget.provider, MapType.KOREA_FULL.type)));
                 // widget.provider.setPlace(null);
                 widget.provider.clearSearchPlace();
               },
               child: Row(
                 children: [
-                  SvgPicture.asset('lib/assets/icons/map.svg'),
+                  SvgPicture.asset('lib/assets/icons/pin_alt.svg'),
                   const SizedBox(
                     width: 15,
                   ),
@@ -56,10 +56,6 @@ class _FootprintHistoryModifyInputState extends State<FootprintHistoryModifyInpu
                         widget.provider.selectedPlace!.title,
                         style: TextStyleFamily.normalTextStyle,
                       ),
-                      const Text(
-                        " (선택한 지역)",
-                        style: TextStyleFamily.hintTextStyle,
-                      )
                     ],
                   )
                       : Row(
@@ -68,10 +64,6 @@ class _FootprintHistoryModifyInputState extends State<FootprintHistoryModifyInpu
                         widget.history.historyPlaceName,
                         style: TextStyleFamily.normalTextStyle,
                       ),
-                      const Text(
-                        " (선택한 지역)",
-                        style: TextStyleFamily.hintTextStyle,
-                      )
                     ],
                   )
                 ],
@@ -173,7 +165,7 @@ class _FootprintHistoryModifyInputState extends State<FootprintHistoryModifyInpu
                   contentPadding: EdgeInsets.zero,
                   border: InputBorder.none,
                   hintStyle: TextStyleFamily.hintTextStyle,
-                  hintText: "내용을 입력해주세요."),
+                  hintText: "내용을 입력해주세요\n\n\n\n"),
             )
           ],
         ),
@@ -189,7 +181,7 @@ class _FootprintHistoryModifyInputState extends State<FootprintHistoryModifyInpu
     return day.weekday == DateTime.sunday;
   }
 
-  void _showCalendarBottomSheet(FootprintHistoryEditProvider provider) {
+  void _showCalendarBottomSheet(FootprintHistoryWriteProvider provider) {
     DateTime? _selectedDay = null;
     DateTime _focusedDay = DateTime.now();
 

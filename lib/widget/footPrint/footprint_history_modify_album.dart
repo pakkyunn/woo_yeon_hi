@@ -12,7 +12,7 @@ import '../../style/color.dart';
 
 class FootprintHistoryModifyAlbum extends StatefulWidget {
   FootprintHistoryModifyAlbum(this.provider, this.history, {super.key});
-  FootprintHistoryEditProvider provider;
+  FootprintHistoryWriteProvider provider;
   History history;
 
   @override
@@ -34,7 +34,7 @@ class _FootprintHistoryModifyAlbumState
           child: Card(
             color: ColorFamily.white,
             surfaceTintColor: ColorFamily.white,
-            elevation: 4,
+            elevation: 1,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
@@ -76,14 +76,21 @@ class _FootprintHistoryModifyAlbumState
       padding: index != widget.provider.albumModifyImages.length - 1
           ? const EdgeInsets.only(right: 5)
           : const EdgeInsets.only(right: 0),
-      child: SizedBox(
+      child: Container(
         width: 90,
         height: 90,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: ColorFamily.gray, // 외곽선 색상
+            width: 0.5, // 외곽선 두께
+          ),
+          borderRadius: BorderRadius.circular(15),
+        ),
         child: Stack(
           fit: StackFit.expand,
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(15),
               child: image,
             )
           ],

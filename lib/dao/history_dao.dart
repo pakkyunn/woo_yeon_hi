@@ -4,9 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/enums.dart';
 import 'package:woo_yeon_hi/model/history_model.dart';
 import 'package:woo_yeon_hi/provider/footprint_provider.dart';
+
+import '../provider/login_register_provider.dart';
 
 Future<int> getHistorySequence() async {
   var querySnapShot = await FirebaseFirestore.instance
@@ -39,11 +42,16 @@ Future<void> addHistory(History history) async {
   });
 }
 
-Future<List<History>> getHistory(int userIdx, int mapIdx) async {
+Future<List<History>> getHistory(BuildContext context, int mapIdx) async {
   List<History> results = [];
+
+  var userProvider = Provider.of<UserProvider>(context, listen: false);
+  var userIdx = userProvider.userIdx;
+  var loverIdx = userProvider.loverIdx;
+
   var querySnapshot = await FirebaseFirestore.instance
       .collection('HistoryData')
-      .where('history_user_idx', isEqualTo: userIdx)
+      .where('history_user_idx', whereIn: [userIdx, loverIdx])
       .where('history_map_idx', isEqualTo: mapIdx)
       .where('history_state', isEqualTo: HistoryState.STATE_NORMAL.state)
       .get();

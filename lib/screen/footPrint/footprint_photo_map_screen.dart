@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/dao/photo_map_dao.dart';
 import 'package:woo_yeon_hi/model/photo_map_model.dart';
+import 'package:woo_yeon_hi/provider/login_register_provider.dart';
 import 'package:woo_yeon_hi/screen/footPrint/footprint_photo_map_detail_screen.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/style/text_style.dart';
@@ -18,12 +20,11 @@ class FootprintPhotoMapScreen extends StatefulWidget {
 
 class _FootprintPhotoMapScreenState extends State<FootprintPhotoMapScreen> {
   List<PhotoMap> photoMapData = [];
-  int userIdx = 0;
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: getPhotoMap(userIdx),
+      future: getPhotoMap(context),
       builder: (context, snapshot){
         if(snapshot.hasData == false){
           return const Center(child: CircularProgressIndicator(color: ColorFamily.pink,));

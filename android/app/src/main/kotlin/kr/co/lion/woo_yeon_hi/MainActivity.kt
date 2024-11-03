@@ -28,6 +28,11 @@ import android.graphics.RectF
 import android.graphics.PorterDuffXfermode
 import android.graphics.PorterDuff
 
+//import com.google.firebase.FirebaseApp
+//import com.google.firebase.appcheck.FirebaseAppCheck
+//import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
+//import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
+
 class MainActivity: FlutterFragmentActivity() {
     private val CHANNEL = "custom_notification_channel"
 
@@ -36,11 +41,16 @@ class MainActivity: FlutterFragmentActivity() {
         const val NOTIFICATION_ID = 1  // 알림을 식별하기 위한 ID
     }
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // 앱 시작 시점에 위젯을 강제로 업데이트
         updateAppWidget()
+
+//        // Firebase App Check 초기화
+//        initAppCheck()
 
         // 알림 채널 생성 코드 추가
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -110,6 +120,22 @@ class MainActivity: FlutterFragmentActivity() {
         // 위젯을 강제로 업데이트
         appWidgetManager.notifyAppWidgetViewDataChanged(allWidgetIds, R.id.widget_layout)
     }
+
+//    // Firebase App Check 초기화 메서드
+//    private fun initAppCheck() {
+//        FirebaseApp.initializeApp(this)
+//
+//        // 일반 모드와 디버그 모드를 선택하여 사용
+//        if (BuildConfig.DEBUG) {
+//            FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
+//                DebugAppCheckProviderFactory.getInstance()
+//            )
+//        } else {
+//            FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
+//                PlayIntegrityAppCheckProviderFactory.getInstance()
+//            )
+//        }
+//    }
 
     private fun showCustomNotification(dDayCount: Int, topBarStyle: Int, myProfileBitmap: Bitmap, loverProfileBitmap: Bitmap) {
         val channelId = CHANNEL_ID

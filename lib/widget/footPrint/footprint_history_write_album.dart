@@ -13,15 +13,15 @@ import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/style/font.dart';
 import 'package:woo_yeon_hi/style/text_style.dart';
 
-class FootprintHistoryEditAlbum extends StatefulWidget {
-  FootprintHistoryEditAlbum(this.provider, {super.key});
-  FootprintHistoryEditProvider provider;
+class FootprintHistoryWriteAlbum extends StatefulWidget {
+  FootprintHistoryWriteAlbum(this.provider, {super.key});
+  FootprintHistoryWriteProvider provider;
 
   @override
-  State<FootprintHistoryEditAlbum> createState() => _FootprintHistoryEditAlbumState();
+  State<FootprintHistoryWriteAlbum> createState() => _FootprintHistoryWriteAlbumState();
 }
 
-class _FootprintHistoryEditAlbumState extends State<FootprintHistoryEditAlbum> {
+class _FootprintHistoryWriteAlbumState extends State<FootprintHistoryWriteAlbum> {
   final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
 
   @override
@@ -34,17 +34,15 @@ class _FootprintHistoryEditAlbumState extends State<FootprintHistoryEditAlbum> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text("${widget.provider.albumImages.length} / 10", style: TextStyleFamily.normalTextStyle),
-
             ],
           ),
         ),
         SizedBox(
-          width: MediaQuery.of(context).size.width - 40,
           height: 120,
           child: Card(
             color: ColorFamily.white,
             surfaceTintColor: ColorFamily.white,
-            elevation: 4,
+            elevation: 1,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
@@ -61,9 +59,9 @@ class _FootprintHistoryEditAlbumState extends State<FootprintHistoryEditAlbum> {
                         decoration: BoxDecoration(
                           border: Border.all(
                             color: ColorFamily.gray, // 외곽선 색상
-                            width: 1, // 외곽선 두께
+                            width: 0.5, // 외곽선 두께
                           ),
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(15),
                         ),
                         child: InkWell(
                           splashColor: Colors.transparent,
@@ -73,11 +71,12 @@ class _FootprintHistoryEditAlbumState extends State<FootprintHistoryEditAlbum> {
                           },
                           child: SvgPicture.asset(
                             'lib/assets/icons/add.svg',
-                            width: 40, height: 40,
-                            colorFilter: const ColorFilter.mode(ColorFamily.gray, BlendMode.srcIn),),
+                            fit: BoxFit.scaleDown,
+                            colorFilter: const ColorFilter.mode(ColorFamily.gray, BlendMode.srcIn)
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 5,),
+                      const SizedBox(width: 5),
                     ],
                   )
                       : const SizedBox()
@@ -102,14 +101,23 @@ class _FootprintHistoryEditAlbumState extends State<FootprintHistoryEditAlbum> {
       padding: index != widget.provider.albumImages.length-1
           ?const EdgeInsets.only(right: 5)
       :const EdgeInsets.only(right: 0),
-      child: SizedBox(
-        width: 90, height: 90,
+      child:
+      Container(
+        width: 90,
+        height: 90,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: ColorFamily.gray, // 외곽선 색상
+            width: 0.5, // 외곽선 두께
+          ),
+          borderRadius: BorderRadius.circular(15),
+        ),
         child: Stack(
           fit: StackFit.expand,
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.file(File(widget.provider.albumImages[index].path), fit: BoxFit.cover,),
+              borderRadius: BorderRadius.circular(15),
+              child: Image.file(File(widget.provider.albumImages[index].path), fit: BoxFit.cover),
             ),
             Positioned(
               top: 0,
@@ -126,8 +134,7 @@ class _FootprintHistoryEditAlbumState extends State<FootprintHistoryEditAlbum> {
             )
           ],
         ),
-      ),
-    );
+      ));
   }
 
 

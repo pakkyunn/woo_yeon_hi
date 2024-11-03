@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/dao/history_dao.dart';
 import 'package:woo_yeon_hi/model/history_model.dart';
 import 'package:woo_yeon_hi/provider/footprint_provider.dart';
 
 import '../../dialogs.dart';
-import '../../screen/footPrint/footprint_history_edit_place_screen.dart';
+import '../../provider/login_register_provider.dart';
+import '../../screen/footPrint/footprint_history_write_place_screen.dart';
 import '../../screen/footPrint/footprint_history_screen.dart';
 import '../../screen/footPrint/footprint_photo_map_detail_screen.dart';
 import '../../style/color.dart';
@@ -14,7 +16,7 @@ import '../../style/text_style.dart';
 
 class FootprintHistoryModifyTopAppBar extends StatefulWidget implements PreferredSizeWidget{
   FootprintHistoryModifyTopAppBar(this.provider, this.history, {super.key});
-  FootprintHistoryEditProvider provider;
+  FootprintHistoryWriteProvider provider;
   History history;
 
   @override
@@ -88,7 +90,6 @@ class _FootprintHistoryModifyTopAppBarState extends State<FootprintHistoryModify
   }
 
   Future<void> _onConfirm_done(BuildContext context) async {
-
     Map<String, dynamic> historyMap = {};
 
     if(widget.provider.selectedPlace != null){

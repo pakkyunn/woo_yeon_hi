@@ -41,7 +41,7 @@ void showFilterBottomSheet(DiaryProvider provider, int user_idx, int lover_idx, 
               SizedBox(
                 width: deviceWidth,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20,0,20,30),
+                  padding: const EdgeInsets.fromLTRB(20,0,20,10),
                   child: Column(
                     children: [
                       Row(

@@ -1,33 +1,34 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/dao/history_dao.dart';
 import 'package:woo_yeon_hi/enums.dart';
 import 'package:woo_yeon_hi/model/history_model.dart';
 import 'package:woo_yeon_hi/provider/footprint_provider.dart';
 
 import '../../dialogs.dart';
-import '../../screen/footPrint/footprint_history_edit_place_screen.dart';
+import '../../provider/login_register_provider.dart';
+import '../../screen/footPrint/footprint_history_write_place_screen.dart';
 import '../../style/color.dart';
 import '../../style/text_style.dart';
 
-class FootprintHistoryEditTopAppBar extends StatefulWidget
+class FootprintHistoryWriteTopAppBar extends StatefulWidget
     implements PreferredSizeWidget {
-  FootprintHistoryEditTopAppBar(this.provider, this.mapIdx, {super.key});
-  FootprintHistoryEditProvider provider;
+  FootprintHistoryWriteTopAppBar(this.provider, this.mapIdx, {super.key});
+  FootprintHistoryWriteProvider provider;
   int mapIdx;
 
   @override
-  State<FootprintHistoryEditTopAppBar> createState() =>
-      _FootprintHistoryEditTopAppBarState();
+  State<FootprintHistoryWriteTopAppBar> createState() =>
+      _FootprintHistoryWriteTopAppBarState();
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
-class _FootprintHistoryEditTopAppBarState
-    extends State<FootprintHistoryEditTopAppBar> {
-  var userIdx = 0;
+class _FootprintHistoryWriteTopAppBarState
+    extends State<FootprintHistoryWriteTopAppBar> {
 
   @override
   Widget build(BuildContext context) {
@@ -97,10 +98,11 @@ class _FootprintHistoryEditTopAppBarState
   Future<void> _onConfirm_done(BuildContext context) async {
     var historySequence = await getHistorySequence() + 1;
     setHistorySequence(historySequence);
-    
+    var userProvider = Provider.of<UserProvider>(context, listen: false);
+
     var imageNameList = List.generate(
         widget.provider.albumImages.length,
-            (index) => "${userIdx}_${widget.mapIdx}_${DateTime.now()}");
+            (index) => "${userProvider.userIdx}_${widget.mapIdx}_${DateTime.now()}");
     var coordinate = convertCoordinate(widget.provider.selectedPlace!.mapx, widget.provider.selectedPlace!.mapy);
 
     var history = History(
@@ -108,7 +110,7 @@ class _FootprintHistoryEditTopAppBarState
         historyMapIdx: widget.mapIdx,
         historyPlaceName: widget.provider.selectedPlace!.title,
         historyLocation: GeoPoint(coordinate.latitude, coordinate.longitude),
-        historyUserIdx: userIdx,
+        historyUserIdx: userProvider.userIdx,
         historyTitle: widget.provider.titleController.text,
         historyDate: widget.provider.date!,
         historyContent: widget.provider.contentController.text,

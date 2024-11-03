@@ -76,7 +76,7 @@ class FootPrintHistoyDetailProvider extends ChangeNotifier{
 }
 
 /// 히스토리 작성, 수정 상태 관리 프로바이더
-class FootprintHistoryEditProvider extends ChangeNotifier{
+class FootprintHistoryWriteProvider extends ChangeNotifier{
   List<XFile> _albumImages = [];
   List<Image> _albumModifyImages = [];
   Place? _selectedPlace;

@@ -9,15 +9,15 @@ import 'package:woo_yeon_hi/style/text_style.dart';
 import '../../dialogs.dart';
 import '../../provider/footprint_provider.dart';
 
-class FootprintHistoryEditPlaceInfo extends StatefulWidget {
-  FootprintHistoryEditPlaceInfo(this.provider, {super.key});
-  FootprintHistoryEditProvider provider;
+class FootprintHistoryWritePlaceInfo extends StatefulWidget {
+  FootprintHistoryWritePlaceInfo(this.provider, {super.key});
+  FootprintHistoryWriteProvider provider;
 
   @override
-  State<FootprintHistoryEditPlaceInfo> createState() => _FootprintHistoryEditPlaceInfoState();
+  State<FootprintHistoryWritePlaceInfo> createState() => _FootprintHistoryWritePlaceInfoState();
 }
 
-class _FootprintHistoryEditPlaceInfoState extends State<FootprintHistoryEditPlaceInfo> {
+class _FootprintHistoryWritePlaceInfoState extends State<FootprintHistoryWritePlaceInfo> {
   @override
   Widget build(BuildContext context) {
     return Card(

@@ -25,7 +25,7 @@ class _FootprintHistoryTopAppBarState extends State<FootprintHistoryTopAppBar> {
       backgroundColor: ColorFamily.cream,
       centerTitle: true,
       title: const Text(
-        "히스토리",
+        "히스토리 목록",
         style: TextStyleFamily.appBarTitleLightTextStyle,
       ),
       leading: IconButton(

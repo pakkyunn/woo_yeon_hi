@@ -28,7 +28,7 @@ class _LedgerCarouselSliderState extends State<LedgerCarouselSlider> {
                     SizedBox(
                       height: 145,
                       child: FlutterCarousel.builder(
-                        options: CarouselOptions(
+                        options: FlutterCarouselOptions(
                           height: 140.0,
                           // 보여줄 슬라이더의 비율
                           viewportFraction: 1.0,

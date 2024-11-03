@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:woo_yeon_hi/screen/footPrint/footprint_history_edit_place_screen.dart';
+import 'package:woo_yeon_hi/screen/footPrint/footprint_history_write_place_screen.dart';
 
 import '../../dialogs.dart';
 import '../../provider/footprint_provider.dart';
