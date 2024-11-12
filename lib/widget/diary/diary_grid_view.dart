@@ -26,7 +26,6 @@ class _DiaryGridViewState extends State<DiaryGridView> {
   Widget build(BuildContext context) {
     var userIdx = Provider.of<UserProvider>(context, listen: false).userIdx;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // executes after build
       var unCheckedDiary = isReadAll(userIdx, widget.provider.diaryData);
       if(unCheckedDiary != null){
         Navigator.push(context, MaterialPageRoute(builder: (context) => DiaryUncheckedScreen(unCheckedDiary)));

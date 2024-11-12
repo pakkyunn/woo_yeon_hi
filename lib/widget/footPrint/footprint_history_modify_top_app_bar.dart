@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/dao/history_dao.dart';
 import 'package:woo_yeon_hi/model/history_model.dart';
 import 'package:woo_yeon_hi/provider/footprint_provider.dart';
+import 'package:woo_yeon_hi/screen/footPrint/footprint_history_detail_screen.dart';
 
 import '../../dialogs.dart';
 import '../../provider/login_register_provider.dart';
@@ -15,9 +16,11 @@ import '../../style/color.dart';
 import '../../style/text_style.dart';
 
 class FootprintHistoryModifyTopAppBar extends StatefulWidget implements PreferredSizeWidget{
-  FootprintHistoryModifyTopAppBar(this.provider, this.history, {super.key});
+  FootprintHistoryModifyTopAppBar(this.provider, this.history, this.index, this.historyList, {super.key});
   FootprintHistoryWriteProvider provider;
   History history;
+  int index;
+  List<History> historyList;
 
   @override
   State<FootprintHistoryModifyTopAppBar> createState() => _FootprintHistoryModifyTopAppBarState();
@@ -111,6 +114,10 @@ class _FootprintHistoryModifyTopAppBarState extends State<FootprintHistoryModify
       editHistory(widget.history.historyIdx, historyMap);
     }
     Navigator.pop(context); // 다이얼로그 팝
-    Navigator.pop(context, "refresh"); // 히스토리 수정 페이지 팝
+    // Navigator.pop(context, "refresh"); // 히스토리 수정 페이지 팝
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => FootprintHistoryDetailScreen(widget.index)));
   }
 }

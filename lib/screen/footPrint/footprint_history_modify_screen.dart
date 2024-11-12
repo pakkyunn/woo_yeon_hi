@@ -10,8 +10,10 @@ import '../../widget/footPrint/footprint_history_modify_top_app_bar.dart';
 import '../../widget/footPrint/footprint_history_modify_content.dart';
 
 class FootprintHistoryModifyScreen extends StatefulWidget {
-  FootprintHistoryModifyScreen(this.history, {super.key});
+  FootprintHistoryModifyScreen(this.history, this.index, this.historyList, {super.key});
   History history;
+  int index;
+  List<History> historyList;
 
   @override
   State<FootprintHistoryModifyScreen> createState() =>
@@ -31,7 +33,7 @@ class _FootprintHistoryModifyScreenState
           });
           return Scaffold(
             backgroundColor: ColorFamily.cream,
-            appBar: FootprintHistoryModifyTopAppBar(provider, widget.history),
+            appBar: FootprintHistoryModifyTopAppBar(provider, widget.history, widget.index, widget.historyList),
             body: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(20),

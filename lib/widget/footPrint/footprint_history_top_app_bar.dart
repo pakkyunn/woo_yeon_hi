@@ -7,8 +7,7 @@ import '../../style/color.dart';
 import '../../style/text_style.dart';
 
 class FootprintHistoryTopAppBar extends StatefulWidget implements PreferredSizeWidget{
-  FootprintHistoryTopAppBar(this.photoMap, {super.key});
-  PhotoMap photoMap;
+  FootprintHistoryTopAppBar({super.key});
 
   @override
   State<FootprintHistoryTopAppBar> createState() => _FootprintHistoryTopAppBarState();
@@ -37,7 +36,7 @@ class _FootprintHistoryTopAppBarState extends State<FootprintHistoryTopAppBar> {
       actions: [
         IconButton(
           onPressed: () {
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => FootprintPhotoMapDetailScreen(widget.photoMap)));
+            // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => FootprintPhotoMapDetailScreen()));
           },
           icon: SvgPicture.asset('lib/assets/icons/map.svg'),
         ),

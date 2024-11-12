@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class History {
   int historyIdx; // 히스토리 번호
-  int historyMapIdx; // 포토맵 지도 번호
+  // int historyMapIdx; // 포토맵 지도 번호
   String historyPlaceName; // 히스토리 지명
   GeoPoint historyLocation; // 히스토리 좌표
   int historyUserIdx; // 히스토리 작성자 번호
@@ -14,7 +14,7 @@ class History {
 
   History(
       {required this.historyIdx,
-      required this.historyMapIdx,
+      // required this.historyMapIdx,
       required this.historyPlaceName,
       required this.historyLocation,
       required this.historyUserIdx,
@@ -27,7 +27,7 @@ class History {
   factory History.fromData(Map<String, dynamic> data) {
     return History(
       historyIdx: data['history_idx'],
-      historyMapIdx: data['history_map_idx'],
+      // historyMapIdx: data['history_map_idx'],
       historyPlaceName: data['history_place_name'],
       historyLocation: data['history_location'],
       historyUserIdx: data['history_user_idx'],

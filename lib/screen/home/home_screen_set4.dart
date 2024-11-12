@@ -23,12 +23,15 @@ class _HomeScreenState extends State<HomeScreenSet4> {
             padding: const EdgeInsets.fromLTRB(20,0,20,20),
             child: Column(
               children: [
+                // 추억 배너 (가제)
+                memoryBanner(context),
+                const SizedBox(height: 20),
                 dDay(context),
                 const SizedBox(height: 20),
                 accountBook(context),
                 const SizedBox(height: 20),
-                datePlan(context),
-                const SizedBox(height: 20),
+                // datePlan(context),
+                // const SizedBox(height: 20),
                 calendar(context),
               ],
             ),

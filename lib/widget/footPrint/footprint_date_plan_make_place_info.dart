@@ -12,16 +12,16 @@ import '../../style/color.dart';
 import '../../style/font.dart';
 import '../../style/text_style.dart';
 
-class FootprintDatePlanWritePlaceInfo extends StatefulWidget {
-  FootprintDatePlanWritePlaceInfo(this.provider, this.mapController, {super.key});
-  FootPrintDatePlanSlidableProvider provider;
+class FootprintDatePlanMakePlaceInfo extends StatefulWidget {
+  FootprintDatePlanMakePlaceInfo(this.provider, this.mapController, {super.key});
+  DatePlanMakeSlidableProvider provider;
   NaverMapController mapController;
 
   @override
-  State<FootprintDatePlanWritePlaceInfo> createState() => _FootprintDatePlanWritePlaceInfoState();
+  State<FootprintDatePlanMakePlaceInfo> createState() => _FootprintDatePlanMakePlaceInfoState();
 }
 
-class _FootprintDatePlanWritePlaceInfoState extends State<FootprintDatePlanWritePlaceInfo> {
+class _FootprintDatePlanMakePlaceInfoState extends State<FootprintDatePlanMakePlaceInfo> {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -137,7 +137,7 @@ class _FootprintDatePlanWritePlaceInfoState extends State<FootprintDatePlanWrite
   }
 
   Future<NLatLng> _addMarkerOverlay(
-      FootPrintDatePlanSlidableProvider provider, NLatLng? position) async {
+      DatePlanMakeSlidableProvider provider, NLatLng? position) async {
     late NLatLng coordinate;
     if(position != null){
       coordinate = position;

@@ -30,8 +30,6 @@ enum PhotoMapState{
 }
 
 enum OverlayInfo {
-  /// 서울 지도
-  KOREA_SEOUL(0, 37.5665, 126.9780, 9),
   /// 한국 전체 지도
   KOREA_FULL(1, 36.5551, 127.7818, 6.5);
 
@@ -43,14 +41,14 @@ enum OverlayInfo {
 
   NLatLng get coordinate => NLatLng(latitude, longitude);
 
-  static OverlayInfo? fromType(int type) {
-    for (var value in OverlayInfo.values) {
-      if (value.type == type) {
-        return value;
-      }
-    }
-    return null; // 해당 type 값이 없을 경우 null 반환
-  }
+  // static OverlayInfo? fromType(int type) {
+  //   for (var value in OverlayInfo.values) {
+  //     if (value.type == type) {
+  //       return value;
+  //     }
+  //   }
+  //   return null; // 해당 type 값이 없을 경우 null 반환
+  // }
 }
 
 enum LoginType {

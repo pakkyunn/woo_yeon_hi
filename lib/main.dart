@@ -24,6 +24,7 @@ import 'package:woo_yeon_hi/screen/login/login_screen.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/utils.dart';
 import 'package:home_widget/home_widget.dart';
+import 'dao/history_dao.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -43,15 +44,16 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform
   );
 
-  await HomeWidget.registerBackgroundCallback(backgroundCallback);
+  await HomeWidget.registerInteractivityCallback(backgroundCallback);
 
   initializeDateFormatting().then((_) async {
     final userData = await fetchUserData();
 
-    runApp(MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (context) => UserProvider())
-        ],
+    runApp(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (context) => UserProvider())
+          ],
         child: WooYeonHi(
           userIdx: userData['userIdx'],
           userAccount: userData['userAccount'],
@@ -136,7 +138,6 @@ class _WooYeonHiState extends State<WooYeonHi> {
 
   @override
   build(BuildContext context) {
-
     Provider.of<UserProvider>(context, listen: false).setUserAllData(widget.userIdx, widget.userAccount, widget.appLockState, widget.homePresetType, widget.loginType, widget.loveDday, widget.loverIdx, widget.notificationAllow, widget.profileMessage, widget.topBarType, widget.userBirth, widget.userNickname, widget.loverNickname, widget.userProfileImagePath, widget.loverProfileImagePath, widget.userProfileImage, widget.loverProfileImage, widget.userState);
     return MultiProvider(
         providers: [
@@ -150,11 +151,13 @@ class _WooYeonHiState extends State<WooYeonHi> {
           ChangeNotifierProvider(create: (context) => AuthCodeProvider()),
           ChangeNotifierProvider(create: (context) => TabPageIndexProvider()),
           ChangeNotifierProvider(create: (context) => DiaryProvider()),
-          ChangeNotifierProvider(create: (context) => FootprintProvider()),
           ChangeNotifierProvider(create: (context) => LedgerProvider(context)),
-          ChangeNotifierProvider(create: (context) => FootPrintSlidableProvider()),
-          ChangeNotifierProvider(create: (context) => FootPrintDatePlanSlidableProvider()),
-          ChangeNotifierProvider(create: (context) => FootprintDraggableSheetProvider()),
+          ChangeNotifierProvider(create: (context) => FootprintProvider()),
+          ChangeNotifierProvider(create: (context) => FootprintHistoryGridViewProvider()),
+          ChangeNotifierProvider(create: (context) => FootprintPhotoMapHistoryProvider()),
+          ChangeNotifierProvider(create: (context) => FootprintPhotoMapOverlayProvider()),
+          ChangeNotifierProvider(create: (context) => DatePlanSlidableProvider()),
+          ChangeNotifierProvider(create: (context) => DatePlanMakeSlidableProvider()),
           ChangeNotifierProvider(create: (context) => BioAuthProvider()),
           ChangeNotifierProvider(create: (context) => PasswordProvider()),
         ],

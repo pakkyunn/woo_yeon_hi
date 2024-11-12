@@ -31,13 +31,13 @@ class _DailySummaryScreenState extends State<DailySummaryScreen> {
   Widget build(BuildContext context) {
 
     ///TODO 매개변수로 Consumer에 사용되는 모든 provider 받을 것임. 현재 임시로 하나만.
-    Future<bool> _asyncData(FootPrintSlidableProvider provider) async {
+    Future<bool> _asyncData(DatePlanSlidableProvider provider) async {
       var userProvider = Provider.of<UserProvider>(context, listen: false);
-      List<Plan> result = await getPlanData(userProvider.userIdx);
+      List<Plan> result = await getPlanData(userProvider.userIdx, context);
       provider.addPlanList(result);
       return true;
     }
-    var datePlanProvider = Provider.of<FootPrintSlidableProvider>(context);
+    var datePlanProvider = Provider.of<DatePlanSlidableProvider>(context);
 
     var deviceWidth = MediaQuery.of(context).size.width;
     var deviceHeight = MediaQuery.of(context).size.height;

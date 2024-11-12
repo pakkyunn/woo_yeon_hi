@@ -73,6 +73,26 @@ class _HomeScreenContainerState extends State<HomeScreenContainer> {
   }
 }
 
+//추억 배너
+Widget memoryBanner(BuildContext context) {
+  var deviceWidth = MediaQuery.of(context).size.width;
+  var deviceHeight = MediaQuery.of(context).size.height;
+
+  return Consumer<UserProvider>(builder: (context, provider, child) {
+    return _cardContainer(
+        context,
+        SizedBox(),
+      Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+              image: DecorationImage(
+                  image: AssetImage("lib/assets/images/sky.jpg"),
+                  fit: BoxFit.cover)
+          )),
+        deviceHeight * 0.15);
+  });
+}
+
 //디데이
 Widget dDay(BuildContext context) {
   var deviceWidth = MediaQuery.of(context).size.width;
@@ -344,100 +364,100 @@ Widget accountBook(BuildContext context) {
 }
 
 //데이트플랜
-Widget datePlan(BuildContext context) {
-  var deviceHeight = MediaQuery.of(context).size.height;
-
-  var provider = Provider.of<HomeDatePlanProvider>(context, listen: false);
-  final controller = PageController(viewportFraction: 1, keepPage: true);
-
-  final pages = List.generate(provider.datePlanList.length, (index) => Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(provider.datePlanList[index]["plan_title"],
-                  style: const TextStyle(
-                    color: ColorFamily.black,
-                    fontSize: 15,
-                    fontFamily: FontFamily.mapleStoryBold
-                  )),
-              const SizedBox(height: 5),
-              Text(provider.datePlanList[index]["plan_date"],
-                  style: const TextStyle(
-                      color: ColorFamily.black,
-                      fontSize: 14,
-                      fontFamily: FontFamily.mapleStoryLight
-                  )),
-              const SizedBox(height: 10),
-              Text("${provider.datePlanList[index]["plan_user_nickname"]}의 플랜",
-                  textAlign: TextAlign.right,
-                  style: const TextStyle(
-                      color: ColorFamily.black,
-                      fontSize: 12,
-                      fontFamily: FontFamily.mapleStoryLight)),
-            ],
-          ));
-
-  return _cardContainer(
-      context,
-      const Row(
-        children: [
-          Text("데이트 플랜",
-              style: TextStyle(
-                  color: ColorFamily.black,
-                  fontSize: 20,
-                  fontFamily: FontFamily.mapleStoryLight)),
-        ],
-      ),
-      InkWell(
-        onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const FootprintDatePlanEditScreen()));
-        },
-        child: Padding(
-          padding: const EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 0),
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                child:
-                provider.datePlanList.isNotEmpty
-                ? PageView.builder(
-                  controller: controller,
-                  itemCount: provider.datePlanList.length,
-                  itemBuilder: (_, index) {
-                    return pages[index];
-                  },
-                )
-                : const Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("데이트 플랜 없음", style: TextStyleFamily.normalTextStyle)
-                  ],
-                )
-              ),
-              provider.datePlanList.isNotEmpty
-              ? Container(
-                padding: const EdgeInsets.all(5),
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
-                  color: ColorFamily.beige,
-                ),
-                child: SmoothPageIndicator(
-                  controller: controller,
-                  count: provider.datePlanList.isNotEmpty ? provider.datePlanList.length : 1,
-                  effect: const ScrollingDotsEffect(
-                    dotHeight: 8,
-                    dotWidth: 8,
-                    activeDotColor: ColorFamily.pink,
-                    dotColor: ColorFamily.white,
-                  ),
-                ),
-              )
-              : const SizedBox(),
-              const SizedBox(height: 5)
-            ],
-          ),
-        ),
-      ),
-      deviceHeight * 0.15);
-}
+// Widget datePlan(BuildContext context) {
+//   var deviceHeight = MediaQuery.of(context).size.height;
+//
+//   var provider = Provider.of<HomeDatePlanProvider>(context, listen: false);
+//   final controller = PageController(viewportFraction: 1, keepPage: true);
+//
+//   final pages = List.generate(provider.datePlanList.length, (index) => Column(
+//             crossAxisAlignment: CrossAxisAlignment.stretch,
+//             children: [
+//               Text(provider.datePlanList[index]["plan_title"],
+//                   style: const TextStyle(
+//                     color: ColorFamily.black,
+//                     fontSize: 15,
+//                     fontFamily: FontFamily.mapleStoryBold
+//                   )),
+//               const SizedBox(height: 5),
+//               Text(provider.datePlanList[index]["plan_date"],
+//                   style: const TextStyle(
+//                       color: ColorFamily.black,
+//                       fontSize: 14,
+//                       fontFamily: FontFamily.mapleStoryLight
+//                   )),
+//               const SizedBox(height: 10),
+//               Text("${provider.datePlanList[index]["plan_user_nickname"]}의 플랜",
+//                   textAlign: TextAlign.right,
+//                   style: const TextStyle(
+//                       color: ColorFamily.black,
+//                       fontSize: 12,
+//                       fontFamily: FontFamily.mapleStoryLight)),
+//             ],
+//           ));
+//
+//   return _cardContainer(
+//       context,
+//       const Row(
+//         children: [
+//           Text("데이트 플랜",
+//               style: TextStyle(
+//                   color: ColorFamily.black,
+//                   fontSize: 20,
+//                   fontFamily: FontFamily.mapleStoryLight)),
+//         ],
+//       ),
+//       InkWell(
+//         onTap: (){
+//           Navigator.push(context, MaterialPageRoute(builder: (context) => const FootprintDatePlanEditScreen()));
+//         },
+//         child: Padding(
+//           padding: const EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 0),
+//           child: Column(
+//             children: <Widget>[
+//               Expanded(
+//                 child:
+//                 provider.datePlanList.isNotEmpty
+//                 ? PageView.builder(
+//                   controller: controller,
+//                   itemCount: provider.datePlanList.length,
+//                   itemBuilder: (_, index) {
+//                     return pages[index];
+//                   },
+//                 )
+//                 : const Column(
+//                   mainAxisAlignment: MainAxisAlignment.center,
+//                   children: [
+//                     Text("데이트 플랜 없음", style: TextStyleFamily.normalTextStyle)
+//                   ],
+//                 )
+//               ),
+//               provider.datePlanList.isNotEmpty
+//               ? Container(
+//                 padding: const EdgeInsets.all(5),
+//                 decoration: const BoxDecoration(
+//                   borderRadius: BorderRadius.all(Radius.circular(15)),
+//                   color: ColorFamily.beige,
+//                 ),
+//                 child: SmoothPageIndicator(
+//                   controller: controller,
+//                   count: provider.datePlanList.isNotEmpty ? provider.datePlanList.length : 1,
+//                   effect: const ScrollingDotsEffect(
+//                     dotHeight: 8,
+//                     dotWidth: 8,
+//                     activeDotColor: ColorFamily.pink,
+//                     dotColor: ColorFamily.white,
+//                   ),
+//                 ),
+//               )
+//               : const SizedBox(),
+//               const SizedBox(height: 5)
+//             ],
+//           ),
+//         ),
+//       ),
+//       deviceHeight * 0.15);
+// }
 
 //캘린더_달력
 Widget calendar(BuildContext context) {

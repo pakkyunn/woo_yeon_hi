@@ -45,7 +45,7 @@ class _DiaryWriteTopAppBarState extends State<DiaryWriteTopAppBar> {
                   context,
                   "일기 작성을 취소하시겠습니까?",
                   "지금까지 작성된 내용은 삭제됩니다",
-                      () => _onCancleBack(context),
+                      () => _onCancelBack(context),
                       () => _onConfirmBack(context)
               );
             } else {
@@ -109,10 +109,9 @@ Future<void> _onConfirmDone(BuildContext context, DiaryEditProvider provider, in
       diaryState: DiaryState.STATE_NORMAL.state);
   await addDiary(diary);
   await uploadDiaryImage(provider.image!, imageName);
-  provider.providerNotify();
 }
 
-void _onCancleBack(BuildContext context){
+void _onCancelBack(BuildContext context){
   Navigator.pop(context);
 }
 

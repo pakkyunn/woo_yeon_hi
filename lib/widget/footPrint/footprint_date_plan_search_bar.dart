@@ -31,7 +31,7 @@ class _FootprintDatePlanSearchBarState extends State<FootprintDatePlanSearchBar>
   @override
   Widget build(BuildContext context) {
     setHttp();
-    return Consumer<FootPrintDatePlanSlidableProvider>(
+    return Consumer<DatePlanMakeSlidableProvider>(
       builder: (context, provider, child) {
         return FloatingSearchBar(
           showCursor: true,
@@ -107,7 +107,7 @@ class _FootprintDatePlanSearchBarState extends State<FootprintDatePlanSearchBar>
 
   // 검색된 항목을 슬라이드 항목으로
   Widget makeSlidable(Place item, int index){
-    return Consumer<FootPrintDatePlanSlidableProvider>(
+    return Consumer<DatePlanMakeSlidableProvider>(
       builder: (context, provider, child) {
         return InkWell(
           onTap: (){
@@ -148,7 +148,7 @@ class _FootprintDatePlanSearchBarState extends State<FootprintDatePlanSearchBar>
     );
   }
 
-  Future<void> searchPlace(String query, FootPrintDatePlanSlidableProvider provider) async {
+  Future<void> searchPlace(String query, DatePlanMakeSlidableProvider provider) async {
     try {
       final response = await _placeSearchApi.search(query, 5);
       provider.clearSearchPlace();

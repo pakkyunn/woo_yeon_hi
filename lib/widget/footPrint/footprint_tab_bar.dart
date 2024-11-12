@@ -29,11 +29,14 @@ class _FootprintTabBarState extends State<FootprintTabBar> {
 
       tabs: const [
         Tab(
-          text: "포토맵",
+          text: "히스토리",
         ),
         Tab(
-          text: "데이트플랜",
-        )
+          text: "포토맵",
+        ),
+        // Tab(
+        //   text: "데이트플랜",
+        // )
       ],
       onTap: (value) {
         if(mounted){

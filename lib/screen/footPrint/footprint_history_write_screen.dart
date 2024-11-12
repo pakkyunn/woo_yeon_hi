@@ -12,8 +12,7 @@ import '../../provider/footprint_provider.dart';
 import '../../style/color.dart';
 
 class FootprintHistoryWriteScreen extends StatefulWidget {
-  FootprintHistoryWriteScreen(this.photoMap, {super.key});
-  PhotoMap photoMap;
+  const FootprintHistoryWriteScreen({super.key});
 
   @override
   State<FootprintHistoryWriteScreen> createState() => _FootprintHistoryWriteScreenState();
@@ -28,7 +27,7 @@ class _FootprintHistoryWriteScreenState extends State<FootprintHistoryWriteScree
         builder: (context, provider, _) {
           return Scaffold(
             backgroundColor: ColorFamily.cream,
-            appBar: FootprintHistoryWriteTopAppBar(provider, widget.photoMap.mapIdx),
+            appBar: FootprintHistoryWriteTopAppBar(provider),
             body: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),

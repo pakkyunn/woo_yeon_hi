@@ -1,14 +1,23 @@
+import 'dart:async';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:woo_yeon_hi/dao/history_dao.dart';
 import 'package:woo_yeon_hi/dao/plan_dao.dart';
 import 'package:woo_yeon_hi/enums.dart';
 import 'package:woo_yeon_hi/model/place_info.dart';
 
+import '../dao/photo_map_dao.dart';
 import '../model/history_model.dart';
+import '../model/photo_map_model.dart';
 import '../model/plan_model.dart';
 import '../retrofit_interface/place_search_api.dart';
+import '../screen/footPrint/footprint_history_detail_screen.dart';
+import '../widget/footPrint/footprint_photo_map_marker.dart';
 
 /// 탭 전환 상태 관리 프로바이더
 class FootprintProvider extends ChangeNotifier{
@@ -24,41 +33,148 @@ class FootprintProvider extends ChangeNotifier{
 
 }
 
-/// 히스토리 목록 ExpansionTile 상태 관리 프로바이더
-class FootprintHistoryProvider extends ChangeNotifier{
+/// 히스토리 탭 그리드뷰 항목 상태관리 프로바이더
+class FootprintHistoryGridViewProvider extends ChangeNotifier {
 
-  List<bool> _isExpandedList = [];
+  List<History> _historyList = [];
+  List<History> get historyList => _historyList;
 
-  FootprintHistoryProvider(int itemCount){
-    _isExpandedList.add(true);
-    for (int i = 1; i < itemCount; i++) {
-      _isExpandedList.add(false);
-    }
+  Future<bool> fetchHistoryData(BuildContext context) async {
+    var list = await getHistory(context);
+    setHistoryList(list);
+
+    return true;
   }
 
-  List<bool> get isExpandedList => _isExpandedList;
-
-  void setExpansionState(int index, bool isExpanded) {
-    _isExpandedList[index] = isExpanded;
-    notifyListeners();
-  }
-
-  void expandAll() {
-    _isExpandedList = List.filled(_isExpandedList.length, true);
-    notifyListeners();
-  }
-
-  void collapseAll() {
-    _isExpandedList = List.filled(_isExpandedList.length, false);
+  void setHistoryList(List<History> historyList) {
+    _historyList = historyList;
     notifyListeners();
   }
 }
 
+/// 포토맵화면 히스토리 항목 상태관리 프로바이더
+class FootprintPhotoMapHistoryProvider extends ChangeNotifier{
+
+  List<History> _historyList = [];
+  List<History> get historyList => _historyList;
+
+  // Future<bool> fetchHistoryData(BuildContext context) async {
+  //   _historyList = await getHistory(context);
+  //   notifyListeners();
+  //   return true;
+  // }
+
+  void setHistoryList(List<History> historyList) {
+    _historyList = historyList;
+    notifyListeners();
+  }
+
+  // Future<void> loadMapData(BuildContext context, NaverMapController mapController) async {
+  //   await _preloadImages(_historyList, context);
+  //   await _addMarkerOverlay(Provider.of<FootprintPhotoMapOverlayProvider>(context, listen: false), _historyList, context, mapController);
+  //   notifyListeners();
+  // }
+  //
+  // Future<void> _preloadImages(List<History> historyList, BuildContext context) async {
+  //   for (var history in historyList) {
+  //     final imageURL = await FirebaseStorage.instance
+  //         .ref('image/history/${history.historyImage[0]}')
+  //         .getDownloadURL();
+  //     final imageProvider = NetworkImage(imageURL);
+  //
+  //     try {
+  //         await precacheImage(imageProvider, context);
+  //     } catch (e) {
+  //       print("Failed to cache image: $imageURL - $e"); // 캐싱 실패 로그
+  //     }
+  //   }
+  // }
+  //
+  // Future<void> _addMarkerOverlay(
+  //     FootprintPhotoMapOverlayProvider provider, List<History> historyList, BuildContext context, NaverMapController mapController) async {
+  //     await _addMarker(provider, historyList, context, mapController);
+  // }
+  //
+  // Future<void> _addMarker(FootprintPhotoMapOverlayProvider provider,
+  //     List<History> historyList, BuildContext context, NaverMapController mapController) async {
+  //     for (var i = 0; i < historyList.length; i++) {
+  //       final imageURL = await FirebaseStorage.instance
+  //           .ref('image/history/${historyList[i].historyImage[0]}')
+  //           .getDownloadURL();
+  //
+  //       final markerWidget = PhotoMapMarker(await _loadNetworkImage(imageURL));
+  //
+  //       final iconImage = await NOverlayImage.fromWidget(
+  //           widget: markerWidget, size: const Size(70, 80), context: context);
+  //
+  //       final marker = NMarker(
+  //         id: "${historyList[i].historyIdx}",
+  //         position: NLatLng(
+  //             historyList[i].historyLocation.latitude, historyList[i].historyLocation.longitude),
+  //         icon: iconImage,
+  //       );
+  //
+  //       marker.setOnTapListener((overlay) async {
+  //           Navigator.push(context, MaterialPageRoute(builder: (context) =>
+  //               FootprintHistoryDetailScreen(i, historyList)));
+  //       });
+  //
+  //       provider.addMarker(marker);
+  //       await mapController.addOverlay(marker);
+  //     }
+  // }
+  //
+  // Future<Image> _loadNetworkImage(String imageUrl) async {
+  //   final completer = Completer<Image>();
+  //   final image = NetworkImage(imageUrl);
+  //
+  //   image.resolve(ImageConfiguration()).addListener(
+  //     ImageStreamListener((ImageInfo info, bool _) {
+  //       completer.complete(Image(image: image, fit: BoxFit.cover));
+  //     }, onError: (error, stackTrace) {
+  //       completer.completeError(error);
+  //     }),
+  //   );
+  //
+  //   return completer.future;
+  // }
+}
+
+/// 히스토리 목록 ExpansionTile 상태 관리 프로바이더
+// class FootprintExpandedHistoryProvider extends ChangeNotifier{
+//
+//   List<bool> _isExpandedList = [];
+//
+//   FootprintExpandedHistoryProvider(int itemCount){
+//     _isExpandedList.add(true);
+//     for (int i = 1; i < itemCount; i++) {
+//       _isExpandedList.add(false);
+//     }
+//   }
+//
+//   List<bool> get isExpandedList => _isExpandedList;
+//
+//   void setExpansionState(int index, bool isExpanded) {
+//     _isExpandedList[index] = isExpanded;
+//     notifyListeners();
+//   }
+//
+//   void expandAll() {
+//     _isExpandedList = List.filled(_isExpandedList.length, true);
+//     notifyListeners();
+//   }
+//
+//   void collapseAll() {
+//     _isExpandedList = List.filled(_isExpandedList.length, false);
+//     notifyListeners();
+//   }
+// }
+
 /// 히스토리 내용 더보기 버튼 상태 관리 프로바이더
-class FootPrintHistoyDetailProvider extends ChangeNotifier{
+class FootprintHistoryMoreProvider extends ChangeNotifier{
   List<bool> _isMoreList = [];
 
-  FootPrintHistoyDetailProvider(int itemCount){
+  FootprintHistoryMoreProvider(int itemCount){
     for(int i = 0; i< itemCount; i++){
       _isMoreList.add(true);
     }
@@ -168,34 +284,31 @@ class FootprintHistoryWriteProvider extends ChangeNotifier{
 
 /// 포토맵 오버레이 상태관리 프로바이더
 class FootprintPhotoMapOverlayProvider extends ChangeNotifier{
-  MapType? _mapType;
-  OverlayInfo? _overlayInfo;
+  // OverlayInfo? _overlayInfo;
   Map<int, PlaceInfo> _polygonInfos = {};
   List<NPolygonOverlay> _polygonOverlays = [];
   List<NMarker> _markers = [];
 
-  MapType? get mapType => _mapType;
-  OverlayInfo? get overlayInfo => _overlayInfo;
+  // OverlayInfo? get overlayInfo => _overlayInfo;
   Map<int, PlaceInfo> get polygonInfos => _polygonInfos;
   List<NPolygonOverlay> get polygonOverlays => _polygonOverlays;
   List<NMarker> get markers => _markers;
 
-  FootprintPhotoMapOverlayProvider(int type){
-    setMapType(type);
-    setOverlayInfo();
-  }
+  // FootprintPhotoMapOverlayProvider(){
+  //   setOverlayInfo();
+  // }
 
-  void setMapType(int type){
-    _mapType = MapType.fromType(type);
-    notifyListeners();
-  }
+  // void setMapType(int type){
+  //   _mapType = MapType.fromType(type);
+  //   notifyListeners();
+  // }
 
-  void setOverlayInfo(){
-    if(mapType != null){
-      _overlayInfo = OverlayInfo.fromType(mapType!.type);
-      notifyListeners();
-    }
-  }
+  // void setOverlayInfo(){
+  //   if(mapType != null){
+  //     _overlayInfo = OverlayInfo.fromType(mapType!.type);
+  //     notifyListeners();
+  //   }
+  // }
 
   void addInfo(int id, PlaceInfo info){
     _polygonInfos[id] = info;
@@ -220,7 +333,7 @@ class FootprintPhotoMapOverlayProvider extends ChangeNotifier{
 }
 
 // 데이트 플랜 메인 화면 상태관리
-class FootPrintSlidableProvider extends ChangeNotifier {
+class DatePlanSlidableProvider extends ChangeNotifier {
   List<Plan> _items = [];
   // List<Item> _items = [
   //   Item(title: 'Item 1'),
@@ -270,7 +383,7 @@ class Item {
 }
 
 // 데이트 플랜 생성 화면 슬라이드 상태관리
-class FootPrintDatePlanSlidableProvider extends ChangeNotifier {
+class DatePlanMakeSlidableProvider extends ChangeNotifier {
   final List<Item> _items = List<Item>.generate(5, (index) => Item(title: "방이역 ${index + 1}"));
   List<Place> _searchPlaces = [];
   Place? _selectedPlace;

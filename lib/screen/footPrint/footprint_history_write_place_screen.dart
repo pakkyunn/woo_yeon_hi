@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/retrofit_interface/place_search_api.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 
+import '../../enums.dart';
 import '../../provider/footprint_provider.dart';
 import '../../retrofit_interface/reverse_geo_coding_api.dart';
 import '../../style/font.dart';
@@ -36,14 +37,15 @@ class _FootprintHistoryWritePlaceScreenState
   final Dio _reverseGCDio = Dio();
   late PlaceSearchApi _placeSearchApi;
   late ReverseGeoCodingApi _reverseGCApi;
-  
+  OverlayInfo overlayInfo = OverlayInfo.KOREA_FULL;
+
 
   @override
   Widget build(BuildContext context) {
     setHttp();
 
     return ChangeNotifierProvider(
-      create: (context) => FootprintPhotoMapOverlayProvider(widget.mapType),
+      create: (context) => FootprintPhotoMapOverlayProvider(),
       child: Consumer<FootprintPhotoMapOverlayProvider>(
           builder: (context, provider, _) {
         return Scaffold(
@@ -84,10 +86,10 @@ class _FootprintHistoryWritePlaceScreenState
                         locale: NLocale.fromLocale(const Locale('ko', 'KR')),
                         scaleBarEnable: false,
                         logoClickEnable: false,
-                        minZoom: provider.overlayInfo!.zoom,
+                        minZoom: overlayInfo.zoom,
                         initialCameraPosition: NCameraPosition(
-                          target: provider.overlayInfo!.coordinate,
-                          zoom: provider.overlayInfo!.zoom,
+                          target: overlayInfo.coordinate,
+                          zoom: overlayInfo.zoom,
                         ))),
                 FloatingSearchBar(
                   controller: searchBarController,

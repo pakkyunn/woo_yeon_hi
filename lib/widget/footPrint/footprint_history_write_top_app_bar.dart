@@ -9,15 +9,16 @@ import 'package:woo_yeon_hi/provider/footprint_provider.dart';
 
 import '../../dialogs.dart';
 import '../../provider/login_register_provider.dart';
+import '../../screen/footPrint/footprint_history_detail_screen.dart';
+import '../../screen/footPrint/footprint_history_screen.dart';
 import '../../screen/footPrint/footprint_history_write_place_screen.dart';
 import '../../style/color.dart';
 import '../../style/text_style.dart';
 
 class FootprintHistoryWriteTopAppBar extends StatefulWidget
     implements PreferredSizeWidget {
-  FootprintHistoryWriteTopAppBar(this.provider, this.mapIdx, {super.key});
+  FootprintHistoryWriteTopAppBar(this.provider, {super.key});
   FootprintHistoryWriteProvider provider;
-  int mapIdx;
 
   @override
   State<FootprintHistoryWriteTopAppBar> createState() =>
@@ -72,9 +73,11 @@ class _FootprintHistoryWriteTopAppBarState
                     context,
                     "히스토리를 작성하시겠습니까?",
                     () => _onCancle_done(context),
-                    () {_onConfirm_done(context); showPinkSnackBar(context, "히스토리가 작성되었습니다!");});
+                    () => _onConfirm_done(context));
+              } else if(widget.provider.albumImages.isEmpty) {
+                showBlackToast("히스토리 사진이 등록되지 않았습니다");
               } else {
-                showBlackToast("사진 및 모든 내용을 입력해주세요");
+                showBlackToast("모든 항목을 입력해주세요!");
               }
             },
             icon: SvgPicture.asset('lib/assets/icons/done.svg'))
@@ -102,12 +105,11 @@ class _FootprintHistoryWriteTopAppBarState
 
     var imageNameList = List.generate(
         widget.provider.albumImages.length,
-            (index) => "${userProvider.userIdx}_${widget.mapIdx}_${DateTime.now()}");
+            (index) => "${userProvider.userIdx}_${DateTime.now()}");
     var coordinate = convertCoordinate(widget.provider.selectedPlace!.mapx, widget.provider.selectedPlace!.mapy);
 
     var history = History(
         historyIdx: historySequence,
-        historyMapIdx: widget.mapIdx,
         historyPlaceName: widget.provider.selectedPlace!.title,
         historyLocation: GeoPoint(coordinate.latitude, coordinate.longitude),
         historyUserIdx: userProvider.userIdx,
@@ -118,13 +120,21 @@ class _FootprintHistoryWriteTopAppBarState
         historyState: HistoryState.STATE_NORMAL.state
     );
 
-    addHistory(history);
-
-    for(var i = 0 ; i < imageNameList.length ; i++){
-      uploadHistoryImage(widget.provider.albumImages[i], imageNameList[i]);
-    }
     Navigator.pop(context); // 다이얼로그 팝
+    showPinkSnackBar(context, "히스토리를 저장하고 있습니다..");
+    await addHistory(history);
+    var newHistoryList = await getHistory(context);
+    var newHistoryIndex = newHistoryList.indexWhere((history) => history.historyIdx == historySequence);
+    for(var i = 0 ; i < imageNameList.length ; i++){
+      await uploadHistoryImage(widget.provider.albumImages[i], imageNameList[i]);
+    }
+    // Provider.of<FootprintPhotoMapHistoryProvider>(context, listen: false).setHistoryList(newHistoryList);
+
     Navigator.pop(context); // 히스토리 작성 페이지 팝
+    //해당 히스토리로 이동
+    Navigator.push(context, MaterialPageRoute(builder: (context) =>
+        FootprintHistoryDetailScreen(newHistoryIndex)));
+    showPinkSnackBar(context, "히스토리가 작성되었습니다!");
   }
 }
 

@@ -9,7 +9,7 @@ import 'package:woo_yeon_hi/widget/footPrint/footprint_date_plan_sheet_header.da
 
 class FootprintDatePlanDraggableSheet extends StatefulWidget {
   FootprintDatePlanDraggableSheet(this.provider, {super.key});
-  FootPrintDatePlanSlidableProvider provider;
+  DatePlanMakeSlidableProvider provider;
 
   @override
   State<FootprintDatePlanDraggableSheet> createState() => _FootprintDatePlanDraggableSheetState();
@@ -57,7 +57,9 @@ class _FootprintDatePlanDraggableSheetState extends State<FootprintDatePlanDragg
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        return Consumer<FootprintDraggableSheetProvider>(
+        return ChangeNotifierProvider(
+            create: (context) => FootprintDraggableSheetProvider(),
+        child: Consumer<FootprintDraggableSheetProvider>(
           builder: (context, provider, child) {
             return DraggableScrollableSheet(
               key: _sheet,
@@ -157,7 +159,7 @@ class _FootprintDatePlanDraggableSheetState extends State<FootprintDatePlanDragg
               },
             );
           },
-        );
+        ));
       },
     );
   }

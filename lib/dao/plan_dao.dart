@@ -84,26 +84,20 @@ Future<List<Map<String, dynamic>>> getHomePlanList(BuildContext context) async {
   return result;
 }
 
-Future<List<Plan>> getPlanData(int userIdx) async {
+Future<List<Plan>> getPlanData(int userIdx, BuildContext context) async {
   List<Plan> result = [];
+
+  var userProvider = Provider.of<UserProvider>(context, listen: false);
+  var userIdx = userProvider.userIdx;
+  var loverIdx = userProvider.loverIdx;
 
   var querySnapshot = await FirebaseFirestore.instance
       .collection('PlanData')
-      .where('plan_user_idx', isEqualTo: userIdx)
-      .where('plan_state', isEqualTo: PlanState.STATE_NORMAL.state)
-      .get();
-
-  var querySnapshot2 = await FirebaseFirestore.instance
-      .collection('PlanData')
-      .where('plan_user_idx', isEqualTo: userIdx)
-      .where('plan_state', isEqualTo: PlanState.STATE_SUCCESS.state)
+      .where('plan_user_idx', whereIn: [userIdx, loverIdx])
+      .where('plan_state', whereIn: [PlanState.STATE_NORMAL.state, PlanState.STATE_SUCCESS.state])
       .get();
 
   for (var doc in querySnapshot.docs) {
-    result.add(Plan.fromData(doc.data()));
-  }
-
-  for (var doc in querySnapshot2.docs) {
     result.add(Plan.fromData(doc.data()));
   }
 

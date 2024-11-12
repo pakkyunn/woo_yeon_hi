@@ -26,45 +26,45 @@ Future<void> setPhotoMapSequence(int sequence) async {
       .set({'value': sequence});
 }
 
-Future<void> addPhotoMap(PhotoMap photoMap) async {
-  await FirebaseFirestore.instance.collection('PhotoMapData').add({
-    "map_idx": photoMap.mapIdx,
-    "map_user_idx": photoMap.mapUserIdx,
-    "map_type": photoMap.mapType,
-    "map_name": photoMap.mapName,
-    "map_snapshot": photoMap.mapSnapshot,
-    "map_state": photoMap.mapState,
-  });
-}
+// Future<void> addPhotoMap(PhotoMap photoMap) async {
+//   await FirebaseFirestore.instance.collection('PhotoMapData').add({
+//     "map_idx": photoMap.mapIdx,
+//     "map_user_idx": photoMap.mapUserIdx,
+//     "map_type": photoMap.mapType,
+//     "map_name": photoMap.mapName,
+//     "map_snapshot": photoMap.mapSnapshot,
+//     "map_state": photoMap.mapState,
+//   });
+// }
 
-Future<List<PhotoMap>> getPhotoMap(BuildContext context) async {
-  var userProvider = Provider.of<UserProvider>(context, listen: false);
+// Future<List<PhotoMap>> getPhotoMap(BuildContext context) async {
+//   var userProvider = Provider.of<UserProvider>(context, listen: false);
+//
+//   var userIdx = userProvider.userIdx;
+//   var loverIdx = userProvider.loverIdx;
+//
+//   List<PhotoMap> results = [];
+//   var querySnapshot = await FirebaseFirestore.instance.collection('PhotoMapData')
+//       .where('map_user_idx', whereIn: [userIdx, loverIdx])
+//       .get();
+//
+//   for(var doc in querySnapshot.docs){
+//     results.add(PhotoMap.fromData(doc.data()));
+//   }
+//   return results;
+// }
 
-  var userIdx = userProvider.userIdx;
-  var loverIdx = userProvider.loverIdx;
-
-  List<PhotoMap> results = [];
-  var querySnapshot = await FirebaseFirestore.instance.collection('PhotoMapData')
-      .where('map_user_idx', whereIn: [userIdx, loverIdx])
-      .get();
-
-  for(var doc in querySnapshot.docs){
-    results.add(PhotoMap.fromData(doc.data()));
-  }
-  return results;
-}
-
-Future<PhotoMap> getPhotoMapByMapIdx(int mapIdx) async {
-  List<PhotoMap> results = [];
-  var querySnapshot = await FirebaseFirestore.instance.collection('PhotoMapData')
-      .where('map_idx', isEqualTo: mapIdx)
-      .get();
-
-  for(var doc in querySnapshot.docs){
-    results.add(PhotoMap.fromData(doc.data()));
-  }
-  return results.first;
-}
+// Future<PhotoMap> getPhotoMapByMapIdx(int mapIdx) async {
+//   List<PhotoMap> results = [];
+//   var querySnapshot = await FirebaseFirestore.instance.collection('PhotoMapData')
+//       .where('map_idx', isEqualTo: mapIdx)
+//       .get();
+//
+//   for(var doc in querySnapshot.docs){
+//     results.add(PhotoMap.fromData(doc.data()));
+//   }
+//   return results.first;
+// }
 
 
 

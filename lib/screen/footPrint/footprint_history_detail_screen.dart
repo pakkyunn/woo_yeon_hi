@@ -1,13 +1,16 @@
+import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:woo_yeon_hi/dao/history_dao.dart';
 import 'package:woo_yeon_hi/dialogs.dart';
 import 'package:woo_yeon_hi/model/history_model.dart';
 import 'package:woo_yeon_hi/model/photo_map_model.dart';
 import 'package:woo_yeon_hi/provider/footprint_provider.dart';
+import 'package:woo_yeon_hi/provider/login_register_provider.dart';
 import 'package:woo_yeon_hi/screen/footPrint/footprint_history_write_screen.dart';
 import 'package:woo_yeon_hi/screen/footPrint/footprint_history_modify_screen.dart';
 import 'package:woo_yeon_hi/style/color.dart';
@@ -17,12 +20,9 @@ import 'package:woo_yeon_hi/widget/footPrint/footprint_history_detail_top_app_ba
 import '../../style/font.dart';
 
 class FootprintHistoryDetailScreen extends StatefulWidget {
-  FootprintHistoryDetailScreen(this.photoMap, this.index, this.historyList,
-      {super.key});
+  FootprintHistoryDetailScreen(this.index, {super.key});
 
-  PhotoMap photoMap;
   int index;
-  List<History> historyList;
 
   @override
   State<FootprintHistoryDetailScreen> createState() =>
@@ -34,218 +34,296 @@ class _FootprintHistoryDetailScreenState
   // scroll controller.
   final AutoScrollController _controller = AutoScrollController();
 
+  List<bool> _overflowStates = [];
+
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
+    setState(() {
+      _isLoading = true;
+    });
+    var provider =
+        Provider.of<FootprintHistoryGridViewProvider>(context, listen: false);
+    var updatedList = await getHistory(context);
+    provider.setHistoryList(updatedList);
+    _checkOverflowForAllItems();
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // 처음 빌드될 때가 아닌, 다른 화면에서 돌아왔을 때만 새로고침이 되도록 체크
+    if (ModalRoute.of(context)?.isCurrent ?? false) {
+      _fetchData();
+    }
+  }
+
+  void _checkOverflowForAllItems() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      List<bool> tempOverflowStates = [];
+
+      for (var item in Provider.of<FootprintHistoryGridViewProvider>(context,
+              listen: false)
+          .historyList) {
+        final textPainter = TextPainter(
+          text: TextSpan(
+            text: item.historyContent,
+            style: TextStyleFamily.normalTextStyle,
+          ),
+          maxLines: 2,
+          textDirection: TextDirection.ltr,
+        )..layout(maxWidth: MediaQuery.of(context).size.width * 0.8);
+
+        tempOverflowStates.add(textPainter.didExceedMaxLines);
+      }
+
+      setState(() {
+        _overflowStates = tempOverflowStates;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) =>
-          FootPrintHistoyDetailProvider(widget.historyList.length),
-      child: Consumer<FootPrintHistoyDetailProvider>(
-        builder: (context, provider, _) {
-          // 해당 인덱스로 스크롤을 이동합니다.
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _controller.scrollToIndex(
-              widget.index,
-              duration: const Duration(milliseconds: 300),
-              preferPosition: AutoScrollPosition.middle,
+    return Consumer<FootprintHistoryGridViewProvider>(
+        builder: (context, historyGridViewProvider, _) {
+      return _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(
+              color: ColorFamily.pink,
+            ))
+          : ChangeNotifierProvider(
+              create: (context) => FootprintHistoryMoreProvider(
+                  historyGridViewProvider.historyList.length),
+              child: Consumer<FootprintHistoryMoreProvider>(
+                builder: (context, historyMoreProvider, _) {
+                  // 해당 인덱스로 스크롤을 이동합니다.
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    _controller.scrollToIndex(
+                      widget.index,
+                      duration: const Duration(milliseconds: 300),
+                      preferPosition: AutoScrollPosition.begin,
+                    );
+                  });
+                  return Scaffold(
+                      backgroundColor: ColorFamily.cream,
+                      appBar: const FootprintHistoryDetailTopAppBar(),
+                      body: Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                        child: ListView.builder(
+                            controller: _controller,
+                            itemCount:
+                                historyGridViewProvider.historyList.length,
+                            itemBuilder: (context, index) {
+                              return AutoScrollTag(
+                                  key: ValueKey(index),
+                                  controller: _controller,
+                                  index: index,
+                                  child: Column(
+                                    children: [
+                                      SizedBox(height: 10),
+                                      makeHistoryDetail(
+                                          context,
+                                          index,
+                                          historyMoreProvider,
+                                          historyGridViewProvider
+                                              .historyList[index]),
+                                    ],
+                                  ));
+                            }),
+                      ));
+                },
+              ),
             );
-          });
-          return Scaffold(
-              backgroundColor: ColorFamily.cream,
-              appBar: const FootprintHistoryDetailTopAppBar(),
-              body: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: ListView.builder(
-                    controller: _controller,
-                    itemCount: widget.historyList.length,
-                    itemBuilder: (context, index) {
-                      return AutoScrollTag(
-                          key: ValueKey(index),
-                          controller: _controller,
-                          index: index,
-                          child: makeHistoryDetail(
-                              context,
-                              index,
-                              widget.photoMap.mapIdx,
-                              provider,
-                              widget.historyList[index]));
-                    }),
-              ));
-        },
-      ),
-    );
+    });
   }
 
-  Widget makeHistoryDetail(BuildContext context, int index, int mapIdx,
-      FootPrintHistoyDetailProvider provider, History history) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: Column(
-        children: [
-          // 프로필 사진, 타이틀, 날짜, 메뉴
-          SizedBox(
-            width: MediaQuery.of(context).size.width - 40,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget makeHistoryDetail(BuildContext context, int index,
+      FootprintHistoryMoreProvider provider, History history) {
+    var deviceWidth = MediaQuery.of(context).size.width;
+    var deviceHeight = MediaQuery.of(context).size.height;
+    int imageIndex = 0;
+
+    var userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    return Column(
+      children: [
+        // 프로필 사진, 타이틀, 날짜, 메뉴
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
               children: [
-                Row(
-                  children: [
-                    // 프로필 사진
-                    SizedBox(
-                      width: 56,
-                      height: 56,
-                      child: ClipOval(
-                        child: Image.asset(
-                          'lib/assets/images/text_profile.png',
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    // 제목, 날짜
-                    SizedBox(
-                      width:
-                          MediaQuery.of(context).size.width - 40 - 56 - 48 - 10,
-                      child: Column(
+                // 프로필 사진
+                ClipOval(
+                    child: Container(
+                        width: 70,
+                        height: 70,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: history.historyUserIdx ==
+                                        userProvider.userIdx
+                                    ? userProvider.userProfileImage.image
+                                    : userProvider.loverProfileImage.image,
+                                // Image 객체의 image 속성을 사용
+                                fit: BoxFit.cover) // 이미지를 원 안에 꽉 차게 함
+                            ))),
+                const SizedBox(
+                  width: 15,
+                ),
+                // 제목, 날짜
+                SizedBox(
+                  width: deviceWidth * 0.5,
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(history.historyTitle,
-                                  style: TextStyleFamily.dialogButtonTextStyle),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                history.historyDate,
-                                style: dateTextStyle,
-                              ),
-                            ],
-                          )
+                          Text(history.historyTitle,
+                              style: TextStyleFamily.dialogButtonTextStyle),
                         ],
                       ),
-                    ),
-                  ],
-                ),
-                // 수정, 삭제
-                IconButton(
-                    onPressed: () {
-                      _showModalBottomSheet(context, mapIdx, history);
-                    },
-                    icon:
-                        SvgPicture.asset('lib/assets/icons/menu_vertical.svg'))
-              ],
-            ),
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          // 사진
-          Container(
-            width: MediaQuery.of(context).size.width - 40,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(5),
-                child: FlutterCarousel(
-                  items: List.generate(
-                      history.historyImage.length,
-                      (index) => FutureBuilder(
-                            future:
-                                getHistoryImage(history.historyImage[index]),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData == false) {
-                                return const Center(
-                                  child: CircularProgressIndicator(
-                                    color: ColorFamily.pink,
-                                  ),
-                                );
-                              } else if (snapshot.hasError) {
-                                return const Center(
-                                  child: Text(
-                                    "network error",
-                                    style: TextStyleFamily.normalTextStyle,
-                                  ),
-                                );
-                              } else {
-                                return snapshot.data!;
-                              }
-                            },
-                          )),
-                  options: FlutterCarouselOptions(
-                      viewportFraction: 1.0,
-                      showIndicator: true,
-                      floatingIndicator: false,
-                      aspectRatio: 2 / 3,
-                      slideIndicator: CircularSlideIndicator(
-                          slideIndicatorOptions: SlideIndicatorOptions(
-                              currentIndicatorColor: ColorFamily.pink,
-                              indicatorBackgroundColor: ColorFamily.gray))),
-                )),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          // 내용
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: Column(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 40 - 10,
-                  child: Text(
-                    history.historyContent,
-                    style: TextStyleFamily.normalTextStyle,
-                    overflow: provider.isMoreList[index]
-                        ? TextOverflow.ellipsis
-                        : null,
-                    maxLines: provider.isMoreList[index] ? 2 : null,
-                  ),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 40 - 10,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      InkWell(
-                        splashColor: Colors.transparent,
-                        onTap: () {
-                          if (provider.isMoreList[index]) {
-                            provider.setMoreState(index, false);
-                          } else {
-                            provider.setMoreState(index, true);
-                          }
-                          provider.notify();
-                        },
-                        child: Text(
-                          provider.isMoreList[index] ? "더보기" : "접기",
-                          style: contentMoreTextStyle,
-                        ),
-                      ),
+                      SizedBox(height: 5),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            history.historyDate,
+                            style: dateTextStyle,
+                          ),
+                        ],
+                      )
                     ],
                   ),
-                )
+                ),
               ],
             ),
-          ),
-          const Divider(
-            height: 20,
-            color: ColorFamily.gray,
-          )
-        ],
-      ),
+            // 수정, 삭제
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                    splashColor: Colors.transparent,
+                    onPressed: () {
+                      _showModalBottomSheet(context, history);
+                    },
+                    icon: SvgPicture.asset('lib/assets/icons/dotdotdot.svg')),
+              ],
+            )
+          ],
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        // 사진
+        ClipRRect(
+            borderRadius: BorderRadius.circular(5),
+            child: FlutterCarousel(
+              items: List.generate(
+                  history.historyImage.length,
+                  (index) => FutureBuilder(
+                        future: getHistoryImage(history.historyImage[index]),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData == false) {
+                            return const Center(
+                              child: CircularProgressIndicator(
+                                color: ColorFamily.pink,
+                              ),
+                            );
+                          } else if (snapshot.hasError) {
+                            return const Center(
+                              child: Text(
+                                "network error",
+                                style: TextStyleFamily.normalTextStyle,
+                              ),
+                            );
+                          } else {
+                            return snapshot.data!;
+                          }
+                        },
+                      )),
+              options: FlutterCarouselOptions(
+                  viewportFraction: 1.0,
+                  showIndicator: true,
+                  floatingIndicator: false,
+                  aspectRatio: 2 / 3,
+                  slideIndicator: CircularSlideIndicator(
+                      slideIndicatorOptions: SlideIndicatorOptions(
+                          itemSpacing: 20,
+                          currentIndicatorColor: ColorFamily.pink,
+                          indicatorBackgroundColor: ColorFamily.beige))),
+            )),
+        const SizedBox(
+          height: 20,
+        ),
+        // 내용
+        Column(
+          children: [
+            SizedBox(
+              width: deviceWidth * 0.85,
+              child: Text(
+                history.historyContent,
+                style: TextStyleFamily.normalTextStyle,
+                overflow:
+                    provider.isMoreList[index] ? TextOverflow.ellipsis : null,
+                maxLines: provider.isMoreList[index] ? 2 : null,
+              ),
+            ),
+            SizedBox(height: 30),
+            if (_overflowStates.length > index &&
+                _overflowStates[index]) // overflow인 경우에만 표시
+              Column(
+                children: [
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  SizedBox(
+                    width: deviceWidth * 0.8,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        InkWell(
+                          splashColor: Colors.transparent,
+                          onTap: () {
+                            if (provider.isMoreList[index]) {
+                              provider.setMoreState(index, false);
+                            } else {
+                              provider.setMoreState(index, true);
+                            }
+                            provider.notify();
+                          },
+                          child: Text(
+                            provider.isMoreList[index] ? "더보기" : "접기",
+                            style: contentMoreTextStyle,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              )
+          ],
+        ),
+        const Divider(
+          height: 20,
+          color: ColorFamily.gray,
+        )
+      ],
     );
   }
 
-  void _showModalBottomSheet(
-      BuildContext context, int mapIdx, History history) {
+  void _showModalBottomSheet(BuildContext context, History history) {
+    var deviceWidth = MediaQuery.of(context).size.width;
+
     showModalBottomSheet(
         context: context,
         showDragHandle: true,
@@ -262,16 +340,21 @@ class _FootprintHistoryDetailScreenState
                       // 바텀 시트 다이얼로그 팝
                       Navigator.pop(context);
                       // 수정 페이지로
-                      Navigator.pushReplacement(
+                      Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  FootprintHistoryModifyScreen(history)));
+                              builder: (context) => FootprintHistoryModifyScreen(
+                                  history,
+                                  widget.index,
+                                  Provider.of<FootprintHistoryGridViewProvider>(
+                                          context,
+                                          listen: false)
+                                      .historyList)));
                     },
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(30, 5, 30, 15),
                       child: SizedBox(
-                        width: MediaQuery.of(context).size.width,
+                        width: deviceWidth,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -303,7 +386,7 @@ class _FootprintHistoryDetailScreenState
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(30, 20, 30, 25),
                       child: SizedBox(
-                        width: MediaQuery.of(context).size.width,
+                        width: deviceWidth,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -373,7 +456,12 @@ class _FootprintHistoryDetailScreenState
                                 deleteHistory(history.historyIdx);
                                 Navigator.pop(context); // 다이얼로그 팝
                                 Navigator.pop(context); // 바텀시트 팝
-                                Navigator.pop(context, "refresh"); // 히스토리 페이지 팝
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            FootprintHistoryDetailScreen(0)));
+                                // Navigator.pop(context, "refresh"); // 히스토리 페이지 팝
                                 showPinkSnackBar(context, "히스토리가 삭제되었습니다");
                               },
                               child: const Text(
