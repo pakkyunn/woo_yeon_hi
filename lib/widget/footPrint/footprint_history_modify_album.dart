@@ -31,39 +31,31 @@ class _FootprintHistoryModifyAlbumState
         SizedBox(
           width: MediaQuery.of(context).size.width - 40,
           height: 120,
-          child: Card(
-            color: ColorFamily.white,
-            surfaceTintColor: ColorFamily.white,
-            elevation: 1,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Row(
-                children: [
-                  FutureBuilder(
-                    future: getHistoryImageList(widget.history.historyImage),
-                    builder: (context, snapshot){
-                      if(snapshot.hasData == false){
-                        return const SizedBox();
-                      }else if(snapshot.hasError){
-                        return const Center(child: Text("image download error"),);
-                      }else{
-                        return Expanded(
-                          child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: snapshot.data!.length,
-                              itemBuilder: (context, index) =>
-                                  makeImageCard(context, index, snapshot.data![index])),
-                        );
-                      }
-                    },
-                  ),
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Row(
+              children: [
+                FutureBuilder(
+                  future: getHistoryImageList(widget.history.historyImage),
+                  builder: (context, snapshot){
+                    if(snapshot.hasData == false){
+                      return const SizedBox();
+                    }else if(snapshot.hasError){
+                      return const Center(child: Text("image download error"),);
+                    }else{
+                      return Expanded(
+                        child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) =>
+                                makeImageCard(context, index, snapshot.data![index])),
+                      );
+                    }
+                  },
+                ),
 
 
-                ],
-              ),
+              ],
             ),
           ),
         ),

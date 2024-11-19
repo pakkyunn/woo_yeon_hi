@@ -28,7 +28,7 @@ class _FootprintHistoryWriteContentState extends State<FootprintHistoryWriteCont
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 35),
+      padding: const EdgeInsets.only(top: 5),
       child: SizedBox(
         width: MediaQuery.of(context).size.width - 40,
         child: Column(
@@ -46,78 +46,136 @@ class _FootprintHistoryWriteContentState extends State<FootprintHistoryWriteCont
                 // widget.provider.setPlace(null);
                 widget.provider.clearSearchPlace();
               },
-              child: Row(
-                children: [
-                  SvgPicture.asset('lib/assets/icons/pin_alt.svg'),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  widget.provider.selectedPlace != null
-                      ? Row(
-                          children: [
-                            Text(
-                              widget.provider.selectedPlace!.title,
-                              style: TextStyleFamily.normalTextStyle,
-                            )
-                          ],
-                        )
-                      : const Text(
-                          "장소",
-                          style: TextStyleFamily.hintTextStyle,
-                        )
-                ],
+              child: SizedBox(
+                height: 50,
+                child: Row(
+                  children: [
+                    SvgPicture.asset('lib/assets/icons/pin_alt.svg'),
+                    const SizedBox(
+                      width: 15,
+                    ),
+                    widget.provider.selectedPlace != null
+                        ? Row(
+                            children: [
+                              Text(
+                                widget.provider.selectedPlace!.title,
+                                style: TextStyleFamily.normalTextStyle,
+                              )
+                            ],
+                          )
+                        : const Text(
+                            "장소",
+                            style: TextStyleFamily.hintTextStyle,
+                          )
+                  ],
+                ),
               ),
             ),
             const Divider(
-              height: 40,
-              thickness: 1,
+              color: ColorFamily.black,
+              height: 5,
+              thickness: 0.5,
             ),
             // 날짜 입력
-            InkWell(
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              onTap: () {
-                _showCalendarBottomSheet(widget.provider);
-              },
+            SizedBox(
+              height: 50,
+              child: InkWell(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                onTap: () {
+                  _showCalendarBottomSheet(widget.provider);
+                },
+                child: Row(
+                  children: [
+                    SvgPicture.asset('lib/assets/icons/calendar.svg'),
+                    const SizedBox(
+                      width: 15,
+                    ),
+                    widget.provider.date != null
+                        ? Row(
+                            children: [
+                              Text(
+                                widget.provider.date!,
+                                style: TextStyleFamily.normalTextStyle,
+                              ),
+                            ],
+                          )
+                        : const Text(
+                            "날짜",
+                            style: TextStyleFamily.hintTextStyle,
+                          )
+                  ],
+                ),
+              ),
+            ),
+            const Divider(
+              color: ColorFamily.black,
+              height: 5,
+              thickness: 0.5,
+            ),
+            // 히스토리 제목
+            SizedBox(
+              height: 50,
               child: Row(
                 children: [
-                  SvgPicture.asset('lib/assets/icons/calendar.svg'),
+                  SvgPicture.asset('lib/assets/icons/woo_yeon_hi.svg'),
                   const SizedBox(
                     width: 15,
                   ),
-                  widget.provider.date != null
-                      ? Row(
-                          children: [
-                            Text(
-                              widget.provider.date!,
-                              style: TextStyleFamily.normalTextStyle,
-                            ),
-                          ],
-                        )
-                      : const Text(
-                          "날짜",
-                          style: TextStyleFamily.hintTextStyle,
-                        )
+                  Expanded(
+                    child: TextField(
+                      controller: widget.provider.titleController,
+                      style: TextStyleFamily.normalTextStyle,
+                      maxLines: 1,
+                      keyboardType: TextInputType.text,
+                      cursorColor: ColorFamily.black,
+                      onTapOutside: (event) =>
+                          FocusManager.instance.primaryFocus?.unfocus(),
+                      decoration: const InputDecoration(
+                          isDense: true,
+                          contentPadding: EdgeInsets.zero,
+                          border: InputBorder.none,
+                          hintStyle: TextStyleFamily.hintTextStyle,
+                          hintText: "히스토리 제목"),
+                    ),
+                  )
                 ],
               ),
             ),
             const Divider(
-              height: 40,
-              thickness: 1,
+              color: ColorFamily.black,
+              height: 5,
+              thickness: 0.5,
             ),
-            // 히스토리 제목
-            Row(
-              children: [
-                SvgPicture.asset('lib/assets/icons/woo_yeon_hi.svg'),
-                const SizedBox(
-                  width: 15,
-                ),
-                Expanded(
-                  child: TextField(
-                    controller: widget.provider.titleController,
+            // 히스토리 내용
+            SizedBox(
+              height: 50,
+              child: Row(
+                children: [
+                  SvgPicture.asset('lib/assets/icons/message-question.svg'),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  const Text(
+                    "어떤 추억을 만드셨나요?",
                     style: TextStyleFamily.normalTextStyle,
-                    maxLines: 1,
-                    keyboardType: TextInputType.text,
+                  )
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            Container(
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: ColorFamily.black, width: 0.5)),
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: TextField(
+                    controller: widget.provider.contentController,
+                    style: TextStyleFamily.normalTextStyle,
+                    maxLines: null,
+                    keyboardType: TextInputType.multiline,
                     cursorColor: ColorFamily.black,
                     onTapOutside: (event) =>
                         FocusManager.instance.primaryFocus?.unfocus(),
@@ -126,48 +184,9 @@ class _FootprintHistoryWriteContentState extends State<FootprintHistoryWriteCont
                         contentPadding: EdgeInsets.zero,
                         border: InputBorder.none,
                         hintStyle: TextStyleFamily.hintTextStyle,
-                        hintText: "히스토리 제목"),
-                  ),
-                )
-              ],
-            ),
-            const Divider(
-              height: 40,
-              thickness: 1,
-            ),
-            // 히스토리 내용
-            Row(
-              children: [
-                SvgPicture.asset('lib/assets/icons/message-question.svg'),
-                const SizedBox(
-                  width: 15,
-                ),
-                const Text(
-                  "어떤 추억을 만드셨나요?",
-                  style: TextStyleFamily.normalTextStyle,
-                )
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: TextField(
-                  controller: widget.provider.contentController,
-                  style: TextStyleFamily.normalTextStyle,
-                  maxLines: null,
-                  keyboardType: TextInputType.multiline,
-                  cursorColor: ColorFamily.black,
-                  onTapOutside: (event) =>
-                      FocusManager.instance.primaryFocus?.unfocus(),
-                  decoration: const InputDecoration(
-                      isDense: true,
-                      contentPadding: EdgeInsets.zero,
-                      border: InputBorder.none,
-                      hintStyle: TextStyleFamily.hintTextStyle,
-                      hintText: "내용을 입력해주세요\n\n\n\n"),
-                )
+                        hintText: "\n\n\n\n\n\n\n\n"),
+                  )
+              ),
             )
           ],
         ),

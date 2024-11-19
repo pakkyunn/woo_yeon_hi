@@ -68,7 +68,12 @@ class FootprintHistoryScreenState extends State<FootprintHistoryScreen> {
                       child: CircularProgressIndicator(
                         color: ColorFamily.pink,
                       ))
-          : RefreshIndicator(
+          : provider.historyList.length == 0
+              ? const Center(
+                  child: Text("히스토리 없음",
+                      style: TextStyleFamily.hintTextStyle),
+                )
+              : RefreshIndicator(
                     onRefresh: () async {
                       await _fetchData();
                       // setState(() {}); // 데이터가 갱신된 후 화면을 다시 그리기 위해 호출
@@ -244,7 +249,7 @@ class FootprintHistoryScreenState extends State<FootprintHistoryScreen> {
                     children: [
                       Container(
                         decoration: BoxDecoration(
-                          color: const Color(0xff393939).withOpacity(0.6),
+                          color: ColorFamily.black.withOpacity(0.6),
                           borderRadius: const BorderRadius.only(
                               bottomLeft: Radius.circular(5),
                               bottomRight: Radius.circular(5)), // 원하는 반지름 값
