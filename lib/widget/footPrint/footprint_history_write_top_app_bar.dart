@@ -121,7 +121,14 @@ class _FootprintHistoryWriteTopAppBarState
     );
 
     Navigator.pop(context); // 다이얼로그 팝
-    showPinkSnackBar(context, "히스토리를 저장하고 있습니다..");
+
+    final snackBar = SnackBar(
+      content: Text("히스토리를 저장하고 있습니다..", textAlign: TextAlign.center, style: TextStyleFamily.normalTextStyle),
+      backgroundColor: ColorFamily.pink,
+      duration: Duration(minutes: 5), // 히스토리 저장작업이 끝날 때까지 스낵바가 유지되도록 설정
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
     await addHistory(history);
     var newHistoryList = await getHistory(context);
     var newHistoryIndex = newHistoryList.indexWhere((history) => history.historyIdx == historySequence);
@@ -130,9 +137,10 @@ class _FootprintHistoryWriteTopAppBarState
     }
     // Provider.of<FootprintPhotoMapHistoryProvider>(context, listen: false).setHistoryList(newHistoryList);
 
-    Navigator.pop(context); // 히스토리 작성 페이지 팝
+    // Navigator.pop(context); // 히스토리 작성 페이지 팝
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
     //해당 히스토리로 이동
-    Navigator.push(context, MaterialPageRoute(builder: (context) =>
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>
         FootprintHistoryDetailScreen(newHistoryIndex)));
     showPinkSnackBar(context, "히스토리가 작성되었습니다!");
   }

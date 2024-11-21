@@ -37,11 +37,19 @@ class _FootprintHistoryDetailScreenState
   List<bool> _overflowStates = [];
 
   bool _isLoading = true;
+  bool _isScreenPopped = false; // 화면 전환 상태를 추적하는 플래그
 
   @override
   void initState() {
     super.initState();
     _fetchData();
+
+    //인덱스로 스크롤 이동
+    _controller.scrollToIndex(
+      widget.index,
+      duration: const Duration(milliseconds: 300),
+      preferPosition: AutoScrollPosition.middle,
+    );
   }
 
   Future<void> _fetchData() async {
@@ -62,9 +70,12 @@ class _FootprintHistoryDetailScreenState
   void didChangeDependencies() {
     super.didChangeDependencies();
     // 처음 빌드될 때가 아닌, 다른 화면에서 돌아왔을 때만 새로고침이 되도록 체크
-    if (ModalRoute.of(context)?.isCurrent ?? false) {
+    if (_isScreenPopped && (ModalRoute.of(context)?.isCurrent ?? false)) {
       _fetchData();
     }
+    setState(() {
+      _isScreenPopped = false;
+    });
   }
 
   void _checkOverflowForAllItems() {
@@ -106,14 +117,14 @@ class _FootprintHistoryDetailScreenState
                   historyGridViewProvider.historyList.length),
               child: Consumer<FootprintHistoryMoreProvider>(
                 builder: (context, historyMoreProvider, _) {
-                  // 해당 인덱스로 스크롤을 이동합니다.
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    _controller.scrollToIndex(
-                      widget.index,
-                      duration: const Duration(milliseconds: 300),
-                      preferPosition: AutoScrollPosition.begin,
-                    );
-                  });
+                  // // 해당 인덱스로 스크롤을 이동합니다.
+                  // WidgetsBinding.instance.addPostFrameCallback((_) {
+                  //   _controller.scrollToIndex(
+                  //     widget.index,
+                  //     duration: const Duration(milliseconds: 300),
+                  //     preferPosition: AutoScrollPosition.begin,
+                  //   );
+                  // });
                   return Scaffold(
                       backgroundColor: ColorFamily.cream,
                       appBar: const FootprintHistoryDetailTopAppBar(),
@@ -182,7 +193,7 @@ class _FootprintHistoryDetailScreenState
                 ),
                 // 제목, 날짜
                 SizedBox(
-                  width: deviceWidth * 0.5,
+                  width: deviceWidth * 0.57,
                   child: Column(
                     children: [
                       Row(
@@ -211,12 +222,20 @@ class _FootprintHistoryDetailScreenState
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                IconButton(
-                    splashColor: Colors.transparent,
-                    onPressed: () {
-                      _showModalBottomSheet(context, history);
-                    },
-                    icon: SvgPicture.asset('lib/assets/icons/dotdotdot.svg')),
+                GestureDetector(
+                  onTap: () {
+                    _showModalBottomSheet(context, history, index);
+                  },
+                  child: SizedBox(
+                    width: 40.0,
+                    height: 48.0,
+                    child: Center(
+                      child: SvgPicture.asset(
+                        'lib/assets/icons/menu_vertical_right.svg',
+                      ),
+                    ),
+                  ),
+                ),
               ],
             )
           ],
@@ -225,9 +244,7 @@ class _FootprintHistoryDetailScreenState
           height: 10,
         ),
         // 사진
-        ClipRRect(
-            borderRadius: BorderRadius.circular(5),
-            child: FlutterCarousel(
+        FlutterCarousel(
               items: List.generate(
                   history.historyImage.length,
                   (index) => FutureBuilder(
@@ -247,7 +264,11 @@ class _FootprintHistoryDetailScreenState
                               ),
                             );
                           } else {
-                            return snapshot.data!;
+                            return ClipRRect(
+                                borderRadius: BorderRadius.circular(5), // 둥근 모서리 처리
+                          child: SizedBox.expand(
+                          child: snapshot.data!, // `getHistoryImage`의 반환값이 `Image` 위젯
+                          ));
                           }
                         },
                       )),
@@ -255,13 +276,13 @@ class _FootprintHistoryDetailScreenState
                   viewportFraction: 1.0,
                   showIndicator: true,
                   floatingIndicator: false,
-                  aspectRatio: 2 / 3,
+                  aspectRatio: 3 / 4,
                   slideIndicator: CircularSlideIndicator(
                       slideIndicatorOptions: SlideIndicatorOptions(
                           itemSpacing: 20,
                           currentIndicatorColor: ColorFamily.pink,
                           indicatorBackgroundColor: ColorFamily.beige))),
-            )),
+            ),
         const SizedBox(
           height: 20,
         ),
@@ -321,14 +342,15 @@ class _FootprintHistoryDetailScreenState
     );
   }
 
-  void _showModalBottomSheet(BuildContext context, History history) {
+  void _showModalBottomSheet(BuildContext context, History history, int index) {
     var deviceWidth = MediaQuery.of(context).size.width;
+    var provider = Provider.of<FootprintHistoryGridViewProvider>(context, listen: false);
 
     showModalBottomSheet(
         context: context,
         showDragHandle: true,
         backgroundColor: ColorFamily.white,
-        builder: (context) {
+        builder: (modalContext) {
           return Wrap(
             children: [
               Column(
@@ -339,17 +361,17 @@ class _FootprintHistoryDetailScreenState
                     onTap: () {
                       // 바텀 시트 다이얼로그 팝
                       Navigator.pop(context);
+                      setState(() {
+                        _isScreenPopped = true; // 화면 이동으로 간주
+                      });
                       // 수정 페이지로
-                      Navigator.push(
+                      Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (context) => FootprintHistoryModifyScreen(
                                   history,
-                                  widget.index,
-                                  Provider.of<FootprintHistoryGridViewProvider>(
-                                          context,
-                                          listen: false)
-                                      .historyList)));
+                                  index,
+                                  provider.historyList)));
                     },
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(30, 5, 30, 15),
@@ -381,6 +403,7 @@ class _FootprintHistoryDetailScreenState
                     highlightColor: Colors.transparent,
                     splashColor: Colors.transparent,
                     onTap: () {
+                      Navigator.pop(context);
                       _showDeleteDialog(context, history);
                     },
                     child: Padding(
@@ -452,15 +475,15 @@ class _FootprintHistoryDetailScreenState
                               style: ButtonStyle(
                                   overlayColor: MaterialStateProperty.all(
                                       ColorFamily.gray)),
-                              onPressed: () {
-                                deleteHistory(history.historyIdx);
+                              onPressed: () async {
+                                await deleteHistory(history.historyIdx);
                                 Navigator.pop(context); // 다이얼로그 팝
-                                Navigator.pop(context); // 바텀시트 팝
+                                // Navigator.pop(context); // 바텀시트 팝
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            FootprintHistoryDetailScreen(0)));
+                                            FootprintHistoryDetailScreen(widget.index)));
                                 // Navigator.pop(context, "refresh"); // 히스토리 페이지 팝
                                 showPinkSnackBar(context, "히스토리가 삭제되었습니다");
                               },

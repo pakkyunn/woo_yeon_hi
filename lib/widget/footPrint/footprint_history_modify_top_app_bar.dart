@@ -54,7 +54,11 @@ class _FootprintHistoryModifyTopAppBarState extends State<FootprintHistoryModify
                     () => _onCancle_back(context),
                     () => _onConfirm_back(context));
           }else{
-            Navigator.pop(context);
+            //해당 히스토리로 이동
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => FootprintHistoryDetailScreen(widget.index)));
           }
         },
         icon: SvgPicture.asset('lib/assets/icons/arrow_back.svg'),
@@ -70,7 +74,7 @@ class _FootprintHistoryModifyTopAppBarState extends State<FootprintHistoryModify
                   context,
                   "히스토리를 수정하시겠습니까?",
                       () => _onCancle_done(context),
-                      () {_onConfirm_done(context); showPinkSnackBar(context, "히스토리가 수정되었습니다");});
+                      () {_onConfirm_done(context);});
             },
             icon: SvgPicture.asset('lib/assets/icons/done.svg'))
             : const SizedBox()
@@ -85,7 +89,11 @@ class _FootprintHistoryModifyTopAppBarState extends State<FootprintHistoryModify
 
   void _onConfirm_back(BuildContext context) {
     Navigator.pop(context); // 다이얼로그 팝
-    Navigator.pop(context); // 히스토리 수정 페이지 팝
+    // Navigator.pop(context); // 히스토리 수정 페이지 팝
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => FootprintHistoryDetailScreen(widget.index)));
   }
 
   void _onCancle_done(BuildContext context) {
@@ -111,7 +119,7 @@ class _FootprintHistoryModifyTopAppBarState extends State<FootprintHistoryModify
         "history_date" : widget.provider.date,
         "history_title" : widget.provider.titleController.text
       };
-      editHistory(widget.history.historyIdx, historyMap);
+      await editHistory(widget.history.historyIdx, historyMap);
     }
     Navigator.pop(context); // 다이얼로그 팝
     // Navigator.pop(context, "refresh"); // 히스토리 수정 페이지 팝
@@ -119,5 +127,6 @@ class _FootprintHistoryModifyTopAppBarState extends State<FootprintHistoryModify
         context,
         MaterialPageRoute(
             builder: (context) => FootprintHistoryDetailScreen(widget.index)));
+    showPinkSnackBar(context, "히스토리가 수정되었습니다");
   }
 }

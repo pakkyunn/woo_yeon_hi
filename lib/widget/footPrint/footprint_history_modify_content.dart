@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:woo_yeon_hi/model/history_model.dart';
+import 'package:woo_yeon_hi/retrofit_interface/place_search_api.dart';
 
 import '../../enums.dart';
 import '../../provider/footprint_provider.dart';
@@ -22,6 +24,18 @@ class FootprintHistoryModifyContent extends StatefulWidget {
 }
 
 class _FootprintHistoryModifyContentState extends State<FootprintHistoryModifyContent> {
+   @override
+    void initState() {
+      super.initState();
+
+    }
+
+    // void getHistoryPlaceData() {
+    //  Place placeData = Place(title: widget.history.historyPlaceName,
+    //      link: widget.history., category: category, description: description, telephone: telephone, address: address, roadAddress: roadAddress, mapx: mapx, mapy: mapy)
+    //  Provider.of<FootprintHistoryWriteProvider>(context, listen: false).setPlace()
+    // }
+
   @override
   Widget build(BuildContext context) {
     return Padding(

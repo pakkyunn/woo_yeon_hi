@@ -127,11 +127,13 @@ class _FootprintHistoryWriteContentState extends State<FootprintHistoryWriteCont
                       controller: widget.provider.titleController,
                       style: TextStyleFamily.normalTextStyle,
                       maxLines: 1,
+                      maxLength: 11,
                       keyboardType: TextInputType.text,
                       cursorColor: ColorFamily.black,
                       onTapOutside: (event) =>
                           FocusManager.instance.primaryFocus?.unfocus(),
                       decoration: const InputDecoration(
+                          counter: SizedBox(),
                           isDense: true,
                           contentPadding: EdgeInsets.zero,
                           border: InputBorder.none,

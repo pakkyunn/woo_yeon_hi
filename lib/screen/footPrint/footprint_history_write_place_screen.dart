@@ -299,7 +299,7 @@ class _FootprintHistoryWritePlaceScreenState
     return InkWell(
       onTap: () async {
         setState(() {
-          _selectedPlace = widget.provider.searchPlaces[0];
+          _selectedPlace = widget.provider.searchPlaces[index];
         });
         // widget.provider.setPlace(widget.provider.searchPlaces[index]);
         // // 검색 결과 비우기

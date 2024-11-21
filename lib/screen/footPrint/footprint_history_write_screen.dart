@@ -7,6 +7,7 @@ import 'package:woo_yeon_hi/widget/footPrint/footprint_history_write_album.dart'
 import 'package:woo_yeon_hi/widget/footPrint/footprint_history_write_content.dart';
 import 'package:woo_yeon_hi/widget/footPrint/footprint_history_write_top_app_bar.dart';
 
+import '../../dialogs.dart';
 import '../../model/photo_map_model.dart';
 import '../../provider/footprint_provider.dart';
 import '../../style/color.dart';
@@ -25,7 +26,27 @@ class _FootprintHistoryWriteScreenState extends State<FootprintHistoryWriteScree
       create: (context) => FootprintHistoryWriteProvider(),
       child: Consumer<FootprintHistoryWriteProvider>(
         builder: (context, provider, _) {
-          return Scaffold(
+          return WillPopScope(
+              onWillPop: () async {
+                if (provider.albumImages.isNotEmpty ||
+                    provider.titleController.text.isNotEmpty ||
+                    provider.contentController.text.isNotEmpty ||
+                    provider.selectedPlace != null ||
+                    provider.date != null) {
+                  // 작성한 내용이 하나라도 있을 경우
+                  dialogTitleWithContent(
+                      context,
+                      "히스토리 작성을 취소하시겠습니까?",
+                      "지금까지 작성된 내용은 삭제됩니다",
+                          () => _onCancle_back(context),
+                          () => _onConfirm_back(context));
+                  return false;
+                } else {
+                  Navigator.pop(context);
+                  return false;
+                }
+          },
+          child: Scaffold(
             backgroundColor: ColorFamily.cream,
             appBar: FootprintHistoryWriteTopAppBar(provider),
             body: SingleChildScrollView(
@@ -39,9 +60,17 @@ class _FootprintHistoryWriteScreenState extends State<FootprintHistoryWriteScree
                 ),
               ),
             ),
-          );
+          ));
         }
       ),
     );
+  }
+  void _onCancle_back(BuildContext context) {
+    Navigator.pop(context);
+  }
+
+  void _onConfirm_back(BuildContext context) {
+    Navigator.pop(context); // 다이얼로그 팝
+    Navigator.pop(context); // 히스토리 작성 페이지 팝
   }
 }
