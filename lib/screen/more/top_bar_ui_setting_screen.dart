@@ -212,7 +212,7 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text("+ 100",
+                          const Text("D + 100",
                               style: TextStyleFamily.smallTitleTextStyle),
                           Padding(
                             padding: const EdgeInsets.only(left: 8),
@@ -324,7 +324,7 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 const SizedBox(width: 50),
-                                const Text("100일",
+                                const Text("100",
                                     style: TextStyleFamily.smallTitleTextStyle),
                                 const SizedBox(width: 10),
                                 Image.asset(
@@ -375,7 +375,7 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
   }
 }
   Future<void> showCustomNotification(String loveDday, int topBarStyle, Image myProfileImage, Image loverProfileImage) async {
-    int dDayCount = DateTime.now().difference(stringToDate(loveDday)).inDays + 1;
+    int dDayCount = DateTime.now().difference(stringToDateLight(loveDday)).inDays;
     final Uint8List? myProfileImageData = await _convertImageToUint8List(myProfileImage);
     final Uint8List? loverProfileImageData = await _convertImageToUint8List(loverProfileImage);
     const platform = MethodChannel('custom_notification_channel');

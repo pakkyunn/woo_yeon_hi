@@ -7,6 +7,7 @@ import 'package:woo_yeon_hi/provider/more_provider.dart';
 import 'package:woo_yeon_hi/screen/more/app_lock_setting_screen.dart';
 import 'package:woo_yeon_hi/screen/more/password_check_screen.dart';
 import 'package:woo_yeon_hi/style/color.dart';
+import 'package:woo_yeon_hi/style/font.dart';
 
 import '../../style/text_style.dart';
 
@@ -31,7 +32,7 @@ class _PasswordSettingScreenState extends State<PasswordSettingScreen> {
           surfaceTintColor: ColorFamily.cream,
           backgroundColor: ColorFamily.cream,
           centerTitle: true,
-          title: const Text("앱 잠금 설정", style: TextStyleFamily.appBarTitleLightTextStyle,),
+          title: const Text("잠금 설정", style: TextStyleFamily.appBarTitleLightTextStyle,),
           leading: IconButton(
             onPressed: () {
               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AppLockSettingScreen()));
@@ -40,249 +41,494 @@ class _PasswordSettingScreenState extends State<PasswordSettingScreen> {
           ),
         ),
         body: Container(
-          width: deviceWidth,
-          height: deviceHeight,
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.fromLTRB(20,20,20,10),
           color: ColorFamily.cream,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              SizedBox(height: deviceHeight * 0.1),
-              const Text("비밀번호 입력",
-                  style: TextStyleFamily.passwordTextStyle),
-              SizedBox(height: deviceHeight * 0.08),
-              SizedBox(
-                height: 50,
-                width: deviceWidth*0.6,
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: List.generate(4, (index) {
-                      return _buildPasswordIcon(
-                          index < passwordList.length);
-                    })),
+              SizedBox(height: 100),
+              // SizedBox(height: deviceHeight * 0.1),
+              Column(
+                children: [
+                  const Text("비밀번호 입력",
+                      style: TextStyleFamily.passwordTextStyle),
+                  SizedBox(height: 30),
+                  SizedBox(
+                    height: 50,
+                    width: deviceWidth*0.6,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: List.generate(4, (index) {
+                          return _buildPasswordIcon(
+                              index < passwordList.length, index);
+                        })),
+                  ),
+                ],
               ),
-              SizedBox(height: deviceHeight*0.25),
-              SizedBox(
-                height: deviceHeight * 0.08,
-                width: deviceWidth-40,
-                child: Row(
-                  children: [
-                    SizedBox(
-                      height: deviceHeight * 0.08,
-                      width: (deviceWidth-40)/3,
-                      child: InkWell(
-                        onTap: () {
-                          _addNumber(1);
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: const Text(
-                            "1",
-                            style: TextStyleFamily.passwordTextStyle,
+              // const Text("비밀번호 입력",
+              //     style: TextStyleFamily.passwordTextStyle),
+              // SizedBox(height: deviceHeight * 0.08),
+              // SizedBox(
+              //   height: 50,
+              //   width: deviceWidth*0.6,
+              //   child: Row(
+              //       mainAxisAlignment: MainAxisAlignment.spaceAround,
+              //       children: List.generate(4, (index) {
+              //         return _buildPasswordIcon(
+              //             index < passwordList.length);
+              //       })),
+              // ),
+              // SizedBox(height: deviceHeight*0.25),
+              SizedBox(height: 200),
+              Column(
+                children: [
+                  SizedBox(height: 0),
+                  SizedBox(
+                    height: 70,
+                    width: deviceWidth-40,
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          height: 70,
+                          width: (deviceWidth-40)/3,
+                          child: InkWell(
+                            onTap: () {
+                              _addNumber(1);
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: const Text(
+                                "1",
+                                style: TextStyleFamily.passwordTextStyle,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                        SizedBox(
+                          height: 70,
+                          width: (deviceWidth-40)/3,
+                          child: InkWell(
+                            onTap: () {
+                              _addNumber(2);
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: const Text(
+                                "2",
+                                style: TextStyleFamily.passwordTextStyle,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 70,
+                          width: (deviceWidth-40)/3,
+                          child: InkWell(
+                            onTap: () {
+                              _addNumber(3);
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: const Text(
+                                "3",
+                                style: TextStyleFamily.passwordTextStyle,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
-                    SizedBox(
-                      height: deviceHeight * 0.08,
-                      width: (deviceWidth-40)/3,
-                      child: InkWell(
-                        onTap: () {
-                          _addNumber(2);
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: const Text(
-                            "2",
-                            style: TextStyleFamily.passwordTextStyle,
+                  ),
+                  SizedBox(
+                    height: 70,
+                    width: deviceWidth-40,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 70,
+                          width: (deviceWidth-40)/3,
+                          child: InkWell(
+                            onTap: () {
+                              _addNumber(4);
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: const Text(
+                                "4",
+                                style: TextStyleFamily.passwordTextStyle,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                        SizedBox(
+                          height: 70,
+                          width: (deviceWidth-40)/3,
+                          child: InkWell(
+                            onTap: () {
+                              _addNumber(5);
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: const Text(
+                                "5",
+                                style: TextStyleFamily.passwordTextStyle,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 70,
+                          width: (deviceWidth-40)/3,
+                          child: InkWell(
+                            onTap: () {
+                              _addNumber(6);
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: const Text(
+                                "6",
+                                style: TextStyleFamily.passwordTextStyle,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
-                    SizedBox(
-                      height: deviceHeight * 0.08,
-                      width: (deviceWidth-40)/3,
-                      child: InkWell(
-                        onTap: () {
-                          _addNumber(3);
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: const Text(
-                            "3",
-                            style: TextStyleFamily.passwordTextStyle,
+                  ),
+                  SizedBox(
+                    height: 70,
+                    width: deviceWidth-40,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 70,
+                          width: (deviceWidth-40)/3,
+                          child: InkWell(
+                            onTap: () {
+                              _addNumber(7);
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: const Text(
+                                "7",
+                                style: TextStyleFamily.passwordTextStyle,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: deviceHeight * 0.08,
-                width: deviceWidth-40,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: deviceHeight * 0.08,
-                      width: (deviceWidth-40)/3,
-                      child: InkWell(
-                        onTap: () {
-                          _addNumber(4);
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: const Text(
-                            "4",
-                            style: TextStyleFamily.passwordTextStyle,
+                        SizedBox(
+                          height: 70,
+                          width: (deviceWidth-40)/3,
+                          child: InkWell(
+                            onTap: () {
+                              _addNumber(8);
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: const Text(
+                                "8",
+                                style: TextStyleFamily.passwordTextStyle,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                        SizedBox(
+                          height: 70,
+                          width: (deviceWidth-40)/3,
+                          child: InkWell(
+                            onTap: () {
+                              _addNumber(9);
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: const Text(
+                                "9",
+                                style: TextStyleFamily.passwordTextStyle,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
-                    SizedBox(
-                      height: deviceHeight * 0.08,
-                      width: (deviceWidth-40)/3,
-                      child: InkWell(
-                        onTap: () {
-                          _addNumber(5);
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: const Text(
-                            "5",
-                            style: TextStyleFamily.passwordTextStyle,
+                  ),
+                  SizedBox(
+                    height: 70,
+                    width: deviceWidth-40,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 70,
+                          width: (deviceWidth-40)/3,
+                          child: InkWell(
+                            onTap: () {},
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: const Text(
+                                "",
+                                style: TextStyleFamily.passwordTextStyle,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                        SizedBox(
+                          height: 70,
+                          width: (deviceWidth-40)/3,
+                          child: InkWell(
+                            onTap: () {
+                              _addNumber(0);
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: const Text(
+                                "0",
+                                style: TextStyleFamily.passwordTextStyle,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 70,
+                          width: (deviceWidth-40)/3,
+                          child: InkWell(
+                            onTap: () {
+                              _removeNumber();
+                            },
+                            child: Container(
+                                alignment: Alignment.center,
+                                child: SvgPicture.asset("lib/assets/icons/backspace.svg")
+                            ),
+                          ),
+                        )
+                      ],
                     ),
-                    SizedBox(
-                      height: deviceHeight * 0.08,
-                      width: (deviceWidth-40)/3,
-                      child: InkWell(
-                        onTap: () {
-                          _addNumber(6);
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: const Text(
-                            "6",
-                            style: TextStyleFamily.passwordTextStyle,
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: deviceHeight * 0.08,
-                width: deviceWidth-40,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: deviceHeight * 0.08,
-                      width: (deviceWidth-40)/3,
-                      child: InkWell(
-                        onTap: () {
-                          _addNumber(7);
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: const Text(
-                            "7",
-                            style: TextStyleFamily.passwordTextStyle,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: deviceHeight * 0.08,
-                      width: (deviceWidth-40)/3,
-                      child: InkWell(
-                        onTap: () {
-                          _addNumber(8);
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: const Text(
-                            "8",
-                            style: TextStyleFamily.passwordTextStyle,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: deviceHeight * 0.08,
-                      width: (deviceWidth-40)/3,
-                      child: InkWell(
-                        onTap: () {
-                          _addNumber(9);
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: const Text(
-                            "9",
-                            style: TextStyleFamily.passwordTextStyle,
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: deviceHeight * 0.08,
-                width: deviceWidth-40,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: deviceHeight * 0.08,
-                      width: (deviceWidth-40)/3,
-                      child: InkWell(
-                        onTap: () {},
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: const Text(
-                            "",
-                            style: TextStyleFamily.passwordTextStyle,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: deviceHeight * 0.08,
-                      width: (deviceWidth-40)/3,
-                      child: InkWell(
-                        onTap: () {
-                          _addNumber(0);
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: const Text(
-                            "0",
-                            style: TextStyleFamily.passwordTextStyle,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: deviceHeight * 0.08,
-                      width: (deviceWidth-40)/3,
-                      child: InkWell(
-                        onTap: () {
-                          _removeNumber();
-                        },
-                        child: Container(
-                            alignment: Alignment.center,
-                            child: SvgPicture.asset("lib/assets/icons/backspace.svg")
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
+                  ),
+                ],
+              )
+              // SizedBox(
+              //   height: 70,
+              //   width: deviceWidth-40,
+              //   child: Row(
+              //     children: [
+              //       SizedBox(
+              //         height: 70,
+              //         width: (deviceWidth-40)/3,
+              //         child: InkWell(
+              //           onTap: () {
+              //             _addNumber(1);
+              //           },
+              //           child: Container(
+              //             alignment: Alignment.center,
+              //             child: const Text(
+              //               "1",
+              //               style: TextStyleFamily.passwordTextStyle,
+              //             ),
+              //           ),
+              //         ),
+              //       ),
+              //       SizedBox(
+              //         height: 70,
+              //         width: (deviceWidth-40)/3,
+              //         child: InkWell(
+              //           onTap: () {
+              //             _addNumber(2);
+              //           },
+              //           child: Container(
+              //             alignment: Alignment.center,
+              //             child: const Text(
+              //               "2",
+              //               style: TextStyleFamily.passwordTextStyle,
+              //             ),
+              //           ),
+              //         ),
+              //       ),
+              //       SizedBox(
+              //         height: 70,
+              //         width: (deviceWidth-40)/3,
+              //         child: InkWell(
+              //           onTap: () {
+              //             _addNumber(3);
+              //           },
+              //           child: Container(
+              //             alignment: Alignment.center,
+              //             child: const Text(
+              //               "3",
+              //               style: TextStyleFamily.passwordTextStyle,
+              //             ),
+              //           ),
+              //         ),
+              //       )
+              //     ],
+              //   ),
+              // ),
+              // SizedBox(
+              //   height: 70,
+              //   width: deviceWidth-40,
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.center,
+              //     children: [
+              //       SizedBox(
+              //         height: 70,
+              //         width: (deviceWidth-40)/3,
+              //         child: InkWell(
+              //           onTap: () {
+              //             _addNumber(4);
+              //           },
+              //           child: Container(
+              //             alignment: Alignment.center,
+              //             child: const Text(
+              //               "4",
+              //               style: TextStyleFamily.passwordTextStyle,
+              //             ),
+              //           ),
+              //         ),
+              //       ),
+              //       SizedBox(
+              //         height: 70,
+              //         width: (deviceWidth-40)/3,
+              //         child: InkWell(
+              //           onTap: () {
+              //             _addNumber(5);
+              //           },
+              //           child: Container(
+              //             alignment: Alignment.center,
+              //             child: const Text(
+              //               "5",
+              //               style: TextStyleFamily.passwordTextStyle,
+              //             ),
+              //           ),
+              //         ),
+              //       ),
+              //       SizedBox(
+              //         height: 70,
+              //         width: (deviceWidth-40)/3,
+              //         child: InkWell(
+              //           onTap: () {
+              //             _addNumber(6);
+              //           },
+              //           child: Container(
+              //             alignment: Alignment.center,
+              //             child: const Text(
+              //               "6",
+              //               style: TextStyleFamily.passwordTextStyle,
+              //             ),
+              //           ),
+              //         ),
+              //       )
+              //     ],
+              //   ),
+              // ),
+              // SizedBox(
+              //   height: 70,
+              //   width: deviceWidth-40,
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.center,
+              //     children: [
+              //       SizedBox(
+              //         height: 70,
+              //         width: (deviceWidth-40)/3,
+              //         child: InkWell(
+              //           onTap: () {
+              //             _addNumber(7);
+              //           },
+              //           child: Container(
+              //             alignment: Alignment.center,
+              //             child: const Text(
+              //               "7",
+              //               style: TextStyleFamily.passwordTextStyle,
+              //             ),
+              //           ),
+              //         ),
+              //       ),
+              //       SizedBox(
+              //         height: 70,
+              //         width: (deviceWidth-40)/3,
+              //         child: InkWell(
+              //           onTap: () {
+              //             _addNumber(8);
+              //           },
+              //           child: Container(
+              //             alignment: Alignment.center,
+              //             child: const Text(
+              //               "8",
+              //               style: TextStyleFamily.passwordTextStyle,
+              //             ),
+              //           ),
+              //         ),
+              //       ),
+              //       SizedBox(
+              //         height: 70,
+              //         width: (deviceWidth-40)/3,
+              //         child: InkWell(
+              //           onTap: () {
+              //             _addNumber(9);
+              //           },
+              //           child: Container(
+              //             alignment: Alignment.center,
+              //             child: const Text(
+              //               "9",
+              //               style: TextStyleFamily.passwordTextStyle,
+              //             ),
+              //           ),
+              //         ),
+              //       )
+              //     ],
+              //   ),
+              // ),
+              // SizedBox(
+              //   height: 70,
+              //   width: deviceWidth-40,
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.center,
+              //     children: [
+              //       SizedBox(
+              //         height: 70,
+              //         width: (deviceWidth-40)/3,
+              //         child: InkWell(
+              //           onTap: () {},
+              //           child: Container(
+              //             alignment: Alignment.center,
+              //             child: const Text(
+              //               "",
+              //               style: TextStyleFamily.passwordTextStyle,
+              //             ),
+              //           ),
+              //         ),
+              //       ),
+              //       SizedBox(
+              //         height: 70,
+              //         width: (deviceWidth-40)/3,
+              //         child: InkWell(
+              //           onTap: () {
+              //             _addNumber(0);
+              //           },
+              //           child: Container(
+              //             alignment: Alignment.center,
+              //             child: const Text(
+              //               "0",
+              //               style: TextStyleFamily.passwordTextStyle,
+              //             ),
+              //           ),
+              //         ),
+              //       ),
+              //       SizedBox(
+              //         height: 70,
+              //         width: (deviceWidth-40)/3,
+              //         child: InkWell(
+              //           onTap: () {
+              //             _removeNumber();
+              //           },
+              //           child: Container(
+              //               alignment: Alignment.center,
+              //               child: SvgPicture.asset("lib/assets/icons/backspace.svg")
+              //           ),
+              //         ),
+              //       )
+              //     ],
+              //   ),
+              // ),
             ],
           ),
         )
@@ -290,13 +536,14 @@ class _PasswordSettingScreenState extends State<PasswordSettingScreen> {
     );
   }
 
-  Widget _buildPasswordIcon(bool isEntered) {
+  Widget _buildPasswordIcon(bool isEntered, int index) {
     return isEntered
-        ? SvgPicture.asset("lib/assets/icons/woo_yeon_hi_48px.svg",
-        width: 48, height: 48)
+        // ? SvgPicture.asset("lib/assets/icons/woo_yeon_hi_48px.svg",
+        // width: 48, height: 48)
+        ? SizedBox(height: 48, width: 48, child: Align(alignment: Alignment.center, child: Text("${passwordList[index]}", style: TextStyle(fontFamily: FontFamily.mapleStoryBold, color: ColorFamily.black, fontSize: 24))))
         : Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: SvgPicture.asset("lib/assets/icons/password_bar_24px.svg",
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: SvgPicture.asset("lib/assets/icons/password_bar_24px.svg",
           width: 24),
     );
   }

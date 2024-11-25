@@ -134,6 +134,7 @@ class _RegisterScreen extends State<LoginScreen> {
                                   MaterialPageRoute(
                                       builder: (context) =>
                                       const MainScreen()));
+                              updateSpecificUserData(provider.userIdx, "user_state", 0);
 
                             case 3: // 미등록 계정
                               await signInWithGoogle();

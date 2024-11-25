@@ -31,11 +31,11 @@ class _MoreScreenState extends State<MoreScreen> {
     var deviceWidth = MediaQuery.of(context).size.width;
     var deviceHeight = MediaQuery.of(context).size.height;
 
-    final userSyncNickname = Provider.of<String>(context);
-    Provider.of<UserProvider>(context).setUserNickname(userSyncNickname);
+    // final userSyncNickname = Provider.of<String>(context);
+    // Provider.of<UserProvider>(context).setUserNickname(userSyncNickname);
 
     return Scaffold(
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: false, // 키보드로 인한 레이아웃 변화 방지
         appBar: const MoreTopAppBar(),
         body: Container(
             height: deviceHeight,
@@ -114,12 +114,17 @@ class _MoreScreenState extends State<MoreScreen> {
                                               FontFamily.mapleStoryBold)),
                                   InkWell(
                                       onTap: () async {
+                                      //   Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileEditScreen())).then((_) {
+                                      //     Future.delayed(Duration(milliseconds: 300), () {
+                                      //       setState(() {});
+                                      //     });
+                                      //   });
                                         Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        const ProfileEditScreen()))
-                                            .then((value) => setState(() {}));
+                                                        const ProfileEditScreen()));
+                                            // .then((value) => setState(() {}));
                                       },
                                       child: SizedBox(
                                           width: 40,
@@ -131,7 +136,17 @@ class _MoreScreenState extends State<MoreScreen> {
                                 ],
                               ),
                               const SizedBox(height: 15),
-                              SizedBox(
+                              provider.profileMessage.isEmpty
+                              ? SizedBox(
+                                  width: deviceWidth * 0.4,
+                                  child: Text("상태메시지로 내 마음을\n표현해보세요!",
+                                      style: const TextStyle(
+                                          color: ColorFamily.gray,
+                                          fontSize: 12,
+                                          fontFamily:
+                                          FontFamily.mapleStoryLight),
+                                      maxLines: 4))
+                              : SizedBox(
                                   width: deviceWidth * 0.4,
                                   child: Text(provider.profileMessage,
                                       style: const TextStyle(

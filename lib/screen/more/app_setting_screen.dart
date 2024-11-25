@@ -54,7 +54,7 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text("앱 알림 받기",
+                                const Text("앱 활동 알림",
                                     style: TextStyleFamily.smallTitleTextStyle),
                                 Switch(
                                     value: provider.notificationAllow,
@@ -72,11 +72,11 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
                                     onChanged: (bool value) async {
                                       value
                                       ? await checkAndRequestNotificationPermission(context, _showDialog)
-                                        ? showPinkSnackBar(context, '앱 알림이 설정되었습니다')
+                                        ? showPinkSnackBar(context, '앱 활동 알림이 설정되었습니다')
                                         : setState(() {
                                           value = false;
                                         })
-                                      : showPinkSnackBar(context, '앱 알림이 해제되었습니다');
+                                      : showPinkSnackBar(context, '앱 활동 알림이 해제되었습니다');
                                       await updateSpecificUserData(provider.userIdx, 'notification_allow', value);
                                       provider.setNotificationAllow(value);
                                     }),
@@ -112,7 +112,7 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Text("앱 잠금 설정",
+                                  const Text("잠금 설정",
                                       style:
                                           TextStyleFamily.smallTitleTextStyle),
                                   SvgPicture.asset(
@@ -140,7 +140,7 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text("앱 버전",
+                                Text("현재 앱 버전",
                                     style: TextStyleFamily.smallTitleTextStyle),
                                 Text("v 1.0",
                                     style: TextStyleFamily.smallTitleTextStyle),

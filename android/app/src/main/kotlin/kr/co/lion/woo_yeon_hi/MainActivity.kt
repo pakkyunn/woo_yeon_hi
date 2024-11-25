@@ -54,7 +54,7 @@ class MainActivity: FlutterFragmentActivity() {
 
         // 알림 채널 생성 코드 추가
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channelName = "앱 알림 및 상단바 설정"
+            val channelName = "앱 활동 알림 및 상단바 설정"
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(CHANNEL_ID, channelName, importance).apply {
                 enableLights(true)
@@ -173,7 +173,7 @@ class MainActivity: FlutterFragmentActivity() {
         // 상단바 스타일 2 커스텀뷰
         val top_bar_style2_customView =
             RemoteViews(packageName, R.layout.top_bar_style_1_2_layout)
-        top_bar_style2_customView.setTextViewText(R.id.top_bar_style_1_2_text, "+ ${dDayCount}")
+        top_bar_style2_customView.setTextViewText(R.id.top_bar_style_1_2_text, "D + ${dDayCount}")
         top_bar_style2_customView.setImageViewResource(
             R.id.top_bar_style_1_2_image,
             R.drawable.like_4x
@@ -198,7 +198,7 @@ class MainActivity: FlutterFragmentActivity() {
             R.id.top_bar_style_4_image1,
             R.drawable.like_4x
         )
-        top_bar_style4_customView.setTextViewText(R.id.top_bar_style_4_text, "${dDayCount}일")
+        top_bar_style4_customView.setTextViewText(R.id.top_bar_style_4_text, "${dDayCount}")
         top_bar_style4_customView.setImageViewBitmap(R.id.top_bar_style_4_image2, myProfileBitmap)
         top_bar_style4_customView.setImageViewBitmap(R.id.top_bar_style_4_image3, loverProfileBitmap)
 

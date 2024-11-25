@@ -28,7 +28,7 @@ class ProfileEditScreen extends StatefulWidget {
   State<ProfileEditScreen> createState() => _ProfileEditScreenState();
 }
 
-class _ProfileEditScreenState extends State<ProfileEditScreen> {
+class _ProfileEditScreenState extends State<ProfileEditScreen> with WidgetsBindingObserver {
   final FocusNode _nickNameFocusNode = FocusNode();
   final FocusNode _profileMessageFocusNode = FocusNode();
 
@@ -36,29 +36,57 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
   late String tempProfileMessage;
   late String tempUserBirth;
   late DateTime _selectedDate;
+  bool isLoading = true; // 초기 상태
 
+  bool _isKeyboardOpen = false;
 
   @override
   void initState() {
     super.initState();
-    _tempDataInitiate();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _tempDataInitiate();
+    });
+    WidgetsBinding.instance.addObserver(this);
   }
 
-  Future<void> _tempDataInitiate() async {
+  void _tempDataInitiate() {
     var provider = Provider.of<UserProvider>(context, listen: false);
     provider.setTempImagePath(provider.userProfileImagePath);
     provider.setTempImage(provider.userProfileImage);
-    tempUserNickname = provider.userNickname;
-    tempProfileMessage = provider.profileMessage;
-    tempUserBirth = provider.userBirth;
-    _selectedDate = stringToDate(tempUserBirth);
+    setState(() {
+      tempUserNickname = provider.userNickname;
+      tempProfileMessage = provider.profileMessage;
+      tempUserBirth = provider.userBirth;
+      _selectedDate = stringToDate(tempUserBirth);
+      isLoading = false; // 초기 상태
+    });
   }
 
   @override
   void dispose() {
     _nickNameFocusNode.dispose();
     _profileMessageFocusNode.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeMetrics() {
+    final bottomInset = WidgetsBinding.instance.window.viewInsets.bottom;
+    setState(() {
+      _isKeyboardOpen = bottomInset > 0;
+    });
+  }
+
+  void _closeKeyboardAndPop(BuildContext context) async {
+    // 키보드 닫기
+    FocusScope.of(context).unfocus();
+
+    // 키보드 닫힘 애니메이션을 기다린 후 pop 호출
+    await Future.delayed(Duration(milliseconds: 100));
+
+    // 이제 Navigator.pop 호출
+    Navigator.pop(context);
   }
 
   @override
@@ -66,35 +94,50 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     var deviceWidth = MediaQuery.of(context).size.width;
     var deviceHeight = MediaQuery.of(context).size.height;
 
+    if (isLoading) {
+      return Center(
+                  child: CircularProgressIndicator(
+                    color: ColorFamily.pink,
+                  ),
+                );
+    }
+
     return Consumer<UserProvider>(builder: (context, provider, child) {
       return PopScope(
           canPop: false,
-          onPopInvoked: (didPop) async {
+          onPopInvokedWithResult:(didPop, result) async {
             if (didPop) {
               return;
             }
+
+            // 키보드 포커스 해제
+            if (_nickNameFocusNode.hasFocus || _profileMessageFocusNode.hasFocus) {
+              _nickNameFocusNode.unfocus();
+              _profileMessageFocusNode.unfocus();
+            }
+
+            // 변경사항이 있는지 확인
             if (provider.tempImagePath != provider.userProfileImagePath ||
                 tempUserNickname != provider.userNickname ||
                 tempUserBirth != provider.userBirth ||
                 tempProfileMessage != provider.profileMessage) {
               dialogTitleWithContent(
-                  context, "프로필 편집 나가기", "변경사항은 저장되지 않습니다",
+                context,
+                "프로필 편집 나가기",
+                "변경사항은 저장되지 않습니다",
                     () {
                   Navigator.pop(context, false);
-                  _nickNameFocusNode.unfocus();
-                  _profileMessageFocusNode.unfocus();
-                  },
+                },
                     () {
                   Navigator.pop(context, true);
-                  _nickNameFocusNode.unfocus();
-                  _profileMessageFocusNode.unfocus();
-                  Future.delayed(const Duration(milliseconds: 100), () {
-                  Navigator.of(context).pop();
-                  });
-              });
+                  // Navigator.of(context).pop();
+                  _closeKeyboardAndPop(context);
+                },
+              );
             } else {
-              FocusScope.of(context).unfocus();
-              Navigator.of(context).pop();
+              // 변경사항이 없으면 바로 닫기
+              // Navigator.of(context).pop();
+              _closeKeyboardAndPop(context);
             }
           },
           child: Scaffold(
@@ -123,13 +166,14 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                           Navigator.pop(context, true);
                           _nickNameFocusNode.unfocus();
                           _profileMessageFocusNode.unfocus();
-                          Future.delayed(const Duration(milliseconds: 100), () {
-                            Navigator.of(context).pop();
-                          });
+                          // Navigator.of(context).pop();
+                          _closeKeyboardAndPop(context);
                         });
                   } else {
                     FocusScope.of(context).unfocus();
-                    Navigator.of(context).pop();
+                    // Navigator.of(context).pop();
+                    _closeKeyboardAndPop(context);
+
                   }
                 },
                 icon: SvgPicture.asset('lib/assets/icons/arrow_back.svg'),
@@ -165,7 +209,8 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                             showCustomNotification(provider.loveDday, provider.topBarType, provider.userProfileImage, provider.loverProfileImage);
                           }
                         }
-                        Navigator.pop(context);
+                        _closeKeyboardAndPop(context);
+                        // Navigator.pop(context);
                         showPinkSnackBar(context, '프로필이 저장되었습니다!');
                     } else {
                       FocusScope.of(context).unfocus();

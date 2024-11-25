@@ -25,11 +25,11 @@ class _HelpScreenState extends State<HelpScreen> {
     "별명을 변경하지 않았는데 다른 별명으로 바뀌었어요.",
     "교환일기는 하루에 몇 번까지 쓸 수 있나요?",
     "추억 모아보기는 어떤 기능인가요?",
-    "앱 알림을 활성화하면 언제 알림을 받게 되나요?",
+    "앱 활동 알림을 활성화하면 언제 알림을 받게 되나요?",
     "홈 화면에서 디데이, 캘린더 외에 다른 것도 보고 싶어요.",
     "생체 인증 기능을 사용할 수 없다고 떠요. 어떻게 해야 하나요?",
     "앱을 사용하고 있지 않을 때도 상단바에 디데이를 보고 싶은데 어떻게 해야 하나요?",
-    "앱 알림을 활성화 했는데 알림이 오지 않아요.",
+    "앱 활동 알림을 활성화 했는데 알림이 오지 않아요.",
     "앱 위젯이 정상적으로 작동하지 않거나 디데이가 다르게 나와요."
   ];
 
@@ -43,7 +43,7 @@ class _HelpScreenState extends State<HelpScreen> {
         body: Container(
             width: deviceWidth,
             height: deviceHeight,
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.fromLTRB(20,10,20,0),
             color: ColorFamily.cream,
             child: Column(
               children: [
@@ -70,7 +70,7 @@ class _HelpScreenState extends State<HelpScreen> {
                               fontSize: 14,
                               color: ColorFamily.black.withOpacity(0.5),
                               fontFamily: FontFamily.mapleStoryLight),
-                          counterText: "",
+                          counterText: null,
                           border: InputBorder.none),
                       onTapOutside: (event) {
                         FocusScope.of(context).unfocus();
@@ -121,7 +121,7 @@ class _HelpScreenState extends State<HelpScreen> {
                                       ? SvgPicture.asset(
                                       "lib/assets/icons/arrow_right_fill.svg")
                                       : SvgPicture.asset("lib/assets/icons/arrow_down_fill.svg"),
-                                  trailing: SvgPicture.asset(""),
+                                  trailing: null,
                                   title: Text(helpListTitle[index], style: TextStyleFamily.normalTextStyle),
                                   backgroundColor: ColorFamily.beige,
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -153,11 +153,11 @@ Widget makeHelpListItem(BuildContext context, int index) {
     "우연히에서는 연인의 별명을 직접 바꿀 수 있습니다!",
     "교환일기는 원하는대로 작성할 수 있습니다! 단, 한 사람이 연속으로 작성할 수 없고, 연인과 번갈아가며 작성할 수 있습니다. ",
     "추억 모아보기는 연인과 내가 특정 날짜에 해당하는 추억들만 모아서 한꺼번에 볼 수 있는 기능입니다. 날짜 부분을 터치하여 추억이 있는 날을 확인할 수 있습니다.",
-    "앱 알림 활성화 시, 연인이 무언가를 작성했을 때 알림을 받을 수 있습니다.",
+    "앱 활동 알림 활성화 시, 연인이 무언가를 작성했을 때 알림을 받을 수 있습니다.",
     "홈 화면에 더 많은 기능을 보여주고 싶다면, '더보기-화면 스타일 설정-홈 화면 스타일'에서 원하는 스타일로 변경이 가능합니다.",
     "생체 인증 기능을 이용하려면 사용하는 기기가 생체 인증을 지원하고, 기기에 미리 등록된 생체 정보가 있어야 합니다. 휴대폰의 기본 설정에서 확인해주세요!",
     "상단바 기능은 '더보기-화면 스타일 설정-상단바 스타일'에서 원하는 스타일을 선택하고 상단바를 활성화하면 이용이 가능합니다.",
-    "앱 알림을 받기 위해서는 기기의 우연히 앱 알림 권한이 설정되어야 합니다. 앱 알림 활성화 시 알림 권한 요청이 뜨지 않는 경우, 기기의 설정-앱정보 에서 알림을 켜주세요!",
+    "앱 활동 알림을 받기 위해서는 기기의 우연히 알림 권한이 설정되어야 합니다. 앱 활동 알림 활성화 시 알림 권한 요청이 뜨지 않는 경우, 기기의 설정-앱정보 에서 알림을 켜주세요!",
     "앱 최초 실행 시 위젯의 데이터 동기화 문제가 발생할 수 있습니다. 앱을 완전히 종료 후 다시 실행해주세요!"
   ];
 
