@@ -162,8 +162,8 @@ class _MoreScreenState extends State<MoreScreen> {
                     ),
                   ),
                   SizedBox(height: deviceHeight * 0.05),
-                  _buildMenuItem(context, '추억 모아보기', 'lib/assets/icons/box.svg',
-                      const DailySummaryScreen()),
+                  // _buildMenuItem(context, '추억 모아보기', 'lib/assets/icons/box.svg',
+                  //     const DailySummaryScreen()),
                   const SizedBox(height: 10),
                   _buildMenuItem(
                       context,

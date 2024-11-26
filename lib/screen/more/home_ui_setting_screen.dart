@@ -21,10 +21,10 @@ class HomeUiSettingScreen extends StatefulWidget {
 
 class _HomeUiSettingScreenState extends State<HomeUiSettingScreen> {
   var presetImages = [
-    "lib/assets/images/home_preset_standard_4x.png",
-    "lib/assets/images/home_preset_dateplan_4x.png",
-    "lib/assets/images/home_preset_ledger_4x.png",
-    "lib/assets/images/home_preset_dateplan_ledger_4x.png",
+    "lib/assets/images/home_preset_1.png",
+    "lib/assets/images/home_preset_2.png",
+    "lib/assets/images/home_preset_3.png",
+    "lib/assets/images/home_preset_4.png",
   ];
 
   late int presetIndex;
@@ -105,11 +105,11 @@ class _HomeUiSettingScreenState extends State<HomeUiSettingScreen> {
                     : const SizedBox(height: 20),
                 const SizedBox(height: 5),
                 SizedBox(
-                  height: deviceHeight * 0.61,
+                  height: deviceHeight * 0.65,
                   child: Swiper(
                     index: presetIndex,
-                    viewportFraction: 0.6,
-                    scale: 0.6,
+                    viewportFraction: 0.7,
+                    scale: 0.7,
                     itemBuilder: (BuildContext context, int index) {
                       return Column(
                         children: [
