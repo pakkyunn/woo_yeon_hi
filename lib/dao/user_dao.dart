@@ -144,3 +144,34 @@ Future<void> deleteProfileImage(String path) async {
     print("Failed to delete file: $e");
   }
 }
+
+Future<void> uploadMemoryBannerImage(XFile imageFile, String imageName) async {
+  await FirebaseStorage.instance
+      .ref('image/memoryBanner/$imageName')
+      .putFile(File(imageFile.path));
+}
+
+Future<Image> getMemoryBannerImage(String path) async {
+  var imageURL = await FirebaseStorage.instance
+      .ref('image/memoryBanner/$path')
+      .getDownloadURL();
+  var image = Image.network(
+    imageURL,
+    fit: BoxFit.cover,
+  );
+  return image;
+}
+
+Future<void> deleteMemoryBannerImage(String path) async {
+  try {
+    // 파일의 참조를 가져옴
+    final imageURL = FirebaseStorage.instance.ref('image/memoryBanner/$path');
+
+    // 파일 삭제
+    await imageURL.delete();
+
+    print("File deleted successfully");
+  } catch (e) {
+    print("Failed to delete file: $e");
+  }
+}

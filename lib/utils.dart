@@ -164,6 +164,11 @@ Future<Map<String, dynamic>> fetchUserData() async {
       ? Image.asset("lib/assets/images/default_profile.png")
       : await getProfileImage(loverProfileImagePath);
   final userState = await getSpecificUserData(userIdx, 'user_state') ?? 2;
+  var memoryBannerImagePath = await getSpecificUserData(userIdx, 'memory_banner_image') ?? "";
+  final memoryBannerImage =
+  memoryBannerImagePath == ""
+      ? Image.asset("lib/assets/images/default_profile.png")
+      : await getMemoryBannerImage(memoryBannerImagePath);
 
   return {
     'userIdx': userIdx,
@@ -184,6 +189,8 @@ Future<Map<String, dynamic>> fetchUserData() async {
     'userProfileImage': userProfileImage,
     'loverProfileImage': loverProfileImage,
     'userState': userState,
+    'memoryBannerImagePath': memoryBannerImagePath,
+    'memoryBannerImage': memoryBannerImage,
   };
 }
 

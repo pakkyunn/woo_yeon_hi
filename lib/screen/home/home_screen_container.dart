@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -45,14 +48,16 @@ class _HomeScreenContainerState extends State<HomeScreenContainer> {
 
   Future<void> _getDatePlanData() async {
     // 데이트플랜 데이터 가져오기
-    var homeDatePlanProvider = Provider.of<HomeDatePlanProvider>(context, listen: false);
+    var homeDatePlanProvider =
+        Provider.of<HomeDatePlanProvider>(context, listen: false);
     var datePlanList = await getHomePlanList(context);
     homeDatePlanProvider.setDatePlanList(datePlanList);
   }
 
   Future<void> _getScheduleData() async {
     // 캘린더 데이터 가져오기
-    var homeCalendarProvider = Provider.of<HomeCalendarProvider>(context, listen: false);
+    var homeCalendarProvider =
+        Provider.of<HomeCalendarProvider>(context, listen: false);
     var scheduleList = await getHomeCalendarScheduleList(context);
     homeCalendarProvider.setScheduleList(scheduleList);
     homeCalendarProvider.setListIndex();
@@ -77,18 +82,227 @@ class _HomeScreenContainerState extends State<HomeScreenContainer> {
 Widget memoryBanner(BuildContext context) {
   var deviceWidth = MediaQuery.of(context).size.width;
   var deviceHeight = MediaQuery.of(context).size.height;
-
+  print("배너이미지경로: ${Provider.of<UserProvider>(context, listen: false).memoryBannerImagePath}");
+  
   return Consumer<UserProvider>(builder: (context, provider, child) {
     return _cardContainer(
         context,
         SizedBox(),
-      Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-              image: DecorationImage(
-                  image: AssetImage("lib/assets/images/sky.jpg"),
-                  fit: BoxFit.cover)
-          )),
+        provider.memoryBannerImagePath == ""
+            ? InkWell(
+                splashColor: Colors.transparent,
+                splashFactory: NoSplash.splashFactory,
+                onTap: () async {
+                  final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
+                  final XFile? pickedFile =
+                      await picker.pickImage(source: ImageSource.gallery);
+                  if (pickedFile != null) {
+                    provider.setImage(XFile(pickedFile.path));
+                    provider.setMemoryBannerImage(
+                        Image.file(File(pickedFile.path), fit: BoxFit.cover));
+                    var imageName =
+                        "${provider.userIdx}_memory_banner_${DateTime.now()}";
+                    provider.setMemoryBannerImagePath(imageName);
+                    updateSpecificUserData(provider.userIdx,
+                        "memory_banner_image", provider.memoryBannerImagePath);
+                    updateSpecificUserData(provider.loverIdx,
+                        "memory_banner_image", provider.memoryBannerImagePath);
+                    uploadMemoryBannerImage(provider.image!, imageName);
+                  }
+                },
+                child: Container(
+                    decoration: BoxDecoration(
+                        // color: ColorFamily.white,
+                        borderRadius: BorderRadius.circular(15),
+                        image: null),
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                              'lib/assets/icons/memory_banner_icon.svg',
+                              width: 40,
+                              height: 40),
+                        ],
+                      ),
+                    )),
+              )
+            : InkWell(
+                splashColor: Colors.transparent,
+                splashFactory: NoSplash.splashFactory,
+                onTap: () {
+                  showModalBottomSheet(
+                      context: context,
+                      showDragHandle: true,
+                      backgroundColor: ColorFamily.white,
+                      builder: (context) {
+                        return Consumer<UserProvider>(builder: (context, provider, child) {
+                          return Wrap(
+                            children: [
+                              Column(
+                                children: [
+                                  InkWell(
+                                    splashColor: ColorFamily.gray.withOpacity(0.5),
+                                    onTap: () async {
+                                      final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
+                                      final XFile? pickedFile =
+                                          await picker.pickImage(source: ImageSource.gallery);
+                                      if (pickedFile != null) {
+                                        deleteMemoryBannerImage(provider.memoryBannerImagePath);
+                                        provider.setImage(XFile(pickedFile.path));
+                                        provider.setMemoryBannerImage(
+                                            Image.file(File(pickedFile.path), fit: BoxFit.cover));
+                                        var imageName =
+                                            "${provider.userIdx}_memory_banner_${DateTime.now()}";
+                                        provider.setMemoryBannerImagePath(imageName);
+                                        updateSpecificUserData(provider.userIdx,
+                                            "memory_banner_image", provider.memoryBannerImagePath);
+                                        updateSpecificUserData(provider.loverIdx,
+                                            "memory_banner_image", provider.memoryBannerImagePath);
+                                        uploadMemoryBannerImage(provider.image!, imageName);
+                                      }
+                                      Navigator.pop(context);
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                                      height: 70,
+                                      width: MediaQuery.of(context).size.width,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          SvgPicture.asset(
+                                            'lib/assets/icons/gallery.svg',
+                                            height: 20,
+                                          ),
+                                          const Text(
+                                            "사진 변경",
+                                            style: TextStyleFamily.smallTitleTextStyle,
+                                          ),
+                                          const SizedBox(
+                                            width: 24,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 0.5,
+                                    child: Divider(
+                                      color: ColorFamily.gray,
+                                      thickness: 0.5,
+                                    ),
+                                  ),
+                                  InkWell(
+                                    splashColor: ColorFamily.gray.withOpacity(0.5),
+                                    onTap: () {
+                                      deleteMemoryBannerImage(provider.memoryBannerImagePath);
+                                      provider.setMemoryBannerImagePath("");
+                                      updateSpecificUserData(provider.userIdx,
+                                          "memory_banner_image", provider.memoryBannerImagePath);
+                                      updateSpecificUserData(provider.loverIdx,
+                                          "memory_banner_image", provider.memoryBannerImagePath);
+                                      Navigator.pop(context);
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                                      height: 70,
+                                      width: MediaQuery.of(context).size.width,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          SvgPicture.asset('lib/assets/icons/delete_pink.svg',
+                                              height: 20),
+                                          const Text(
+                                            "사진 삭제",
+                                            style: TextStyle(fontFamily: FontFamily.mapleStoryLight, fontSize: 15, color: ColorFamily.pink),
+                                          ),
+                                          const SizedBox(
+                                            width: 24,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          );
+                        });
+                      });
+                },
+                child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        image: DecorationImage(
+                            image: provider.memoryBannerImage.image,
+                            fit: BoxFit.cover))),
+              ),
+        // FutureBuilder(
+        //     future: provider.fetchMemoryBannerImage(provider.memoryBannerImagePath),
+        //     builder: (context, snapshot) {
+        //       if (snapshot.hasData == false) {
+        //         return const Center(
+        //           child: CircularProgressIndicator(
+        //             color: ColorFamily.pink,
+        //           ),
+        //         );
+        //       } else if (snapshot.hasError) {
+        //         return const Text(
+        //           "오류 발생",
+        //           style: TextStyleFamily.normalTextStyle,
+        //         );
+        //       } else {
+        //         return provider.memoryBannerImagePath == ""
+        //             ? InkWell(
+        //                 splashColor: Colors.transparent,
+        //                 splashFactory: NoSplash.splashFactory,
+        //                 onTap: () async {
+        //                   // TODO 바로 사진첩 띄워도 괜찮을듯?
+        //                   final ImagePicker picker =
+        //                       ImagePicker(); //ImagePicker 초기화
+        //                   final XFile? pickedFile = await picker.pickImage(
+        //                       source: ImageSource.gallery);
+        //                   if (pickedFile != null) {
+        //                     provider.setImage(XFile(pickedFile.path));
+        //                     provider.setMemoryBannerImage(Image.file(File(pickedFile.path), fit: BoxFit.cover));
+        //                     provider.setMemoryBannerImagePath(pickedFile.path);
+        //                     updateSpecificUserData(provider.userIdx, "memory_banner_image", provider.memoryBannerImagePath);
+        //                     var imageName = "${provider.userIdx}_memory_banner_${DateTime.now()}";
+        //                     uploadMemoryBannerImage(provider.image!, imageName);
+        //                   }
+        //                 },
+        //                 child: Container(
+        //                     decoration: BoxDecoration(
+        //                         // color: ColorFamily.white,
+        //                         borderRadius: BorderRadius.circular(15),
+        //                         image: null),
+        //                     child: Center(
+        //                       child: Row(
+        //                         mainAxisAlignment: MainAxisAlignment.center,
+        //                         children: [
+        //                           SvgPicture.asset(
+        //                               'lib/assets/icons/memory_banner_icon.svg',
+        //                               width: 40,
+        //                               height: 40),
+        //                         ],
+        //                       ),
+        //                     )),
+        //               )
+        //             : InkWell(
+        //                 splashColor: Colors.transparent,
+        //                 splashFactory: NoSplash.splashFactory,
+        //                 onTap: () {
+        //                   //TODO 다이얼로그/바텀시트 띄우면서 이미지삭제, 변경 기능 추가
+        //                 },
+        //                 child: Container(
+        //                     decoration: BoxDecoration(
+        //                         borderRadius: BorderRadius.circular(15),
+        //                         image: DecorationImage(
+        //                             image: provider.memoryBannerImage.image,
+        //                             fit: BoxFit.cover))),
+        //               );
+        //       }
+        //     }),
         deviceHeight * 0.15);
   });
 }
@@ -101,26 +315,24 @@ Widget dDay(BuildContext context) {
   return Consumer<UserProvider>(builder: (context, provider, child) {
     return _cardContainer(
         context,
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const dDayScreen()));
-              },
-              splashColor: Colors.transparent,
-              splashFactory: NoSplash.splashFactory,
-              child: Row(
-                children: [
-                  const Text("디데이",
-                      style: TextStyle(
-                          color: ColorFamily.black,
-                          fontSize: 20,
-                          fontFamily: FontFamily.mapleStoryLight)),
-                  SvgPicture.asset('lib/assets/icons/expand.svg'),
-                ],
-              ),
-            ),
+        InkWell(
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const dDayScreen()));
+          },
+          splashColor: Colors.transparent,
+          splashFactory: NoSplash.splashFactory,
+          child: Row(
+            children: [
+              const Text("디데이",
+                  style: TextStyle(
+                      color: ColorFamily.black,
+                      fontSize: 20,
+                      fontFamily: FontFamily.mapleStoryLight)),
+              SvgPicture.asset('lib/assets/icons/expand.svg'),
+            ],
+          ),
+        ),
         Row(
           children: [
             SizedBox(
@@ -132,7 +344,18 @@ Widget dDay(BuildContext context) {
                       onTap: () {
                         provider.userProfileImagePath ==
                                 "lib/assets/images/default_profile.png"
-                            ? null
+                            ? showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Dialog(
+                                    child: SizedBox(
+                                        width: deviceWidth * 0.8,
+                                        height: deviceHeight * 0.6,
+                                        child: Image(
+                                            image: AssetImage(
+                                                "lib/assets/images/default_profile.png"))),
+                                  );
+                                })
                             : showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -173,7 +396,11 @@ Widget dDay(BuildContext context) {
                   SvgPicture.asset('lib/assets/icons/like.svg'),
                   const SizedBox(height: 5),
                   Text(
-                    '${DateTime(DateTime.now().year-2000,DateTime.now().month,DateTime.now().day,).difference(stringToDate(provider.loveDday)).inDays}일',
+                    '${DateTime(
+                      DateTime.now().year - 2000,
+                      DateTime.now().month,
+                      DateTime.now().day,
+                    ).difference(stringToDate(provider.loveDday)).inDays}일',
                     style:
                         const TextStyle(fontFamily: FontFamily.mapleStoryLight),
                   ),
@@ -189,7 +416,18 @@ Widget dDay(BuildContext context) {
                       onTap: () {
                         provider.loverProfileImagePath ==
                                 "lib/assets/images/default_profile.png"
-                            ? null
+                            ? showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Dialog(
+                                    child: SizedBox(
+                                        width: deviceWidth * 0.8,
+                                        height: deviceHeight * 0.6,
+                                        child: Image(
+                                            image: AssetImage(
+                                                "lib/assets/images/default_profile.png"))),
+                                  );
+                                })
                             : showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -460,35 +698,38 @@ Widget accountBook(BuildContext context) {
 // }
 
 //캘린더_달력
+
+//캘린더
 Widget calendar(BuildContext context) {
   DateTime _focusedDay = Provider.of<HomeCalendarProvider>(context).focusedDay;
-  DateTime? _selectedDay = Provider.of<HomeCalendarProvider>(context).selectedDay;
+  DateTime? _selectedDay =
+      Provider.of<HomeCalendarProvider>(context).selectedDay;
 
   // CalendarFormat _calendarFormat = CalendarFormat.month;
 
   return Consumer<HomeCalendarProvider>(builder: (context, provider, child) {
     return _cardContainer(
         context,
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const CalendarScreen()));
-              },
-              splashColor: Colors.transparent,
-              splashFactory: NoSplash.splashFactory,
-              child: Row(
-                children: [
-                  const Text("캘린더",
-                      style: TextStyle(
-                          color: ColorFamily.black,
-                          fontSize: 20,
-                          fontFamily: FontFamily.mapleStoryLight)),
-                  SvgPicture.asset('lib/assets/icons/expand.svg'),
-                ],
-              ),
-            ),
+        InkWell(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const CalendarScreen()));
+          },
+          splashColor: Colors.transparent,
+          splashFactory: NoSplash.splashFactory,
+          child: Row(
+            children: [
+              const Text("캘린더",
+                  style: TextStyle(
+                      color: ColorFamily.black,
+                      fontSize: 20,
+                      fontFamily: FontFamily.mapleStoryLight)),
+              SvgPicture.asset('lib/assets/icons/expand.svg'),
+            ],
+          ),
+        ),
         Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Container(
               padding: const EdgeInsets.all(10.0),
@@ -501,8 +742,8 @@ Widget calendar(BuildContext context) {
                       DateTime(DateTime.now().year, DateTime.now().month, 31),
                   focusedDay: _focusedDay,
                   locale: 'ko_kr',
-                  rowHeight: MediaQuery.of(context).size.height*0.05,
-                  daysOfWeekHeight: MediaQuery.of(context).size.height*0.055,
+                  rowHeight: MediaQuery.of(context).size.height * 0.05,
+                  daysOfWeekHeight: MediaQuery.of(context).size.height * 0.055,
                   headerStyle: const HeaderStyle(
                     titleCentered: true,
                     titleTextStyle: TextStyleFamily.appBarTitleBoldTextStyle,
@@ -654,7 +895,8 @@ Widget scheduleListWidget(BuildContext context) {
                   child: Row(
                     children: [
                       // 1.하루일정인 경우
-                      provider.selectedDayScheduleList[index]['schedule_start_date'] ==
+                      provider.selectedDayScheduleList[index]
+                                      ['schedule_start_date'] ==
                                   selectedDayParse &&
                               provider.selectedDayScheduleList[index]
                                       ['schedule_finish_date'] ==
@@ -700,8 +942,8 @@ Widget scheduleListWidget(BuildContext context) {
                                     children: [
                                       const SizedBox(width: 20),
                                       Text(
-                                          provider.selectedDayScheduleList[index]
-                                              ['schedule_start_time'],
+                                          provider.selectedDayScheduleList[
+                                              index]['schedule_start_time'],
                                           style: const TextStyle(
                                               fontSize: 15,
                                               fontFamily:
@@ -724,7 +966,8 @@ Widget scheduleListWidget(BuildContext context) {
                                   ? const SizedBox(
                                       width: 140,
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           Text(" ~ ",
                                               style: TextStyle(
@@ -739,7 +982,8 @@ Widget scheduleListWidget(BuildContext context) {
                                   : SizedBox(
                                       width: 140,
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           const Text(" ~ ",
                                               style: TextStyle(
@@ -747,7 +991,8 @@ Widget scheduleListWidget(BuildContext context) {
                                                   fontFamily: FontFamily
                                                       .mapleStoryLight)),
                                           Text(
-                                              provider.selectedDayScheduleList[index]
+                                              provider.selectedDayScheduleList[
+                                                      index]
                                                   ['schedule_finish_time'],
                                               style: const TextStyle(
                                                   fontSize: 15,

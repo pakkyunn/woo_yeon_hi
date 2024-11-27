@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:woo_yeon_hi/utils.dart';
 
+import '../dao/user_dao.dart';
 import '../dialogs.dart';
 
 class UserProvider extends ChangeNotifier {
@@ -27,6 +28,8 @@ class UserProvider extends ChangeNotifier {
   late Image _userProfileImage;
   late Image _loverProfileImage;
   int _userState = 2;
+  String _memoryBannerImagePath = "";
+  late Image _memoryBannerImage;
 
   bool _loginSuccess = false;
   List<int> _lockPassword = [0, 0, 0, 0];
@@ -49,10 +52,12 @@ class UserProvider extends ChangeNotifier {
   Image get userProfileImage => _userProfileImage;
   Image get loverProfileImage => _loverProfileImage;
   int get userState => _userState;
+  String get memoryBannerImagePath => _memoryBannerImagePath;
+  Image get memoryBannerImage => _memoryBannerImage;
   bool get loginSuccess => _loginSuccess;
   List<int> get lockPassword => _lockPassword;
 
-  TextEditingController _codeTextEditController = TextEditingController();
+  final TextEditingController _codeTextEditController = TextEditingController();
   TextEditingController get codeTextEditController => _codeTextEditController;
 
   XFile? _image;
@@ -118,13 +123,13 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setUserProfileImagePath(String userProfileImagePath) {
-    _userProfileImagePath = userProfileImagePath;
+  void setUserProfileImagePath(String imagePath) {
+    _userProfileImagePath = imagePath;
     notifyListeners();
   }
 
-  void setLoverProfileImagePath(String loverProfileImagePath) {
-    _loverProfileImagePath = loverProfileImagePath;
+  void setLoverProfileImagePath(String imagePath) {
+    _loverProfileImagePath = imagePath;
     notifyListeners();
   }
 
@@ -163,6 +168,25 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setMemoryBannerImagePath(String imagePath) {
+    _memoryBannerImagePath = imagePath;
+    notifyListeners();
+  }
+
+  void setMemoryBannerImage(Image image) {
+    _memoryBannerImage = image;
+    notifyListeners();
+  }
+
+  Future<Image> fetchMemoryBannerImage(String imagePath) async {
+    Image updatedBannerImage =
+      imagePath == ""
+      ? Image.asset("lib/assets/images/memory_banner_icon_image.png")
+      : await getMemoryBannerImage(imagePath);
+
+    return updatedBannerImage;
+  }
+
   void setUserAllData(
       int userIdx,
       String userAccount,
@@ -181,7 +205,9 @@ class UserProvider extends ChangeNotifier {
       String loverProfileImagePath,
       Image userProfileImage,
       Image loverProfileImage,
-      int userState) {
+      int userState,
+      String memoryBannerImagePath,
+      Image memoryBannerImage) {
     _userIdx = userIdx;
     _userAccount = userAccount;
     _appLockState = appLockState;
@@ -200,6 +226,8 @@ class UserProvider extends ChangeNotifier {
     _userProfileImage = userProfileImage;
     _loverProfileImage = loverProfileImage;
     _userState = userState;
+    _memoryBannerImagePath = memoryBannerImagePath;
+    _memoryBannerImage = memoryBannerImage;
   }
 
   String _tempImagePath = "lib/assets/images/default_profile.png";
