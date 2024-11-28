@@ -347,25 +347,114 @@ Widget dDay(BuildContext context) {
                             ? showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return Dialog(
-                                    child: SizedBox(
+                                  return Center(
+                                    child: Material(
+                                      color: Colors.transparent, // 기본 배경 제거
+                                      child: Container(
                                         width: deviceWidth * 0.8,
-                                        height: deviceHeight * 0.6,
-                                        child: Image(
-                                            image: AssetImage(
-                                                "lib/assets/images/default_profile.png"))),
+                                        height: deviceHeight * 0.5,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(30), // 모든 모서리를 둥글게
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius: BorderRadius.vertical(top: Radius.circular(30)), // 상단 모서리 둥글게
+                                              child: Image(
+                                                  image: AssetImage(
+                                                      "lib/assets/images/default_profile.png")), // 이미지나 위젯을 둥글게 클립
+                                            ),
+                                            Expanded(
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)), // 하단 모서리 둥글게
+                                                child: Container(
+                                                  color: ColorFamily.white,
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Expanded(
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.all(15),
+                                                              child: Text(
+                                                                "테스트상태메시지테 \n테스트상태메시지테 \n테스트상태메시지테 \n테스트상태메시지테",
+                                                                style: TextStyleFamily.normalTextStyle,
+                                                                overflow: TextOverflow.clip,
+                                                                softWrap: true,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
                                   );
                                 })
-                            : showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return Dialog(
-                                    child: SizedBox(
-                                        width: deviceWidth * 0.8,
-                                        height: deviceHeight * 0.6,
-                                        child: provider.userProfileImage),
-                                  );
-                                });
+                        : showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Center(
+                              child: Material(
+                                color: Colors.transparent, // 기본 배경 제거
+                                child: Container(
+                                  width: deviceWidth * 0.8,
+                                  height: deviceHeight * 0.5,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(30), // 모든 모서리를 둥글게
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.vertical(top: Radius.circular(30)), // 상단 모서리 둥글게
+                                        child: provider.userProfileImage, // 이미지나 위젯을 둥글게 클립
+                                      ),
+                                      Expanded(
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)), // 하단 모서리 둥글게
+                                          child: Container(
+                                            color: ColorFamily.white,
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Expanded(
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.all(15),
+                                                        child: Text(
+                                                          "테스트상태메시지테 스테스트상태메시지테스테스트상 태메시지테스테스트상태 메시지테스테스 트상태메시지테스 테스트상태메시지테스",
+                                                          style: TextStyleFamily.normalTextStyle,
+                                                          overflow: TextOverflow.clip,
+                                                          softWrap: true,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
                       },
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(100),
@@ -419,23 +508,111 @@ Widget dDay(BuildContext context) {
                             ? showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return Dialog(
-                                    child: SizedBox(
+                                  return Center(
+                                    child: Material(
+                                      color: Colors.transparent, // 기본 배경 제거
+                                      child: Container(
                                         width: deviceWidth * 0.8,
-                                        height: deviceHeight * 0.6,
-                                        child: Image(
-                                            image: AssetImage(
-                                                "lib/assets/images/default_profile.png"))),
+                                        height: deviceHeight * 0.5,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(30), // 모든 모서리를 둥글게
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius: BorderRadius.vertical(top: Radius.circular(30)), // 상단 모서리 둥글게
+                                              child: Image(
+                                                  image: AssetImage(
+                                                      "lib/assets/images/default_profile.png")), // 이미지나 위젯을 둥글게 클립
+                                            ),
+                                            Expanded(
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)), // 하단 모서리 둥글게
+                                                child: Container(
+                                                  color: ColorFamily.white,
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Expanded(
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.all(15),
+                                                              child: Text(
+                                                                "테스트상태메시지테 \n테스트상태메시지테 \n테스트상태메시지테 \n테스트상태메시지테",
+                                                                style: TextStyleFamily.normalTextStyle,
+                                                                overflow: TextOverflow.clip,
+                                                                softWrap: true,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
                                   );
                                 })
                             : showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return Dialog(
-                                    child: SizedBox(
+                                  return Center(
+                                    child: Material(
+                                      color: Colors.transparent, // 기본 배경 제거
+                                      child: Container(
                                         width: deviceWidth * 0.8,
-                                        height: deviceHeight * 0.6,
-                                        child: provider.loverProfileImage),
+                                        height: deviceHeight * 0.5,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(30), // 모든 모서리를 둥글게
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius: BorderRadius.vertical(top: Radius.circular(30)), // 상단 모서리 둥글게
+                                              child: provider.loverProfileImage, // 이미지나 위젯을 둥글게 클립
+                                            ),
+                                            Expanded(
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)), // 하단 모서리 둥글게
+                                                child: Container(
+                                                  color: ColorFamily.white,
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Expanded(
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.all(15),
+                                                              child: Text(
+                                                                "테스트상태메시지테 스테스트상태메시지테스테스트상 태메시지테스테스트상태 메시지테스테스 트상태메시지테스 테스트상태메시지테스",
+                                                                style: TextStyleFamily.normalTextStyle,
+                                                                overflow: TextOverflow.clip,
+                                                                softWrap: true,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
                                   );
                                 });
                       },
@@ -450,7 +627,6 @@ Widget dDay(BuildContext context) {
                                       // Image 객체의 image 속성을 사용
                                       fit: BoxFit.cover) // 이미지를 원 안에 꽉 차게 함
                                   )))),
-                  // ClipOval(child: Image.asset('lib/assets/images/test_wooyeon_women.jpg', width: 75, height: 75)),
                   const SizedBox(height: 5),
                   InkWell(
                     splashFactory: NoSplash.splashFactory,

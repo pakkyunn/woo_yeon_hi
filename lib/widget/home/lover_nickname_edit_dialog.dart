@@ -80,11 +80,15 @@ class _LoverNicknameEditDialogState extends State<LoverNicknameEditDialog> {
                         style: TextButton.styleFrom(
                             overlayColor: Colors.transparent),
                         onPressed: () async {
-                          await updateSpecificUserData(userProvider.userIdx, "lover_nickname", loverNicknameController.text);
-                          await updateSpecificUserData(userProvider.loverIdx, "user_nickname", loverNicknameController.text);
-                          userProvider.setLoverNickname(loverNicknameController.text);
-                          Navigator.pop(context);
-                          showPinkSnackBar(context, "연인의 별명을 바꾸었습니다!");
+                          if(loverNicknameController.text.isNotEmpty){
+                            await updateSpecificUserData(userProvider.userIdx, "lover_nickname", loverNicknameController.text);
+                            await updateSpecificUserData(userProvider.loverIdx, "user_nickname", loverNicknameController.text);
+                            userProvider.setLoverNickname(loverNicknameController.text);
+                            Navigator.pop(context);
+                            showPinkSnackBar(context, "연인의 별명을 바꾸었습니다!");
+                          } else {
+                            showBlackToast("별명을 입력해주세요!");
+                          }
                         },
                         child: const Text(
                           "확인",
