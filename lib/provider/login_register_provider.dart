@@ -18,7 +18,8 @@ class UserProvider extends ChangeNotifier {
   int _loginType = 0;
   String _loveDday = dateToString(DateTime.now());
   int _loverIdx = 0;
-  String _profileMessage = "";
+  String _userProfileMessage = "";
+  String _loverProfileMessage = "";
   int _topBarType = 0;
   String _userBirth = dateToString(DateTime.now());
   String _userNickname = "기본별명";
@@ -42,7 +43,8 @@ class UserProvider extends ChangeNotifier {
   int get loginType => _loginType;
   String get loveDday => _loveDday;
   int get loverIdx => _loverIdx;
-  String get profileMessage => _profileMessage;
+  String get userProfileMessage => _userProfileMessage;
+  String get loverProfileMessage => _loverProfileMessage;
   int get topBarType => _topBarType;
   String get userBirth => _userBirth;
   String get userNickname => _userNickname;
@@ -118,8 +120,8 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setProfileMessage(String profileMessage) {
-    _profileMessage = profileMessage;
+  void setUserProfileMessage(String message) {
+    _userProfileMessage = message;
     notifyListeners();
   }
 
@@ -196,7 +198,8 @@ class UserProvider extends ChangeNotifier {
       String loveDday,
       int loverIdx,
       bool notificationAllow,
-      String profileMessage,
+      String userProfileMessage,
+      String loverProfileMessage,
       int topBarType,
       String userBirth,
       String userNickname,
@@ -216,7 +219,8 @@ class UserProvider extends ChangeNotifier {
     _loveDday = loveDday;
     _loverIdx = loverIdx;
     _notificationAllow = notificationAllow;
-    _profileMessage = profileMessage;
+    _userProfileMessage = userProfileMessage;
+    _loverProfileMessage = loverProfileMessage;
     _topBarType = topBarType;
     _userBirth = userBirth;
     _userNickname = userNickname;
@@ -248,12 +252,12 @@ class UserProvider extends ChangeNotifier {
 
 
   Future<void> setUserProfile(String userProfileImagePath, Image userProfileImage, String userNickname,
-      String userBirth, String profileMessage) async {
+      String userBirth, String message) async {
     _userProfileImagePath = userProfileImagePath;
     _userProfileImage = userProfileImage;
     _userNickname = userNickname;
     _userBirth = userBirth;
-    _profileMessage = profileMessage;
+    _userProfileMessage = message;
 
     notifyListeners();
   }

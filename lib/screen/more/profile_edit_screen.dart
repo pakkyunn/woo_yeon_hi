@@ -55,7 +55,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> with WidgetsBindi
     provider.setTempImage(provider.userProfileImage);
     setState(() {
       tempUserNickname = provider.userNickname;
-      tempProfileMessage = provider.profileMessage;
+      tempProfileMessage = provider.userProfileMessage;
       tempUserBirth = provider.userBirth;
       _selectedDate = stringToDate(tempUserBirth);
       isLoading = false; // 초기 상태
@@ -120,7 +120,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> with WidgetsBindi
             if (provider.tempImagePath != provider.userProfileImagePath ||
                 tempUserNickname != provider.userNickname ||
                 tempUserBirth != provider.userBirth ||
-                tempProfileMessage != provider.profileMessage) {
+                tempProfileMessage != provider.userProfileMessage) {
               dialogTitleWithContent(
                 context,
                 "프로필 편집 나가기",
@@ -154,7 +154,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> with WidgetsBindi
                   if (provider.tempImagePath != provider.userProfileImagePath ||
                       tempUserNickname != provider.userNickname ||
                       tempUserBirth != provider.userBirth ||
-                      tempProfileMessage != provider.profileMessage) {
+                      tempProfileMessage != provider.userProfileMessage) {
                     dialogTitleWithContent(
                         context, "프로필 편집 나가기", "변경사항은 저장되지 않습니다",
                             () {

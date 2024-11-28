@@ -136,7 +136,7 @@ class _MoreScreenState extends State<MoreScreen> {
                                 ],
                               ),
                               const SizedBox(height: 15),
-                              provider.profileMessage.isEmpty
+                              provider.userProfileMessage.isEmpty
                               ? SizedBox(
                                   width: deviceWidth * 0.4,
                                   child: Text("상태메시지로 내 마음을\n표현해보세요!",
@@ -148,7 +148,7 @@ class _MoreScreenState extends State<MoreScreen> {
                                       maxLines: 4))
                               : SizedBox(
                                   width: deviceWidth * 0.4,
-                                  child: Text(provider.profileMessage,
+                                  child: Text(provider.userProfileMessage,
                                       style: const TextStyle(
                                           color: ColorFamily.black,
                                           fontSize: 12,

@@ -148,7 +148,8 @@ Future<Map<String, dynamic>> fetchUserData() async {
   final loginType = await getSpecificUserData(userIdx, 'login_type') ?? 0;
   final loveDday = await getSpecificUserData(userIdx, 'love_dDay') ?? "${DateTime.now()}";
   final loverIdx = await getSpecificUserData(userIdx, 'lover_idx') ?? 0;
-  final profileMessage = await getSpecificUserData(userIdx, 'profile_message') ?? "";
+  final userProfileMessage = await getSpecificUserData(userIdx, 'profile_message') ?? "";
+  final loverProfileMessage = await getSpecificUserData(loverIdx, 'profile_message') ?? "";
   final topBarType = await getSpecificUserData(userIdx, 'top_bar_type') ?? 0;
   final userBirth = await getSpecificUserData(userIdx, 'user_birth') ?? "${DateTime.now()}";
   final userNickname = await getSpecificUserData(userIdx, 'user_nickname') ?? "기본별명";
@@ -179,7 +180,8 @@ Future<Map<String, dynamic>> fetchUserData() async {
     'loginType': loginType,
     'loveDday': loveDday,
     'loverIdx': loverIdx,
-    'profileMessage': profileMessage,
+    'userProfileMessage': userProfileMessage,
+    'loverProfileMessage': loverProfileMessage,
     'topBarType': topBarType,
     'userBirth': userBirth,
     'userNickname': userNickname,

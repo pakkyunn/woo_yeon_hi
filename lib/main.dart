@@ -63,7 +63,8 @@ Future<void> main() async {
           loveDday: userData['loveDday'],
           loverIdx: userData['loverIdx'],
           notificationAllow: userData['notificationAllow'],
-          profileMessage: userData['profileMessage'],
+          userProfileMessage: userData['userProfileMessage'],
+          loverProfileMessage: userData['loverProfileMessage'],
           topBarType: userData['topBarType'],
           userBirth: userData['userBirth'],
           userNickname: userData['userNickname'],
@@ -101,7 +102,8 @@ class WooYeonHi extends StatefulWidget {
       required this.loveDday,
       required this.loverIdx,
       required this.notificationAllow,
-      required this.profileMessage,
+      required this.userProfileMessage,
+      required this.loverProfileMessage,
       required this.topBarType,
       required this.userBirth,
       required this.userNickname,
@@ -123,7 +125,8 @@ class WooYeonHi extends StatefulWidget {
   final String loveDday;
   final int loverIdx;
   final bool notificationAllow;
-  final String profileMessage;
+  final String userProfileMessage;
+  final String loverProfileMessage;
   final int topBarType;
   final String userBirth;
   final String userNickname;
@@ -145,7 +148,7 @@ class _WooYeonHiState extends State<WooYeonHi> {
 
   @override
   build(BuildContext context) {
-    Provider.of<UserProvider>(context, listen: false).setUserAllData(widget.userIdx, widget.userAccount, widget.appLockState, widget.homePresetType, widget.loginType, widget.loveDday, widget.loverIdx, widget.notificationAllow, widget.profileMessage, widget.topBarType, widget.userBirth, widget.userNickname, widget.loverNickname, widget.userProfileImagePath, widget.loverProfileImagePath, widget.userProfileImage, widget.loverProfileImage, widget.userState, widget.memoryBannerImagePath, widget.memoryBannerImage);
+    Provider.of<UserProvider>(context, listen: false).setUserAllData(widget.userIdx, widget.userAccount, widget.appLockState, widget.homePresetType, widget.loginType, widget.loveDday, widget.loverIdx, widget.notificationAllow, widget.userProfileMessage, widget.loverProfileMessage, widget.topBarType, widget.userBirth, widget.userNickname, widget.loverNickname, widget.userProfileImagePath, widget.loverProfileImagePath, widget.userProfileImage, widget.loverProfileImage, widget.userState, widget.memoryBannerImagePath, widget.memoryBannerImage);
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => CalendarProvider()),

@@ -386,7 +386,7 @@ Widget dDay(BuildContext context) {
                                                             child: Padding(
                                                               padding: const EdgeInsets.all(15),
                                                               child: Text(
-                                                                "테스트상태메시지테 \n테스트상태메시지테 \n테스트상태메시지테 \n테스트상태메시지테",
+                                                                provider.userProfileMessage,
                                                                 style: TextStyleFamily.normalTextStyle,
                                                                 overflow: TextOverflow.clip,
                                                                 softWrap: true,
@@ -440,7 +440,7 @@ Widget dDay(BuildContext context) {
                                                       child: Padding(
                                                         padding: const EdgeInsets.all(15),
                                                         child: Text(
-                                                          "테스트상태메시지테 스테스트상태메시지테스테스트상 태메시지테스테스트상태 메시지테스테스 트상태메시지테스 테스트상태메시지테스",
+                                                          provider.userProfileMessage,
                                                           style: TextStyleFamily.normalTextStyle,
                                                           overflow: TextOverflow.clip,
                                                           softWrap: true,
@@ -543,7 +543,7 @@ Widget dDay(BuildContext context) {
                                                             child: Padding(
                                                               padding: const EdgeInsets.all(15),
                                                               child: Text(
-                                                                "테스트상태메시지테 \n테스트상태메시지테 \n테스트상태메시지테 \n테스트상태메시지테",
+                                                                provider.loverProfileMessage,
                                                                 style: TextStyleFamily.normalTextStyle,
                                                                 overflow: TextOverflow.clip,
                                                                 softWrap: true,
@@ -597,8 +597,7 @@ Widget dDay(BuildContext context) {
                                                             child: Padding(
                                                               padding: const EdgeInsets.all(15),
                                                               child: Text(
-                                                                "테스트상태메시지테 스테스트상태메시지테스테스트상 태메시지테스테스트상태 메시지테스테스 트상태메시지테스 테스트상태메시지테스",
-                                                                style: TextStyleFamily.normalTextStyle,
+                                                                provider.loverProfileMessage,                                                                style: TextStyleFamily.normalTextStyle,
                                                                 overflow: TextOverflow.clip,
                                                                 softWrap: true,
                                                               ),
