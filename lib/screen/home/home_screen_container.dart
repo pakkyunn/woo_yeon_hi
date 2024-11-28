@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -39,15 +42,24 @@ class _HomeScreenContainerState extends State<HomeScreenContainer> {
   @override
   void initState() {
     super.initState();
-    _getDatePlanData();
+    // _getDatePlanData();
+    _getLedgerData();
     _getScheduleData();
   }
 
-  Future<void> _getDatePlanData() async {
-    // 데이트플랜 데이터 가져오기
-    var homeDatePlanProvider = Provider.of<HomeDatePlanProvider>(context, listen: false);
-    var datePlanList = await getHomePlanList(context);
-    homeDatePlanProvider.setDatePlanList(datePlanList);
+  // Future<void> _getDatePlanData() async {
+  //   // 데이트플랜 데이터 가져오기
+  //   var homeDatePlanProvider =
+  //       Provider.of<HomeDatePlanProvider>(context, listen: false);
+  //   var datePlanList = await getHomePlanList(context);
+  //   homeDatePlanProvider.setDatePlanList(datePlanList);
+  // }
+
+  Future<void> _getLedgerData() async {
+    // 캘린더 데이터 가져오기
+    var ledgerProvider = Provider.of<LedgerProvider>(context, listen: false);
+    await ledgerProvider.getMonthExpenditureSum();
+
   }
 
   Future<void> _getScheduleData() async {
@@ -82,13 +94,221 @@ Widget memoryBanner(BuildContext context) {
     return _cardContainer(
         context,
         SizedBox(),
-      Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-              image: DecorationImage(
-                  image: AssetImage("lib/assets/images/sky.jpg"),
-                  fit: BoxFit.cover)
-          )),
+        provider.memoryBannerImagePath == ""
+            ? InkWell(
+                splashColor: Colors.transparent,
+                splashFactory: NoSplash.splashFactory,
+                onTap: () async {
+                  final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
+                  final XFile? pickedFile =
+                      await picker.pickImage(source: ImageSource.gallery);
+                  if (pickedFile != null) {
+                    provider.setImage(XFile(pickedFile.path));
+                    provider.setMemoryBannerImage(
+                        Image.file(File(pickedFile.path), fit: BoxFit.cover));
+                    var imageName =
+                        "${provider.userIdx}_memory_banner_${DateTime.now()}";
+                    provider.setMemoryBannerImagePath(imageName);
+                    updateSpecificUserData(provider.userIdx,
+                        "memory_banner_image", provider.memoryBannerImagePath);
+                    updateSpecificUserData(provider.loverIdx,
+                        "memory_banner_image", provider.memoryBannerImagePath);
+                    uploadMemoryBannerImage(provider.image!, imageName);
+                  }
+                },
+                child: Container(
+                    decoration: BoxDecoration(
+                        // color: ColorFamily.white,
+                        borderRadius: BorderRadius.circular(15),
+                        image: null),
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                              'lib/assets/icons/memory_banner_icon.svg',
+                              width: 40,
+                              height: 40),
+                        ],
+                      ),
+                    )),
+              )
+            : InkWell(
+                splashColor: Colors.transparent,
+                splashFactory: NoSplash.splashFactory,
+                onTap: () {
+                  showModalBottomSheet(
+                      context: context,
+                      showDragHandle: true,
+                      backgroundColor: ColorFamily.white,
+                      builder: (context) {
+                        return Consumer<UserProvider>(builder: (context, provider, child) {
+                          return Wrap(
+                            children: [
+                              Column(
+                                children: [
+                                  InkWell(
+                                    splashColor: ColorFamily.gray.withOpacity(0.5),
+                                    onTap: () async {
+                                      final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
+                                      final XFile? pickedFile =
+                                          await picker.pickImage(source: ImageSource.gallery);
+                                      if (pickedFile != null) {
+                                        deleteMemoryBannerImage(provider.memoryBannerImagePath);
+                                        provider.setImage(XFile(pickedFile.path));
+                                        provider.setMemoryBannerImage(
+                                            Image.file(File(pickedFile.path), fit: BoxFit.cover));
+                                        var imageName =
+                                            "${provider.userIdx}_memory_banner_${DateTime.now()}";
+                                        provider.setMemoryBannerImagePath(imageName);
+                                        updateSpecificUserData(provider.userIdx,
+                                            "memory_banner_image", provider.memoryBannerImagePath);
+                                        updateSpecificUserData(provider.loverIdx,
+                                            "memory_banner_image", provider.memoryBannerImagePath);
+                                        uploadMemoryBannerImage(provider.image!, imageName);
+                                      }
+                                      Navigator.pop(context);
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                                      height: 70,
+                                      width: MediaQuery.of(context).size.width,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          SvgPicture.asset(
+                                            'lib/assets/icons/gallery.svg',
+                                            height: 20,
+                                          ),
+                                          const Text(
+                                            "사진 변경",
+                                            style: TextStyleFamily.smallTitleTextStyle,
+                                          ),
+                                          const SizedBox(
+                                            width: 24,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 0.5,
+                                    child: Divider(
+                                      color: ColorFamily.gray,
+                                      thickness: 0.5,
+                                    ),
+                                  ),
+                                  InkWell(
+                                    splashColor: ColorFamily.gray.withOpacity(0.5),
+                                    onTap: () {
+                                      deleteMemoryBannerImage(provider.memoryBannerImagePath);
+                                      provider.setMemoryBannerImagePath("");
+                                      updateSpecificUserData(provider.userIdx,
+                                          "memory_banner_image", provider.memoryBannerImagePath);
+                                      updateSpecificUserData(provider.loverIdx,
+                                          "memory_banner_image", provider.memoryBannerImagePath);
+                                      Navigator.pop(context);
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                                      height: 70,
+                                      width: MediaQuery.of(context).size.width,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          SvgPicture.asset('lib/assets/icons/delete_pink.svg',
+                                              height: 20),
+                                          const Text(
+                                            "사진 삭제",
+                                            style: TextStyle(fontFamily: FontFamily.mapleStoryLight, fontSize: 15, color: ColorFamily.pink),
+                                          ),
+                                          const SizedBox(
+                                            width: 24,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          );
+                        });
+                      });
+                },
+                child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        image: DecorationImage(
+                            image: provider.memoryBannerImage.image,
+                            fit: BoxFit.cover))),
+              ),
+        // FutureBuilder(
+        //     future: provider.fetchMemoryBannerImage(provider.memoryBannerImagePath),
+        //     builder: (context, snapshot) {
+        //       if (snapshot.hasData == false) {
+        //         return const Center(
+        //           child: CircularProgressIndicator(
+        //             color: ColorFamily.pink,
+        //           ),
+        //         );
+        //       } else if (snapshot.hasError) {
+        //         return const Text(
+        //           "오류 발생",
+        //           style: TextStyleFamily.normalTextStyle,
+        //         );
+        //       } else {
+        //         return provider.memoryBannerImagePath == ""
+        //             ? InkWell(
+        //                 splashColor: Colors.transparent,
+        //                 splashFactory: NoSplash.splashFactory,
+        //                 onTap: () async {
+        //                   // TODO 바로 사진첩 띄워도 괜찮을듯?
+        //                   final ImagePicker picker =
+        //                       ImagePicker(); //ImagePicker 초기화
+        //                   final XFile? pickedFile = await picker.pickImage(
+        //                       source: ImageSource.gallery);
+        //                   if (pickedFile != null) {
+        //                     provider.setImage(XFile(pickedFile.path));
+        //                     provider.setMemoryBannerImage(Image.file(File(pickedFile.path), fit: BoxFit.cover));
+        //                     provider.setMemoryBannerImagePath(pickedFile.path);
+        //                     updateSpecificUserData(provider.userIdx, "memory_banner_image", provider.memoryBannerImagePath);
+        //                     var imageName = "${provider.userIdx}_memory_banner_${DateTime.now()}";
+        //                     uploadMemoryBannerImage(provider.image!, imageName);
+        //                   }
+        //                 },
+        //                 child: Container(
+        //                     decoration: BoxDecoration(
+        //                         // color: ColorFamily.white,
+        //                         borderRadius: BorderRadius.circular(15),
+        //                         image: null),
+        //                     child: Center(
+        //                       child: Row(
+        //                         mainAxisAlignment: MainAxisAlignment.center,
+        //                         children: [
+        //                           SvgPicture.asset(
+        //                               'lib/assets/icons/memory_banner_icon.svg',
+        //                               width: 40,
+        //                               height: 40),
+        //                         ],
+        //                       ),
+        //                     )),
+        //               )
+        //             : InkWell(
+        //                 splashColor: Colors.transparent,
+        //                 splashFactory: NoSplash.splashFactory,
+        //                 onTap: () {
+        //                   //TODO 다이얼로그/바텀시트 띄우면서 이미지삭제, 변경 기능 추가
+        //                 },
+        //                 child: Container(
+        //                     decoration: BoxDecoration(
+        //                         borderRadius: BorderRadius.circular(15),
+        //                         image: DecorationImage(
+        //                             image: provider.memoryBannerImage.image,
+        //                             fit: BoxFit.cover))),
+        //               );
+        //       }
+        //     }),
         deviceHeight * 0.15);
   });
 }
@@ -101,26 +321,24 @@ Widget dDay(BuildContext context) {
   return Consumer<UserProvider>(builder: (context, provider, child) {
     return _cardContainer(
         context,
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const dDayScreen()));
-              },
-              splashColor: Colors.transparent,
-              splashFactory: NoSplash.splashFactory,
-              child: Row(
-                children: [
-                  const Text("디데이",
-                      style: TextStyle(
-                          color: ColorFamily.black,
-                          fontSize: 20,
-                          fontFamily: FontFamily.mapleStoryLight)),
-                  SvgPicture.asset('lib/assets/icons/expand.svg'),
-                ],
-              ),
-            ),
+        InkWell(
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const dDayScreen()));
+          },
+          splashColor: Colors.transparent,
+          splashFactory: NoSplash.splashFactory,
+          child: Row(
+            children: [
+              const Text("디데이",
+                  style: TextStyle(
+                      color: ColorFamily.black,
+                      fontSize: 20,
+                      fontFamily: FontFamily.mapleStoryLight)),
+              SvgPicture.asset('lib/assets/icons/expand.svg'),
+            ],
+          ),
+        ),
         Row(
           children: [
             SizedBox(
@@ -132,17 +350,117 @@ Widget dDay(BuildContext context) {
                       onTap: () {
                         provider.userProfileImagePath ==
                                 "lib/assets/images/default_profile.png"
-                            ? null
-                            : showDialog(
+                            ? showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return Dialog(
-                                    child: SizedBox(
+                                  return Center(
+                                    child: Material(
+                                      color: Colors.transparent, // 기본 배경 제거
+                                      child: Container(
                                         width: deviceWidth * 0.8,
-                                        height: deviceHeight * 0.6,
-                                        child: provider.userProfileImage),
+                                        height: deviceHeight * 0.5,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(30), // 모든 모서리를 둥글게
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius: BorderRadius.vertical(top: Radius.circular(30)), // 상단 모서리 둥글게
+                                              child: Image(
+                                                  image: AssetImage(
+                                                      "lib/assets/images/default_profile.png")), // 이미지나 위젯을 둥글게 클립
+                                            ),
+                                            Expanded(
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)), // 하단 모서리 둥글게
+                                                child: Container(
+                                                  color: ColorFamily.white,
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Expanded(
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.all(15),
+                                                              child: Text(
+                                                                "테스트상태메시지테 \n테스트상태메시지테 \n테스트상태메시지테 \n테스트상태메시지테",
+                                                                style: TextStyleFamily.normalTextStyle,
+                                                                overflow: TextOverflow.clip,
+                                                                softWrap: true,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
                                   );
-                                });
+                                })
+                        : showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Center(
+                              child: Material(
+                                color: Colors.transparent, // 기본 배경 제거
+                                child: Container(
+                                  width: deviceWidth * 0.8,
+                                  height: deviceHeight * 0.5,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(30), // 모든 모서리를 둥글게
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.vertical(top: Radius.circular(30)), // 상단 모서리 둥글게
+                                        child: provider.userProfileImage, // 이미지나 위젯을 둥글게 클립
+                                      ),
+                                      Expanded(
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)), // 하단 모서리 둥글게
+                                          child: Container(
+                                            color: ColorFamily.white,
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Expanded(
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.all(15),
+                                                        child: Text(
+                                                          "테스트상태메시지테 스테스트상태메시지테스테스트상 태메시지테스테스트상태 메시지테스테스 트상태메시지테스 테스트상태메시지테스",
+                                                          style: TextStyleFamily.normalTextStyle,
+                                                          overflow: TextOverflow.clip,
+                                                          softWrap: true,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
                       },
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(100),
@@ -189,15 +507,114 @@ Widget dDay(BuildContext context) {
                       onTap: () {
                         provider.loverProfileImagePath ==
                                 "lib/assets/images/default_profile.png"
-                            ? null
+                            ? showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Center(
+                                    child: Material(
+                                      color: Colors.transparent, // 기본 배경 제거
+                                      child: Container(
+                                        width: deviceWidth * 0.8,
+                                        height: deviceHeight * 0.5,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(30), // 모든 모서리를 둥글게
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius: BorderRadius.vertical(top: Radius.circular(30)), // 상단 모서리 둥글게
+                                              child: Image(
+                                                  image: AssetImage(
+                                                      "lib/assets/images/default_profile.png")), // 이미지나 위젯을 둥글게 클립
+                                            ),
+                                            Expanded(
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)), // 하단 모서리 둥글게
+                                                child: Container(
+                                                  color: ColorFamily.white,
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Expanded(
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.all(15),
+                                                              child: Text(
+                                                                "테스트상태메시지테 \n테스트상태메시지테 \n테스트상태메시지테 \n테스트상태메시지테",
+                                                                style: TextStyleFamily.normalTextStyle,
+                                                                overflow: TextOverflow.clip,
+                                                                softWrap: true,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                })
                             : showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return Dialog(
-                                    child: SizedBox(
+                                  return Center(
+                                    child: Material(
+                                      color: Colors.transparent, // 기본 배경 제거
+                                      child: Container(
                                         width: deviceWidth * 0.8,
-                                        height: deviceHeight * 0.6,
-                                        child: provider.loverProfileImage),
+                                        height: deviceHeight * 0.5,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(30), // 모든 모서리를 둥글게
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius: BorderRadius.vertical(top: Radius.circular(30)), // 상단 모서리 둥글게
+                                              child: provider.loverProfileImage, // 이미지나 위젯을 둥글게 클립
+                                            ),
+                                            Expanded(
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)), // 하단 모서리 둥글게
+                                                child: Container(
+                                                  color: ColorFamily.white,
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Expanded(
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.all(15),
+                                                              child: Text(
+                                                                "테스트상태메시지테 스테스트상태메시지테스테스트상 태메시지테스테스트상태 메시지테스테스 트상태메시지테스 테스트상태메시지테스",
+                                                                style: TextStyleFamily.normalTextStyle,
+                                                                overflow: TextOverflow.clip,
+                                                                softWrap: true,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
                                   );
                                 });
                       },
@@ -212,7 +629,6 @@ Widget dDay(BuildContext context) {
                                       // Image 객체의 image 속성을 사용
                                       fit: BoxFit.cover) // 이미지를 원 안에 꽉 차게 함
                                   )))),
-                  // ClipOval(child: Image.asset('lib/assets/images/test_wooyeon_women.jpg', width: 75, height: 75)),
                   const SizedBox(height: 5),
                   InkWell(
                     splashFactory: NoSplash.splashFactory,
@@ -241,126 +657,130 @@ Widget dDay(BuildContext context) {
 
 //가계부
 Widget accountBook(BuildContext context) {
-  var ledgerProvider = Provider.of<LedgerProvider>(context);
+  // var ledgerProvider = Provider.of<LedgerProvider>(context, listen: false);
 
   var deviceWidth = MediaQuery.of(context).size.width;
   var deviceHeight = MediaQuery.of(context).size.height;
 
-  Future<bool> _asyncData(LedgerProvider provider) async {
-    await provider.getMonthExpenditureSum();
+  // Future<bool> _asyncData(LedgerProvider provider) async {
+  //   await provider.getMonthExpenditureSum();
+  //
+  //   return true;
+  // }
 
-    return true;
-  }
-
-  return FutureBuilder(
-    future: _asyncData(ledgerProvider),
-    builder: (context, snapshot) {
-      if (snapshot.hasData == false) {
-        return const Center(
-          child: CircularProgressIndicator(
-            color: ColorFamily.pink,
-          ),
-        );
-      } else if (snapshot.hasError) {
-        return const Text(
-          "오류 발생",
-          style: TextStyleFamily.normalTextStyle,
-        );
-      } else {
-        return _cardContainer(
-            context,
-            const Row(
-              children: [
-                Text("가계부",
-                    style: TextStyle(
-                        color: ColorFamily.black,
-                        fontSize: 20,
-                        fontFamily: FontFamily.mapleStoryLight)),
-              ],
-            ),
-            Row(
-              children: [
-                SizedBox(
-                  width: deviceWidth * 0.38,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  // return FutureBuilder(
+  //   future: _asyncData(ledgerProvider),
+  //   builder: (context, snapshot) {
+  //     if (snapshot.hasData == false) {
+  //       return const Center(
+  //         child: CircularProgressIndicator(
+  //           color: ColorFamily.pink,
+  //         ),
+  //       );
+  //     } else if (snapshot.hasError) {
+  //       return const Text(
+  //         "오류 발생",
+  //         style: TextStyleFamily.normalTextStyle,
+  //       );
+  //     } else {
+  return Consumer<LedgerProvider>(builder: (context, provider, child) {
+    return _cardContainer(
+        context,
+        const Row(
+          children: [
+            Text("가계부",
+                style: TextStyle(
+                    color: ColorFamily.black,
+                    fontSize: 20,
+                    fontFamily: FontFamily.mapleStoryLight)),
+          ],
+        ),
+        Row(
+          children: [
+            SizedBox(
+              width: deviceWidth * 0.38,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(
+                    height: 35,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                            "${provider.monthExpenditureTargetDateTime.year}",
+                            style: TextStyleFamily.normalTextStyle),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(
-                        height: 35,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text(
-                                "${ledgerProvider.monthExpenditureTargetDateTime.year}",
-                                style: TextStyleFamily.normalTextStyle),
-                          ],
-                        ),
+                      IconButton(
+                        onPressed: () async {
+                          provider.updatePreviousMonth();
+                          await provider.getMonthExpenditureSum();
+                        },
+                        icon: SvgPicture.asset(
+                            'lib/assets/icons/arrow_left.svg'),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              ledgerProvider.updatePreviousMonth();
-                            },
-                            icon: SvgPicture.asset(
-                                'lib/assets/icons/arrow_left.svg'),
-                          ),
-                          Text(
-                              "${ledgerProvider.monthExpenditureTargetDateTime.month}월",
-                              style: const TextStyle(
-                                  color: ColorFamily.black,
-                                  fontSize: 24,
-                                  fontFamily: FontFamily.mapleStoryLight)),
-                          IconButton(
-                            onPressed: () {
-                              ledgerProvider.updateNextMonth();
-                            },
-                            icon: SvgPicture.asset(
-                                'lib/assets/icons/arrow_right.svg'),
-                          ),
-                        ],
+                      Text(
+                          "${provider.monthExpenditureTargetDateTime.month}월",
+                          style: const TextStyle(
+                              color: ColorFamily.black,
+                              fontSize: 24,
+                              fontFamily: FontFamily.mapleStoryLight)),
+                      IconButton(
+                        onPressed: () async {
+                          provider.updateNextMonth();
+                          await provider.getMonthExpenditureSum();
+                        },
+                        icon: SvgPicture.asset(
+                            'lib/assets/icons/arrow_right.svg'),
                       ),
-                      const SizedBox(height: 35),
                     ],
                   ),
-                ),
-                const SizedBox(width: 10),
-                Container(width: 2, height: 70, color: ColorFamily.pink),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Flexible(
-                          child: Text(
-                            ledgerProvider.monthExpenditureSum,
-                            style: const TextStyle(
-                                color: ColorFamily.black,
-                                fontSize: 20,
-                                fontFamily: FontFamily.mapleStoryLight),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                          ),
-                        ),
-                        const Text(
-                          "원 소비",
-                          style: TextStyle(
-                              color: ColorFamily.black,
-                              fontSize: 20,
-                              fontFamily: FontFamily.mapleStoryLight),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                      ]),
-                ),
-                const SizedBox(width: 20),
-              ],
+                  const SizedBox(height: 35),
+                ],
+              ),
             ),
-            deviceHeight * 0.15);
-      }
-    },
-  );
+            const SizedBox(width: 10),
+            Container(width: 2, height: 70, color: ColorFamily.pink),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        provider.monthExpenditureSum,
+                        style: const TextStyle(
+                            color: ColorFamily.black,
+                            fontSize: 20,
+                            fontFamily: FontFamily.mapleStoryLight),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ),
+                    const Text(
+                      "원 소비",
+                      style: TextStyle(
+                          color: ColorFamily.black,
+                          fontSize: 20,
+                          fontFamily: FontFamily.mapleStoryLight),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                  ]),
+            ),
+            const SizedBox(width: 20),
+          ],
+        ),
+        deviceHeight * 0.15);
+  });
+      // }
+    // },
+  // );
 }
 
 //데이트플랜
@@ -469,26 +889,26 @@ Widget calendar(BuildContext context) {
   return Consumer<HomeCalendarProvider>(builder: (context, provider, child) {
     return _cardContainer(
         context,
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const CalendarScreen()));
-              },
-              splashColor: Colors.transparent,
-              splashFactory: NoSplash.splashFactory,
-              child: Row(
-                children: [
-                  const Text("캘린더",
-                      style: TextStyle(
-                          color: ColorFamily.black,
-                          fontSize: 20,
-                          fontFamily: FontFamily.mapleStoryLight)),
-                  SvgPicture.asset('lib/assets/icons/expand.svg'),
-                ],
-              ),
-            ),
+        InkWell(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const CalendarScreen()));
+          },
+          splashColor: Colors.transparent,
+          splashFactory: NoSplash.splashFactory,
+          child: Row(
+            children: [
+              const Text("캘린더",
+                  style: TextStyle(
+                      color: ColorFamily.black,
+                      fontSize: 20,
+                      fontFamily: FontFamily.mapleStoryLight)),
+              SvgPicture.asset('lib/assets/icons/expand.svg'),
+            ],
+          ),
+        ),
         Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Container(
               padding: const EdgeInsets.all(10.0),

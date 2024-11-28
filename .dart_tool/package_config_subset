@@ -196,8 +196,8 @@ file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/file-7.0.1/
 file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/file-7.0.1/lib/
 file_selector_linux
 3.3
-file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/file_selector_linux-0.9.3+1/
-file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/file_selector_linux-0.9.3+1/lib/
+file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/file_selector_linux-0.9.3+2/
+file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/file_selector_linux-0.9.3+2/lib/
 file_selector_macos
 3.3
 file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/file_selector_macos-0.9.4+2/
@@ -624,8 +624,8 @@ file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider-2.1.
 file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider-2.1.5/lib/
 path_provider_android
 3.5
-file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_android-2.2.12/
-file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_android-2.2.12/lib/
+file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_android-2.2.14/
+file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_android-2.2.14/lib/
 path_provider_foundation
 3.2
 file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_foundation-2.4.0/
@@ -767,9 +767,9 @@ shelf
 file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/shelf-1.4.1/
 file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/shelf-1.4.1/lib/
 shelf_web_socket
-3.0
-file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/shelf_web_socket-2.0.0/
-file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/shelf_web_socket-2.0.0/lib/
+3.3
+file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/shelf_web_socket-2.0.1/
+file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/shelf_web_socket-2.0.1/lib/
 simple_gesture_detector
 2.12
 file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/simple_gesture_detector-0.2.1/
@@ -876,8 +876,8 @@ file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/vector_graphics_co
 file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/vector_graphics_codec-1.1.12/lib/
 vector_graphics_compiler
 3.4
-file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/vector_graphics_compiler-1.1.15/
-file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/vector_graphics_compiler-1.1.15/lib/
+file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/vector_graphics_compiler-1.1.16/
+file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/vector_graphics_compiler-1.1.16/lib/
 vector_math
 2.14
 file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/vector_math-2.1.4/
@@ -916,8 +916,8 @@ file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter_pl
 file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter_platform_interface-2.10.0/lib/
 webview_flutter_wkwebview
 3.5
-file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter_wkwebview-3.16.2/
-file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter_wkwebview-3.16.2/lib/
+file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter_wkwebview-3.16.3/
+file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter_wkwebview-3.16.3/lib/
 widgets_to_image
 3.1
 file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/widgets_to_image-1.0.0/

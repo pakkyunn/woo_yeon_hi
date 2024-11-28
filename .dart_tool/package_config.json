@@ -267,7 +267,7 @@
     },
     {
       "name": "file_selector_linux",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/file_selector_linux-0.9.3+1",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/file_selector_linux-0.9.3+2",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
@@ -927,7 +927,7 @@
     },
     {
       "name": "path_provider_android",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_android-2.2.12",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_android-2.2.14",
       "packageUri": "lib/",
       "languageVersion": "3.5"
     },
@@ -1143,9 +1143,9 @@
     },
     {
       "name": "shelf_web_socket",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/shelf_web_socket-2.0.0",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/shelf_web_socket-2.0.1",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.3"
     },
     {
       "name": "simple_gesture_detector",
@@ -1311,7 +1311,7 @@
     },
     {
       "name": "vector_graphics_compiler",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/vector_graphics_compiler-1.1.15",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/vector_graphics_compiler-1.1.16",
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
@@ -1371,7 +1371,7 @@
     },
     {
       "name": "webview_flutter_wkwebview",
-      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter_wkwebview-3.16.2",
+      "rootUri": "file:///C:/Users/oscar/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter_wkwebview-3.16.3",
       "packageUri": "lib/",
       "languageVersion": "3.5"
     },
@@ -1418,7 +1418,7 @@
       "languageVersion": "3.3"
     }
   ],
-  "generated": "2024-11-22T06:50:12.260048Z",
+  "generated": "2024-11-26T19:05:21.163907Z",
   "generator": "pub",
   "generatorVersion": "3.5.0",
   "flutterRoot": "file:///C:/FlutterProject/flutter-sdk",

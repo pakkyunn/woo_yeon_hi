@@ -16,6 +16,7 @@ class UserModel {
   int userState;
   String loveDday;
   int appLockState;
+  String memoryBannerImage;
 
   UserModel({required this.userIdx,
     required this.loginType,
@@ -31,7 +32,8 @@ class UserModel {
     required this.notificationAllow,
     required this.userState,
     required this.loveDday,
-    required this.appLockState
+    required this.appLockState,
+    required this.memoryBannerImage
   });
 
   factory UserModel.fromData(Map<String, dynamic> data){
@@ -50,7 +52,8 @@ class UserModel {
         notificationAllow: data['notification_allow'],
         userState: data['user_state'],
         loveDday: data['love_d_day'],
-        appLockState: data['app_lock_state']
+        appLockState: data['app_lock_state'],
+        memoryBannerImage: data['memory_banner_image']
     );
   }
 
