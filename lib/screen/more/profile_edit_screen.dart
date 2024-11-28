@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -413,35 +414,36 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> with WidgetsBindi
                       ),
                       const SizedBox(height: 10),
                       SizedBox(
-                        height: 100,
+                        height: 80,
                         width: deviceWidth - 60,
                         child: Material(
                           elevation: 0.5,
                           color: ColorFamily.white,
                           borderRadius: BorderRadius.circular(15),
                           child: Padding(
-                            padding: const EdgeInsets.only(left: 15),
+                            padding: const EdgeInsets.fromLTRB(10,5,10,5),
                             child: TextFormField(
                               cursorColor: ColorFamily.black,
                               focusNode: _profileMessageFocusNode,
                               initialValue: tempProfileMessage,
+                              inputFormatters: [
+                                LengthLimitingTextInputFormatter(50), // 글자 수 제한
+                                FilteringTextInputFormatter.deny(RegExp(r'\n')), // 줄바꿈 입력 제한
+                              ],
                               onChanged: (value) {
                                 setState(() {
                                   tempProfileMessage = value;
                                 });
                               },
-                              onFieldSubmitted: (value) {
-                                tempProfileMessage = value;
-                              },
-                              maxLines: 4,
                               maxLength: 60,
+                              maxLines: null,
                               onTapOutside: (event) {
                                 FocusScope.of(context).unfocus();
                               },
                               style: TextStyleFamily.smallTitleTextStyle,
                               decoration: const InputDecoration(
                                 border: InputBorder.none,
-                                counter: SizedBox(),
+                                counterText: "", // 글자 수 카운터 숨김
                               ),
                             ),
                           ),

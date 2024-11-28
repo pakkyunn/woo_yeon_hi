@@ -108,7 +108,7 @@ class _HomeUiSettingScreenState extends State<HomeUiSettingScreen> {
                   height: deviceHeight * 0.65,
                   child: Swiper(
                     index: presetIndex,
-                    viewportFraction: 0.7,
+                    viewportFraction: 0.6,
                     scale: 0.7,
                     itemBuilder: (BuildContext context, int index) {
                       return Column(
