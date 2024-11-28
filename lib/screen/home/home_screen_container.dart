@@ -42,16 +42,24 @@ class _HomeScreenContainerState extends State<HomeScreenContainer> {
   @override
   void initState() {
     super.initState();
-    _getDatePlanData();
+    // _getDatePlanData();
+    _getLedgerData();
     _getScheduleData();
   }
 
-  Future<void> _getDatePlanData() async {
-    // 데이트플랜 데이터 가져오기
-    var homeDatePlanProvider =
-        Provider.of<HomeDatePlanProvider>(context, listen: false);
-    var datePlanList = await getHomePlanList(context);
-    homeDatePlanProvider.setDatePlanList(datePlanList);
+  // Future<void> _getDatePlanData() async {
+  //   // 데이트플랜 데이터 가져오기
+  //   var homeDatePlanProvider =
+  //       Provider.of<HomeDatePlanProvider>(context, listen: false);
+  //   var datePlanList = await getHomePlanList(context);
+  //   homeDatePlanProvider.setDatePlanList(datePlanList);
+  // }
+
+  Future<void> _getLedgerData() async {
+    // 캘린더 데이터 가져오기
+    var ledgerProvider = Provider.of<LedgerProvider>(context, listen: false);
+    await ledgerProvider.getMonthExpenditureSum();
+
   }
 
   Future<void> _getScheduleData() async {
@@ -655,126 +663,130 @@ Widget dDay(BuildContext context) {
 
 //가계부
 Widget accountBook(BuildContext context) {
-  var ledgerProvider = Provider.of<LedgerProvider>(context);
+  // var ledgerProvider = Provider.of<LedgerProvider>(context, listen: false);
 
   var deviceWidth = MediaQuery.of(context).size.width;
   var deviceHeight = MediaQuery.of(context).size.height;
 
-  Future<bool> _asyncData(LedgerProvider provider) async {
-    await provider.getMonthExpenditureSum();
+  // Future<bool> _asyncData(LedgerProvider provider) async {
+  //   await provider.getMonthExpenditureSum();
+  //
+  //   return true;
+  // }
 
-    return true;
-  }
-
-  return FutureBuilder(
-    future: _asyncData(ledgerProvider),
-    builder: (context, snapshot) {
-      if (snapshot.hasData == false) {
-        return const Center(
-          child: CircularProgressIndicator(
-            color: ColorFamily.pink,
-          ),
-        );
-      } else if (snapshot.hasError) {
-        return const Text(
-          "오류 발생",
-          style: TextStyleFamily.normalTextStyle,
-        );
-      } else {
-        return _cardContainer(
-            context,
-            const Row(
-              children: [
-                Text("가계부",
-                    style: TextStyle(
-                        color: ColorFamily.black,
-                        fontSize: 20,
-                        fontFamily: FontFamily.mapleStoryLight)),
-              ],
-            ),
-            Row(
-              children: [
-                SizedBox(
-                  width: deviceWidth * 0.38,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  // return FutureBuilder(
+  //   future: _asyncData(ledgerProvider),
+  //   builder: (context, snapshot) {
+  //     if (snapshot.hasData == false) {
+  //       return const Center(
+  //         child: CircularProgressIndicator(
+  //           color: ColorFamily.pink,
+  //         ),
+  //       );
+  //     } else if (snapshot.hasError) {
+  //       return const Text(
+  //         "오류 발생",
+  //         style: TextStyleFamily.normalTextStyle,
+  //       );
+  //     } else {
+  return Consumer<LedgerProvider>(builder: (context, provider, child) {
+    return _cardContainer(
+        context,
+        const Row(
+          children: [
+            Text("가계부",
+                style: TextStyle(
+                    color: ColorFamily.black,
+                    fontSize: 20,
+                    fontFamily: FontFamily.mapleStoryLight)),
+          ],
+        ),
+        Row(
+          children: [
+            SizedBox(
+              width: deviceWidth * 0.38,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(
+                    height: 35,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                            "${provider.monthExpenditureTargetDateTime.year}",
+                            style: TextStyleFamily.normalTextStyle),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(
-                        height: 35,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text(
-                                "${ledgerProvider.monthExpenditureTargetDateTime.year}",
-                                style: TextStyleFamily.normalTextStyle),
-                          ],
-                        ),
+                      IconButton(
+                        onPressed: () async {
+                          provider.updatePreviousMonth();
+                          await provider.getMonthExpenditureSum();
+                        },
+                        icon: SvgPicture.asset(
+                            'lib/assets/icons/arrow_left.svg'),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              ledgerProvider.updatePreviousMonth();
-                            },
-                            icon: SvgPicture.asset(
-                                'lib/assets/icons/arrow_left.svg'),
-                          ),
-                          Text(
-                              "${ledgerProvider.monthExpenditureTargetDateTime.month}월",
-                              style: const TextStyle(
-                                  color: ColorFamily.black,
-                                  fontSize: 24,
-                                  fontFamily: FontFamily.mapleStoryLight)),
-                          IconButton(
-                            onPressed: () {
-                              ledgerProvider.updateNextMonth();
-                            },
-                            icon: SvgPicture.asset(
-                                'lib/assets/icons/arrow_right.svg'),
-                          ),
-                        ],
+                      Text(
+                          "${provider.monthExpenditureTargetDateTime.month}월",
+                          style: const TextStyle(
+                              color: ColorFamily.black,
+                              fontSize: 24,
+                              fontFamily: FontFamily.mapleStoryLight)),
+                      IconButton(
+                        onPressed: () async {
+                          provider.updateNextMonth();
+                          await provider.getMonthExpenditureSum();
+                        },
+                        icon: SvgPicture.asset(
+                            'lib/assets/icons/arrow_right.svg'),
                       ),
-                      const SizedBox(height: 35),
                     ],
                   ),
-                ),
-                const SizedBox(width: 10),
-                Container(width: 2, height: 70, color: ColorFamily.pink),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Flexible(
-                          child: Text(
-                            ledgerProvider.monthExpenditureSum,
-                            style: const TextStyle(
-                                color: ColorFamily.black,
-                                fontSize: 20,
-                                fontFamily: FontFamily.mapleStoryLight),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                          ),
-                        ),
-                        const Text(
-                          "원 소비",
-                          style: TextStyle(
-                              color: ColorFamily.black,
-                              fontSize: 20,
-                              fontFamily: FontFamily.mapleStoryLight),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                      ]),
-                ),
-                const SizedBox(width: 20),
-              ],
+                  const SizedBox(height: 35),
+                ],
+              ),
             ),
-            deviceHeight * 0.15);
-      }
-    },
-  );
+            const SizedBox(width: 10),
+            Container(width: 2, height: 70, color: ColorFamily.pink),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        provider.monthExpenditureSum,
+                        style: const TextStyle(
+                            color: ColorFamily.black,
+                            fontSize: 20,
+                            fontFamily: FontFamily.mapleStoryLight),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ),
+                    const Text(
+                      "원 소비",
+                      style: TextStyle(
+                          color: ColorFamily.black,
+                          fontSize: 20,
+                          fontFamily: FontFamily.mapleStoryLight),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                  ]),
+            ),
+            const SizedBox(width: 20),
+          ],
+        ),
+        deviceHeight * 0.15);
+  });
+      // }
+    // },
+  // );
 }
 
 //데이트플랜
