@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
@@ -164,7 +165,7 @@ Future<Map<String, dynamic>> fetchUserData() async {
   loverProfileImagePath == "lib/assets/images/default_profile.png"
       ? Image.asset("lib/assets/images/default_profile.png")
       : await getProfileImage(loverProfileImagePath);
-  final userState = await getSpecificUserData(userIdx, 'user_state') ?? 2;
+  final userState = await getSpecificUserData(userIdx, 'user_state') ?? 0;
   var memoryBannerImagePath = await getSpecificUserData(userIdx, 'memory_banner_image') ?? "";
   final memoryBannerImage =
   memoryBannerImagePath == ""
@@ -262,4 +263,13 @@ Future<bool> checkAndRequestNotificationPermission(BuildContext context, Functio
 
   // Default case to handle any other authorization status
   return false;
+}
+
+Future<void> closeApp() async {
+  const MethodChannel _platformChannel = MethodChannel("kr.co.lion.woo_yeon_hi/close");
+  try {
+    await _platformChannel.invokeMethod('closeApp');
+  } on PlatformException catch (e) {
+    print("Failed to close app: ${e.message}");
+  }
 }

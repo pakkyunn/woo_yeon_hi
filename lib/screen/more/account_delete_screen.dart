@@ -8,6 +8,7 @@ import 'package:woo_yeon_hi/dao/user_dao.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/style/font.dart';
 import 'package:woo_yeon_hi/style/text_style.dart';
+import 'package:woo_yeon_hi/utils.dart';
 import 'package:woo_yeon_hi/widget/more/account_delete_top_app_bar.dart';
 
 import '../../dialogs.dart';
@@ -112,19 +113,8 @@ class _AccountDeleteScreenState extends State<AccountDeleteScreen> {
                     splashColor: ColorFamily.gray,
                       onTap: () {
                         if (isAgreed) {
-                          _accountDeleting(context);
-                          Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                  builder: (context) => const LoginScreen()),
-                              (Route<dynamic> route) => false);
-                          Fluttertoast.showToast(
-                              msg: "우연히 계정이 삭제 처리되었습니다.",
-                              toastLength: Toast.LENGTH_LONG,
-                              gravity: ToastGravity.BOTTOM,
-                              timeInSecForIosWeb: 3,
-                              backgroundColor: ColorFamily.black,
-                              textColor: ColorFamily.white,
-                              fontSize: 14.0);
+                          dialogTitleWithContent(context, "우연히 계정 삭제", "계정 삭제 후 앱이 종료됩니다.",
+                                  (){Navigator.pop(context);}, (){_deleteAccount(context);});
                         } else {
                           showBlackToast("동의 항목을 체크해주세요");
                         }
@@ -147,8 +137,9 @@ class _AccountDeleteScreenState extends State<AccountDeleteScreen> {
         ));
   }
 
-  void _accountDeleting(BuildContext context) async {
-    switch (Provider.of<UserProvider>(context, listen: false).loginType) {
+  void _deleteAccount(BuildContext context) async {
+    var userProvider = Provider.of<UserProvider>(context, listen: false);
+    switch (userProvider.loginType) {
       case 1:
         await GoogleSignIn().signOut();
         break;
@@ -163,9 +154,9 @@ class _AccountDeleteScreenState extends State<AccountDeleteScreen> {
       case 0:
         break;
     }
-    await updateSpecificUserData(Provider.of<UserProvider>(context, listen: false).userIdx, 'login_type', 0);
-    await updateSpecificUserData(Provider.of<UserProvider>(context, listen: false).userIdx, 'user_state', 1);
-    await updateSpecificUserData(Provider.of<UserProvider>(context, listen: false).userIdx, 'app_lock_state', 0);
+    await updateSpecificUserData(userProvider.userIdx, 'user_state', 3);
+    await updateSpecificUserData(userProvider.userIdx, 'app_lock_state', 0);
     await storage.delete(key: "lockPassword");
+    closeApp();
   }
 }

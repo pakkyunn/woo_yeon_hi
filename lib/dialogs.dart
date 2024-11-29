@@ -50,6 +50,7 @@ void dialogTitleWithContent(BuildContext context, String title, String content, 
                         Text(
                           content,
                           style: TextStyleFamily.hintTextStyle,
+                          textAlign: TextAlign.center,
                         )
                       ],
                     ),

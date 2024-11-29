@@ -1,4 +1,5 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/svg.dart';
@@ -14,7 +15,6 @@ import '../../dialogs.dart';
 import '../../style/color.dart';
 import '../../style/text_style.dart';
 import '../../utils.dart';
-import '../login/login_screen.dart';
 import 'app_lock_setting_screen.dart';
 
 class AppSettingScreen extends StatefulWidget {
@@ -162,7 +162,8 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
                         child: InkWell(
                           splashFactory: NoSplash.splashFactory,
                           onTap: () async {
-                            _logOut(context);
+                            dialogTitleWithContent(context, "우연히 로그아웃", "로그아웃 후 앱이 종료됩니다.",
+                                    (){Navigator.pop(context);}, (){_logOut(context);});
                           },
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -272,13 +273,8 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
       case 0:
         break;
     }
-    await updateSpecificUserData(Provider.of<UserProvider>(context, listen: false).userIdx, 'login_type', 0);
     await updateSpecificUserData(Provider.of<UserProvider>(context, listen: false).userIdx, 'user_state', 2);
     await storage.delete(key: "lockPassword");
-    Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-            builder: (context) => const LoginScreen()),
-            (Route<dynamic> route) => false);
-    showBlackToast("로그아웃 되었습니다");
+    closeApp();
   }
 }

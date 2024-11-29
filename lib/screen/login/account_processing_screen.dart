@@ -88,8 +88,10 @@ class _AccountProcessingScreenState extends State<AccountProcessingScreen> {
                         await updateSpecificUserData(
                         provider.userIdx,
                         'user_state',
-                        0);
+                        2);
+                        provider.setUserState(2);
                         Navigator.pop(context, true);
+                        Navigator.pop(context);
                         Fluttertoast.showToast(
                             msg:
                             "계정 복구가 완료되었습니다\n다시 로그인 해주세요",

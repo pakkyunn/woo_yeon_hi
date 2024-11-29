@@ -123,7 +123,7 @@ class _FootprintHistoryWriteTopAppBarState
     Navigator.pop(context); // 다이얼로그 팝
 
     final snackBar = SnackBar(
-      content: Text("히스토리를 저장하고 있습니다..", textAlign: TextAlign.center, style: TextStyleFamily.normalTextStyle),
+      content: Text("히스토리를 저장하고 있습니다...", textAlign: TextAlign.center, style: TextStyleFamily.normalTextStyle),
       backgroundColor: ColorFamily.pink,
       duration: Duration(minutes: 5), // 히스토리 저장작업이 끝날 때까지 스낵바가 유지되도록 설정
     );

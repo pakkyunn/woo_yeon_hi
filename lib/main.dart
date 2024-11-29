@@ -190,13 +190,13 @@ class _WooYeonHiState extends State<WooYeonHi> {
                 dragHandleColor: ColorFamily.gray, // 드래그 핸들 색상 설정
               ),
               useMaterial3: true),
-          home: widget.userIdx == 0 // 미등록 계정
+          home: widget.userState == 0 // 미등록 계정
               ? const LoginScreen()
-              : widget.userState == 0 // 등록계정 & 계정상태 정상
+              : widget.userState == 1 // 등록계정 & 계정상태 정상 & 로그인 상태
                   ? widget.appLockState == 0 // 앱 잠금 미설정
                     ? const MainScreen()
                     : const PasswordEnterScreen() // 앱 잠금 설정
-                  : const LoginScreen(), // 등록계정 & 계정상태 비정상(삭제처리중/로그아웃)
+                  : const LoginScreen(), // 등록계정 & 계정상태 정상 & 로그아웃 상태 or 계정 삭제처리중 상태
           onGenerateRoute: RouteGenerator.generateRoute,
         ));
   }

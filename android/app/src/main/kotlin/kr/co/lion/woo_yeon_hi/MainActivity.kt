@@ -35,6 +35,7 @@ import android.graphics.PorterDuff
 
 class MainActivity: FlutterFragmentActivity() {
     private val CHANNEL = "custom_notification_channel"
+    private val CLOSECHANNEL = "kr.co.lion.woo_yeon_hi/close"
 
     companion object {
         const val CHANNEL_ID = "fixed_notification_channel"
@@ -107,6 +108,15 @@ class MainActivity: FlutterFragmentActivity() {
                 else -> {
                     result.notImplemented()
                 }
+            }
+        }
+
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CLOSECHANNEL).setMethodCallHandler { call, result ->
+            if (call.method == "closeApp") {
+                finishAffinity() // 앱 종료
+                result.success(null)
+            } else {
+                result.notImplemented()
             }
         }
     }

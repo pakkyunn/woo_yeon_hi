@@ -26,12 +26,12 @@ Future<void> addUserData(UserModel user) async {
   });
 }
 
-Future<Map<String, dynamic>> getUserData(int userIdx) async {
+Future<Map<String, dynamic>> getUserData(String userAccount) async {
   Map<String, dynamic> results = {};
 
   Query<Map<String, dynamic>> query = FirebaseFirestore.instance
       .collection('UserData')
-      .where('user_idx', isEqualTo: userIdx);
+      .where('user_account', isEqualTo: userAccount);
 
   var querySnapShot = await query.get();
   for (var doc in querySnapShot.docs) {
