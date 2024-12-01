@@ -12,9 +12,9 @@ import '../../style/font.dart';
 import '../../utils.dart';
 
 class NickNameSettingScreen extends StatefulWidget {
-  final bool isHost;
+  // final bool isHost;
 
-  const NickNameSettingScreen({super.key, required this.isHost});
+  const NickNameSettingScreen({super.key});
 
   @override
   State<NickNameSettingScreen> createState() => _NickNameSettingScreenState();
@@ -69,24 +69,24 @@ class _NickNameSettingScreenState extends State<NickNameSettingScreen> {
                           child: Column(
                             children: [
                               SizedBox(height: deviceHeight * 0.1),
-                              widget.isHost
-                                  ? const Text(
+                              // widget.isHost
+                                  const Text(
                                       "3 / 5",
                                       style: TextStyle(
                                           fontFamily: FontFamily.mapleStoryBold,
                                           fontSize: 15,
                                           color: ColorFamily.pink),
-                                    )
-                                  : const Text(
-                                      "2 / 4",
-                                      style: TextStyle(
-                                          fontFamily: FontFamily.mapleStoryBold,
-                                          fontSize: 15,
-                                          color: ColorFamily.pink),
-                                    ),
+                                  ),
+                                  // : const Text(
+                                  //     "2 / 4",
+                                  //     style: TextStyle(
+                                  //         fontFamily: FontFamily.mapleStoryBold,
+                                  //         fontSize: 15,
+                                  //         color: ColorFamily.pink),
+                                  //   ),
                               const SizedBox(height: 20),
-                              widget.isHost
-                                  ? Row(
+                              // widget.isHost
+                                  Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
@@ -96,33 +96,6 @@ class _NickNameSettingScreenState extends State<NickNameSettingScreen> {
                                         SvgPicture.asset(
                                             "lib/assets/icons/triple_right_arrow.svg",
                                             height: 24),
-                                        SvgPicture.asset(
-                                            "lib/assets/icons/heart_fill.svg",
-                                            height: 24),
-                                        SvgPicture.asset(
-                                            "lib/assets/icons/triple_right_arrow.svg",
-                                            height: 24),
-                                        SvgPicture.asset(
-                                            "lib/assets/icons/heart_fill.svg",
-                                            height: 24),
-                                        SvgPicture.asset(
-                                            "lib/assets/icons/triple_right_arrow.svg",
-                                            height: 24),
-                                        SvgPicture.asset(
-                                            "lib/assets/icons/heart_outlined.svg",
-                                            height: 24),
-                                        SvgPicture.asset(
-                                            "lib/assets/icons/triple_right_arrow.svg",
-                                            height: 24),
-                                        SvgPicture.asset(
-                                            "lib/assets/icons/heart_outlined.svg",
-                                            height: 24),
-                                      ],
-                                    )
-                                  : Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
                                         SvgPicture.asset(
                                             "lib/assets/icons/heart_fill.svg",
                                             height: 24),
@@ -146,6 +119,33 @@ class _NickNameSettingScreenState extends State<NickNameSettingScreen> {
                                             height: 24),
                                       ],
                                     ),
+                                  // : Row(
+                                  //     mainAxisAlignment:
+                                  //         MainAxisAlignment.center,
+                                  //     children: [
+                                  //       SvgPicture.asset(
+                                  //           "lib/assets/icons/heart_fill.svg",
+                                  //           height: 24),
+                                  //       SvgPicture.asset(
+                                  //           "lib/assets/icons/triple_right_arrow.svg",
+                                  //           height: 24),
+                                  //       SvgPicture.asset(
+                                  //           "lib/assets/icons/heart_fill.svg",
+                                  //           height: 24),
+                                  //       SvgPicture.asset(
+                                  //           "lib/assets/icons/triple_right_arrow.svg",
+                                  //           height: 24),
+                                  //       SvgPicture.asset(
+                                  //           "lib/assets/icons/heart_outlined.svg",
+                                  //           height: 24),
+                                  //       SvgPicture.asset(
+                                  //           "lib/assets/icons/triple_right_arrow.svg",
+                                  //           height: 24),
+                                  //       SvgPicture.asset(
+                                  //           "lib/assets/icons/heart_outlined.svg",
+                                  //           height: 24),
+                                  //     ],
+                                  //   ),
                               SizedBox(height: deviceHeight * 0.05),
                               const Text("연인의 별명을 지어주세요!",
                                   style: TextStyleFamily.smallTitleTextStyle),
@@ -202,8 +202,8 @@ class _NickNameSettingScreenState extends State<NickNameSettingScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              widget.isHost
-                                  ? Material(
+                              // widget.isHost
+                                  Material(
                                       color: ColorFamily.white,
                                       elevation: 0.5,
                                       shadowColor: Colors.black,
@@ -228,10 +228,10 @@ class _NickNameSettingScreenState extends State<NickNameSettingScreen> {
                                                       .normalTextStyle,
                                                 ),
                                               ))),
-                                    )
-                                  : SizedBox(
-                                      height: deviceHeight * 0.045,
-                                      width: deviceWidth * 0.4),
+                                    ),
+                                  // : SizedBox(
+                                  //     height: deviceHeight * 0.045,
+                                  //     width: deviceWidth * 0.4),
                               Material(
                                 color: ColorFamily.beige,
                                 elevation: 0.5,
@@ -243,14 +243,15 @@ class _NickNameSettingScreenState extends State<NickNameSettingScreen> {
                                   onTap: () {
                                     if (provider.checkProvider(
                                         loverNickNameTextEditController)) {
+                                      updateSpecificUserData(provider.userIdx,
+                                          'lover_nickname', loverNickname);
                                       updateSpecificUserData(provider.loverIdx,
                                           'user_nickname', loverNickname);
                                       provider.setLoverNickname(loverNickname);
                                       Navigator.of(context).push(
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  BirthdaySettingScreen(
-                                                      isHost: widget.isHost)));
+                                                  BirthdaySettingScreen()));
                                     } else {
                                       setState(() {
                                         _showErrorMessages = true;
@@ -288,7 +289,7 @@ class _NickNameSettingScreenState extends State<NickNameSettingScreen> {
                           (route) => false);
                     },
                     child: const Text(
-                      "로그아웃",
+                      "나가기",
                       style: TextStyleFamily.normalTextStyle,
                     ),
                   ),

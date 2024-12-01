@@ -344,9 +344,7 @@ class _ConnectCodeScreenState extends State<CodeConnectScreen> {
                                                                 context,
                                                                 MaterialPageRoute(
                                                                     builder: (context) =>
-                                                                        const DdaySettingScreen(
-                                                                            isHost:
-                                                                                true)),
+                                                                        const DdaySettingScreen()),
                                                                 (route) => false);
                                                             showBlackToast("연결되었습니다!");
                                                           } else {
@@ -456,7 +454,7 @@ class _ConnectCodeScreenState extends State<CodeConnectScreen> {
                                       (route) => false);
                                 },
                                 child: const Text(
-                                  "로그아웃",
+                                  "나가기",
                                   style: TextStyleFamily.normalTextStyle,
                                 ),
                               ),
@@ -484,9 +482,11 @@ class _ConnectCodeScreenState extends State<CodeConnectScreen> {
       await updateConnectCode(codeInput, userProvider.userIdx);
       userProvider.setLoverIdx(hostIdx);
       userProvider.setLoveDday(dateToString(DateTime.now()));
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const DdaySettingScreen()), (route) => false);
+
       //게스트화면 이동
-      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) =>
-      const NickNameSettingScreen(isHost: false)), (route) => false);
+      // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) =>
+      // const NickNameSettingScreen(isHost: false)), (route) => false);
       showBlackToast("연결되었습니다!");
     } else {
       showBlackToast("유효하지 않은 연결코드입니다");

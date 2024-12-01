@@ -123,11 +123,9 @@ class _RegisterScreen extends State<LoginScreen> {
                               switch (provider.userState) {
                                 case 0: // 미등록 상태
                                   await signInWithGoogle();
-                                  if (loginSuccess == true) {
-                                    var userData =
-                                        await getUserData(provider.userAccount);
-                                    // 기존 등록 계정이 있는 경우
-                                    if (userData != {}) {
+                                // 기존 등록 계정이 있는 경우
+                                  if (await provider.isUserAccountRegistered(provider.userAccount)) {
+                                      var userData = await getUserData(provider.userAccount);
                                       if(context.mounted){
                                         showDialog(
                                             context: context,
@@ -286,8 +284,6 @@ class _RegisterScreen extends State<LoginScreen> {
                                               const CodeConnectScreen()));
                                       showBlackToast("구글 계정으로 로그인 되었습니다");
                                     }
-                                  }
-
                                 case 2: // 로그아웃 상태
                                   provider.loginType == 1
                                       ? {

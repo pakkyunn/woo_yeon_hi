@@ -144,7 +144,7 @@ class _DdaySettingCalendarState extends State<DdaySettingCalendar> {
               if (!isSameDay(provider.selectedDay, selectedDay)) {
                 provider.setSelectedDay(selectedDay);
                 provider.setFocusedDay(focusedDay);
-                Provider.of<UserProvider>(context, listen: false).setLoveDday(dateToString(provider.selectedDay!));
+                Provider.of<UserProvider>(context, listen: false).setLoveDday(dateToStringLight(provider.selectedDay!));
               }
             },
             onFormatChanged: (format) {

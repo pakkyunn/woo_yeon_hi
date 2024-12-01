@@ -15,9 +15,9 @@ import 'package:card_swiper/card_swiper.dart';
 import '../../utils.dart';
 
 class HomePresetSettingScreen extends StatefulWidget {
-  final bool isHost;
+  // final bool isHost;
 
-  const HomePresetSettingScreen({super.key, required this.isHost});
+  const HomePresetSettingScreen({super.key});
 
   @override
   State<HomePresetSettingScreen> createState() => _RegisterDoneScreenState();
@@ -25,10 +25,10 @@ class HomePresetSettingScreen extends StatefulWidget {
 
 class _RegisterDoneScreenState extends State<HomePresetSettingScreen> {
   var presetImages = [
-    "lib/assets/images/home_preset_standard_4x.png",
-    "lib/assets/images/home_preset_dateplan_4x.png",
-    "lib/assets/images/home_preset_ledger_4x.png",
-    "lib/assets/images/home_preset_dateplan_ledger_4x.png",
+    "lib/assets/images/home_preset_1.png",
+    "lib/assets/images/home_preset_2.png",
+    "lib/assets/images/home_preset_3.png",
+    "lib/assets/images/home_preset_4.png",
   ];
 
   int presetIndex = 0;
@@ -59,26 +59,26 @@ class _RegisterDoneScreenState extends State<HomePresetSettingScreen> {
                                 width: deviceWidth - 40,
                                 child: Column(children: [
                                   SizedBox(height: deviceHeight * 0.1),
-                                  widget.isHost
-                                      ? const Text(
+                                  // widget.isHost
+                                      const Text(
                                           "5 / 5",
                                           style: TextStyle(
                                               fontFamily:
                                                   FontFamily.mapleStoryBold,
                                               fontSize: 15,
                                               color: ColorFamily.pink),
-                                        )
-                                      : const Text(
-                                          "4 / 4",
-                                          style: TextStyle(
-                                              fontFamily:
-                                                  FontFamily.mapleStoryBold,
-                                              fontSize: 15,
-                                              color: ColorFamily.pink),
                                         ),
+                                      // : const Text(
+                                      //     "4 / 4",
+                                      //     style: TextStyle(
+                                      //         fontFamily:
+                                      //             FontFamily.mapleStoryBold,
+                                      //         fontSize: 15,
+                                      //         color: ColorFamily.pink),
+                                      //   ),
                                   const SizedBox(height: 20),
-                                  widget.isHost
-                                      ? Row(
+                                  // widget.isHost
+                                      Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
@@ -88,33 +88,6 @@ class _RegisterDoneScreenState extends State<HomePresetSettingScreen> {
                                             SvgPicture.asset(
                                                 "lib/assets/icons/triple_right_arrow.svg",
                                                 height: 24),
-                                            SvgPicture.asset(
-                                                "lib/assets/icons/heart_fill.svg",
-                                                height: 24),
-                                            SvgPicture.asset(
-                                                "lib/assets/icons/triple_right_arrow.svg",
-                                                height: 24),
-                                            SvgPicture.asset(
-                                                "lib/assets/icons/heart_fill.svg",
-                                                height: 24),
-                                            SvgPicture.asset(
-                                                "lib/assets/icons/triple_right_arrow.svg",
-                                                height: 24),
-                                            SvgPicture.asset(
-                                                "lib/assets/icons/heart_fill.svg",
-                                                height: 24),
-                                            SvgPicture.asset(
-                                                "lib/assets/icons/triple_right_arrow.svg",
-                                                height: 24),
-                                            SvgPicture.asset(
-                                                "lib/assets/icons/heart_fill.svg",
-                                                height: 24),
-                                          ],
-                                        )
-                                      : Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
                                             SvgPicture.asset(
                                                 "lib/assets/icons/heart_fill.svg",
                                                 height: 24),
@@ -138,6 +111,33 @@ class _RegisterDoneScreenState extends State<HomePresetSettingScreen> {
                                                 height: 24),
                                           ],
                                         ),
+                                      // : Row(
+                                      //     mainAxisAlignment:
+                                      //         MainAxisAlignment.center,
+                                      //     children: [
+                                      //       SvgPicture.asset(
+                                      //           "lib/assets/icons/heart_fill.svg",
+                                      //           height: 24),
+                                      //       SvgPicture.asset(
+                                      //           "lib/assets/icons/triple_right_arrow.svg",
+                                      //           height: 24),
+                                      //       SvgPicture.asset(
+                                      //           "lib/assets/icons/heart_fill.svg",
+                                      //           height: 24),
+                                      //       SvgPicture.asset(
+                                      //           "lib/assets/icons/triple_right_arrow.svg",
+                                      //           height: 24),
+                                      //       SvgPicture.asset(
+                                      //           "lib/assets/icons/heart_fill.svg",
+                                      //           height: 24),
+                                      //       SvgPicture.asset(
+                                      //           "lib/assets/icons/triple_right_arrow.svg",
+                                      //           height: 24),
+                                      //       SvgPicture.asset(
+                                      //           "lib/assets/icons/heart_fill.svg",
+                                      //           height: 24),
+                                      //     ],
+                                      //   ),
                                   SizedBox(height: deviceHeight * 0.05),
                                   const Text(
                                     "홈 화면 스타일을 골라주세요",
@@ -261,8 +261,7 @@ class _RegisterDoneScreenState extends State<HomePresetSettingScreen> {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     RegisterDoneScreen(
-                                                        title: '',
-                                                        isHost: widget.isHost)),
+                                                        title: '')),
                                             (route) => false);
                                       },
                                       borderRadius: BorderRadius.circular(20.0),
@@ -295,7 +294,7 @@ class _RegisterDoneScreenState extends State<HomePresetSettingScreen> {
                                 (route) => false);
                           },
                           child: const Text(
-                            "로그아웃",
+                            "나가기",
                             style: TextStyleFamily.normalTextStyle,
                           ),
                         ),

@@ -8,22 +8,28 @@ import 'package:image_picker/image_picker.dart';
 
 import '../model/user_model.dart';
 
-Future<void> addUserData(UserModel user) async {
-  await FirebaseFirestore.instance.collection('UserData').add({
-    "user_idx": user.userIdx,
-    "login_type": user.loginType,
-    "user_account": user.userAccount,
-    "user_nickname": user.userNickname,
-    "user_birth": user.userBirth,
-    "user_profile_image": user.userProfileImage,
-    "lover_idx": user.loverIdx,
-    "home_preset_type": user.homePresetType,
-    "top_bar_type": user.topBarType,
-    "profile_message": user.profileMessage,
-    "notification_allow": user.notificationAllow,
-    "user_state": user.userState,
-    "love_dDay": user.loveDday,
-  });
+Future<void> registerUserData(int userIdx, String loveDday, String userBirth, String userProfileImage, int homePresetType, bool topBarActivate, int topBarType, String profileMessage, bool notificationAllow, int userState, int appLockState, String memoryBannerImage) async {
+  var myQuerySnapshot = await FirebaseFirestore.instance
+      .collection('UserData')
+      .where('user_idx', isEqualTo: userIdx)
+      .get();
+  var myDocument = myQuerySnapshot.docs.first;
+
+  if (myQuerySnapshot.docs.isNotEmpty) {
+    await myDocument.reference.update({
+      "love_dDay": loveDday,
+      "user_birth": userBirth,
+      "user_profile_image": userProfileImage,
+      "home_preset_type": homePresetType,
+      "top_bar_activate": topBarType,
+      "top_bar_type": topBarType,
+      "profile_message": profileMessage,
+      "notification_allow": notificationAllow,
+      "user_state": userState,
+      "app_lock_state": appLockState,
+      "memory_banner-image": memoryBannerImage,
+    });
+  }
 }
 
 Future<Map<String, dynamic>> getUserData(String userAccount) async {

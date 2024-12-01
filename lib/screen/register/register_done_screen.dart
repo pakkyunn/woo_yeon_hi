@@ -3,20 +3,22 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
+import 'package:woo_yeon_hi/model/user_model.dart';
 import 'package:woo_yeon_hi/screen/main_screen.dart';
 import 'package:woo_yeon_hi/style/color.dart';
 import 'package:woo_yeon_hi/style/text_style.dart';
 
+import '../../dao/user_dao.dart';
 import '../../provider/login_register_provider.dart';
 import '../../style/font.dart';
 import '../../utils.dart';
 
 class RegisterDoneScreen extends StatefulWidget {
   const RegisterDoneScreen(
-      {super.key, required this.title, required this.isHost});
+      {super.key, required this.title});
 
   final String title;
-  final bool isHost;
+  // final bool isHost;
 
   @override
   State<RegisterDoneScreen> createState() => _RegisterDoneScreen();
@@ -192,25 +194,18 @@ Future<void> _registerUserData(BuildContext context, UserProvider provider) asyn
       key: "userIdx",
       value: "${provider.userIdx}");
 
-  var myQuerySnapshot = await FirebaseFirestore.instance
-      .collection('UserData')
-      .where('user_idx', isEqualTo: provider.userIdx)
-      .get();
-  var myDocument = myQuerySnapshot.docs.first;
+  String _loveDday = provider.loveDday;
+  String _userBirth = provider.userBirth;
+  String _userProfileImage = "lib/assets/images/default_profile.png";
+  int _homePresetType = provider.homePresetType;
+  bool _topBarActivate = false;
+  int _topBarType = 0;
+  String _profileMessage = "";
+  bool _notificationAllow = false;
+  int _userState = 1;
+  int _appLockState = 0;
+  String _memoryBannerImage = "";
 
-  if (myQuerySnapshot.docs.isNotEmpty) {
-    myDocument.reference.update({
-      'user_birth': provider.userBirth,
-      'home_preset_type': provider.homePresetType,
-      'user_state': 0,
-      'login_type': provider.loginType,
-      'love_dDay': provider.loveDday,
-      'user_profile_image': "lib/assets/images/default_profile.png",
-      'top_bar_type': 0,
-      'profile_message': "",
-      'notification_allow': false,
-      'top_bar_activate': false,
-      'app_lock_state': 0,
-    });
-  }
+
+  registerUserData(provider.userIdx, _loveDday, _userBirth, _userProfileImage, _homePresetType, _topBarActivate, _topBarType, _profileMessage, _notificationAllow, _userState, _appLockState, _memoryBannerImage);
 }

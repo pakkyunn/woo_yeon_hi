@@ -24,11 +24,6 @@ class DdayListView extends StatefulWidget {
 }
 
 class _DdayListViewState extends State<DdayListView> {
-  // List<DdayModel> tempDdayList = [
-  //   DdayModel(user_idx: 1, dDay_idx: 0, title: "연애 시작", description: "오래오래 가자", date: "24. 3. 1.(일)"),
-  //   DdayModel(user_idx: 1, dDay_idx: 0, title: "생일", description: "우연녀 생일", date: "24. 8. 25.(일)"),
-  //   DdayModel(user_idx: 1, dDay_idx: 0, title: "200일", description: "만난지 200일 ♥️", date: "24. 8. 25.(일)")
-  // ];
   String? loverBirth;
 
   @override
@@ -48,7 +43,7 @@ class _DdayListViewState extends State<DdayListView> {
   Future<void> _getLoverBirthday() async {
     // 연인의 생일 정보 가져오기
     var userProvider = Provider.of<UserProvider>(context, listen: false);
-    loverBirth = await getSpecificUserData(userProvider.loverIdx, "user_birth");
+    loverBirth = await getSpecificUserData(userProvider.loverIdx, "user_birth")??"";
     setState(() {});
   }
 
@@ -61,7 +56,6 @@ class _DdayListViewState extends State<DdayListView> {
           ))
         : Consumer2<DdayProvider, UserProvider>(
             builder: (context, dDayProvider, userProvider, child) {
-            print("디데이리스트: ${dDayProvider.dDayList}");
             return Padding(
                 padding: const EdgeInsets.all(20),
                 child: SingleChildScrollView(
@@ -71,7 +65,7 @@ class _DdayListViewState extends State<DdayListView> {
                         children: [
                           Container(
                             padding:
-                                const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                            const EdgeInsets.fromLTRB(10, 10, 10, 0),
                             child: Column(
                               children: [
                                 // title, count
@@ -110,7 +104,7 @@ class _DdayListViewState extends State<DdayListView> {
                         children: [
                           Container(
                             padding:
-                                const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                            const EdgeInsets.fromLTRB(10, 10, 10, 0),
                             child: Column(
                               children: [
                                 // title, count
@@ -148,7 +142,7 @@ class _DdayListViewState extends State<DdayListView> {
                         children: [
                           Container(
                             padding:
-                                const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                                const EdgeInsets.fromLTRB(10, 10, 10, 0),
                             child: Column(
                               children: [
                                 // title, count
@@ -157,7 +151,9 @@ class _DdayListViewState extends State<DdayListView> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text("연인 생일", style: dDayTitleTextStyle),
-                                    Text(
+                                    loverBirth == ""
+                                    ? Text("", style: dDayCountTextStyle)
+                                    : Text(
                                         countingAnnualDday(
                                             stringToDate(loverBirth!)),
                                         style: dDayCountTextStyle)
@@ -170,7 +166,9 @@ class _DdayListViewState extends State<DdayListView> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text("", style: dDayContentTextStyle),
-                                    Text(makeBirthToDday(loverBirth!),
+                                    loverBirth == ""
+                                        ? Text("연인의 생일이 등록되지 않았습니다.", style: dDayDateTextStyle)
+                                        : Text(makeBirthToDday(loverBirth!),
                                         style: dDayDateTextStyle)
                                   ],
                                 ),

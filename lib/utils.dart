@@ -25,6 +25,15 @@ String dateToString(DateTime date) {
   return formattedDay;
 }
 
+/// Datetime 객체를 'yy. M. d.' 형식으로 변환합니다.
+String dateToStringLight(DateTime date) {
+  String formattedDay = DateFormat('yy. M. d.').format(date);
+  // String year = DateFormat('yyyy').format(date);
+  // String month = date.month.toString().padLeft(2, " ");
+  // String day = date.day.toString().padLeft(2, " ");
+  return formattedDay;
+}
+
 /// 'yyyy. M. d.' 형태의 문자열 날짜 데이터를 DateTime으로 변환합니다.
 DateTime stringToDate(String date) {
   List<String> splitDate = date.split(".");
@@ -147,7 +156,7 @@ Future<Map<String, dynamic>> fetchUserData() async {
   final appLockState = await getSpecificUserData(userIdx, 'app_lock_state') ?? 0;
   final homePresetType = await getSpecificUserData(userIdx, 'home_preset_type') ?? 0;
   final loginType = await getSpecificUserData(userIdx, 'login_type') ?? 0;
-  final loveDday = await getSpecificUserData(userIdx, 'love_dDay') ?? "${DateTime.now()}";
+  final loveDday = await getSpecificUserData(userIdx, 'love_dDay') ?? "미설정";
   final loverIdx = await getSpecificUserData(userIdx, 'lover_idx') ?? 0;
   final userProfileMessage = await getSpecificUserData(userIdx, 'profile_message') ?? "";
   final loverProfileMessage = await getSpecificUserData(loverIdx, 'profile_message') ?? "";

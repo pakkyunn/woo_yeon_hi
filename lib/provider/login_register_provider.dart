@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -271,56 +272,70 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  signInWithGoogle() async {
-    GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+  // signInWithGoogle() async {
+  //   GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+  //
+  //   if (googleUser != null) {
+  //     print('email = ${googleUser.email}');
+  //     print('id = ${googleUser.id}');
+  //
+  //     setUserAccount(googleUser.email);
+  //     setLoginSuccess(true);
+  //   } else {
+  //     showBlackToast("구글 계정 로그인에 실패하였습니다");
+  //   }
+  // }
 
-    if (googleUser != null) {
-      print('email = ${googleUser.email}');
-      print('id = ${googleUser.id}');
+  // signInWithKakao() async {
+  //   if (await isKakaoTalkInstalled()) {
+  //     try {
+  //       //카카오톡 설치됨, 카카오톡으로 로그인 시도
+  //       await UserApi.instance.loginWithKakaoTalk();
+  //       setLoginSuccess(true);
+  //       // setUserAccount(카카오계정정보);
+  //     } catch (error) {
+  //       print('카카오톡으로 로그인 실패 $error');
+  //       showBlackToast("카카오 계정 로그인에 실패하였습니다");
+  //       if (error is PlatformException && error.code == 'CANCELED') {
+  //         print('사용자가 로그인 취소');
+  //         showBlackToast("카카오 계정 로그인을 취소하였습니다");
+  //         return;
+  //       }
+  //
+  //       print('카카오 계정으로 로그인 시도');
+  //       try {
+  //         await UserApi.instance.loginWithKakaoAccount();
+  //         // setUserAccount(카카오계정정보);
+  //         setLoginSuccess(true);
+  //       } catch (error) {
+  //         print('카카오 계정으로 로그인 실패 $error');
+  //         showBlackToast("카카오 계정 로그인에 실패하였습니다");
+  //       }
+  //     }
+  //   } else {
+  //     //카카오톡 설치 안됨, 카카오계정으로 로그인 시도
+  //     try {
+  //       await UserApi.instance.loginWithKakaoAccount();
+  //       // setUserAccount(카카오계정정보);
+  //       setLoginSuccess(true);
+  //     } catch (error) {
+  //       showBlackToast("카카오 계정 로그인에 실패하였습니다");
+  //     }
+  //   }
+  // }
 
-      setUserAccount(googleUser.email);
-      setLoginSuccess(true);
-    } else {
-      showBlackToast("구글 계정 로그인에 실패하였습니다");
-    }
-  }
-
-  signInWithKakao() async {
-    if (await isKakaoTalkInstalled()) {
-      try {
-        //카카오톡 설치됨, 카카오톡으로 로그인 시도
-        await UserApi.instance.loginWithKakaoTalk();
-        setLoginSuccess(true);
-        // setUserAccount(카카오계정정보);
-      } catch (error) {
-        print('카카오톡으로 로그인 실패 $error');
-        showBlackToast("카카오 계정 로그인에 실패하였습니다");
-        if (error is PlatformException && error.code == 'CANCELED') {
-          print('사용자가 로그인 취소');
-          showBlackToast("카카오 계정 로그인을 취소하였습니다");
-          return;
-        }
-
-        print('카카오 계정으로 로그인 시도');
-        try {
-          await UserApi.instance.loginWithKakaoAccount();
-          // setUserAccount(카카오계정정보);
-          setLoginSuccess(true);
-        } catch (error) {
-          print('카카오 계정으로 로그인 실패 $error');
-          showBlackToast("카카오 계정 로그인에 실패하였습니다");
-        }
+  Future<bool> isUserAccountRegistered (String userAccount) async {
+    Query<Map<String, dynamic>> query = FirebaseFirestore.instance.collection('UserData');
+    bool _isRegistered = false;
+    var querySnapShot = await query.get();
+    for (var doc in querySnapShot.docs) {
+      if(doc["user_account"] == userAccount) {
+        _isRegistered = true;
+      } else {
+        _isRegistered = false;
       }
-    } else {
-      //카카오톡 설치 안됨, 카카오계정으로 로그인 시도
-      try {
-        await UserApi.instance.loginWithKakaoAccount();
-        // setUserAccount(카카오계정정보);
-        setLoginSuccess(true);
-      } catch (error) {
-        showBlackToast("카카오 계정 로그인에 실패하였습니다");
-      }
     }
+    return _isRegistered;
   }
 }
 

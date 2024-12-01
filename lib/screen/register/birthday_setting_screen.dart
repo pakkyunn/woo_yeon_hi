@@ -19,9 +19,9 @@ import '../../style/font.dart';
 import '../../style/text_style.dart';
 
 class BirthdaySettingScreen extends StatefulWidget {
-  final bool isHost;
+  // final bool isHost;
 
-  const BirthdaySettingScreen({super.key, required this.isHost});
+  const BirthdaySettingScreen({super.key});
 
   @override
   State<BirthdaySettingScreen> createState() => _BirthdaySettingScreenState();
@@ -63,26 +63,26 @@ class _BirthdaySettingScreenState extends State<BirthdaySettingScreen> {
                                 width: deviceWidth - 40,
                                 child: Column(children: [
                                   SizedBox(height: deviceHeight * 0.1),
-                                  widget.isHost
-                                      ? const Text(
+                                  // widget.isHost
+                                      const Text(
                                           "4 / 5",
                                           style: TextStyle(
                                               fontFamily:
                                                   FontFamily.mapleStoryBold,
                                               fontSize: 15,
                                               color: ColorFamily.pink),
-                                        )
-                                      : const Text(
-                                          "3 / 4",
-                                          style: TextStyle(
-                                              fontFamily:
-                                                  FontFamily.mapleStoryBold,
-                                              fontSize: 15,
-                                              color: ColorFamily.pink),
                                         ),
+                                      // : const Text(
+                                      //     "3 / 4",
+                                      //     style: TextStyle(
+                                      //         fontFamily:
+                                      //             FontFamily.mapleStoryBold,
+                                      //         fontSize: 15,
+                                      //         color: ColorFamily.pink),
+                                      //   ),
                                   const SizedBox(height: 20),
-                                  widget.isHost
-                                      ? Row(
+                                  // widget.isHost
+                                      Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
@@ -92,33 +92,6 @@ class _BirthdaySettingScreenState extends State<BirthdaySettingScreen> {
                                             SvgPicture.asset(
                                                 "lib/assets/icons/triple_right_arrow.svg",
                                                 height: 24),
-                                            SvgPicture.asset(
-                                                "lib/assets/icons/heart_fill.svg",
-                                                height: 24),
-                                            SvgPicture.asset(
-                                                "lib/assets/icons/triple_right_arrow.svg",
-                                                height: 24),
-                                            SvgPicture.asset(
-                                                "lib/assets/icons/heart_fill.svg",
-                                                height: 24),
-                                            SvgPicture.asset(
-                                                "lib/assets/icons/triple_right_arrow.svg",
-                                                height: 24),
-                                            SvgPicture.asset(
-                                                "lib/assets/icons/heart_fill.svg",
-                                                height: 24),
-                                            SvgPicture.asset(
-                                                "lib/assets/icons/triple_right_arrow.svg",
-                                                height: 24),
-                                            SvgPicture.asset(
-                                                "lib/assets/icons/heart_outlined.svg",
-                                                height: 24),
-                                          ],
-                                        )
-                                      : Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
                                             SvgPicture.asset(
                                                 "lib/assets/icons/heart_fill.svg",
                                                 height: 24),
@@ -142,6 +115,33 @@ class _BirthdaySettingScreenState extends State<BirthdaySettingScreen> {
                                                 height: 24),
                                           ],
                                         ),
+                                      // : Row(
+                                      //     mainAxisAlignment:
+                                      //         MainAxisAlignment.center,
+                                      //     children: [
+                                      //       SvgPicture.asset(
+                                      //           "lib/assets/icons/heart_fill.svg",
+                                      //           height: 24),
+                                      //       SvgPicture.asset(
+                                      //           "lib/assets/icons/triple_right_arrow.svg",
+                                      //           height: 24),
+                                      //       SvgPicture.asset(
+                                      //           "lib/assets/icons/heart_fill.svg",
+                                      //           height: 24),
+                                      //       SvgPicture.asset(
+                                      //           "lib/assets/icons/triple_right_arrow.svg",
+                                      //           height: 24),
+                                      //       SvgPicture.asset(
+                                      //           "lib/assets/icons/heart_fill.svg",
+                                      //           height: 24),
+                                      //       SvgPicture.asset(
+                                      //           "lib/assets/icons/triple_right_arrow.svg",
+                                      //           height: 24),
+                                      //       SvgPicture.asset(
+                                      //           "lib/assets/icons/heart_outlined.svg",
+                                      //           height: 24),
+                                      //     ],
+                                      //   ),
                                   SizedBox(height: deviceHeight * 0.05),
                                   const Text(
                                     "본인의 생년월일을 등록해주세요",
@@ -292,9 +292,7 @@ class _BirthdaySettingScreenState extends State<BirthdaySettingScreen> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    HomePresetSettingScreen(
-                                                        isHost:
-                                                            widget.isHost)));
+                                                    HomePresetSettingScreen()));
                                       },
                                       borderRadius: BorderRadius.circular(20.0),
                                       child: SizedBox(
@@ -326,7 +324,7 @@ class _BirthdaySettingScreenState extends State<BirthdaySettingScreen> {
                                 (route) => false);
                           },
                           child: const Text(
-                            "로그아웃",
+                            "나가기",
                             style: TextStyleFamily.normalTextStyle,
                           ),
                         ),

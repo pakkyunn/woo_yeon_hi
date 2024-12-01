@@ -18,9 +18,9 @@ import '../../utils.dart';
 import '../../widget/register/d_day_setting_calendar.dart';
 
 class DdaySettingScreen extends StatefulWidget {
-  final bool isHost;
+  // final bool isHost;
 
-  const DdaySettingScreen({super.key, required this.isHost});
+  const DdaySettingScreen({super.key});
 
   @override
   State<StatefulWidget> createState() => _DdaySettingScreen();
@@ -133,17 +133,15 @@ class _DdaySettingScreen extends State<DdaySettingScreen> {
                                                   provider.userIdx,
                                                   'love_dDay',
                                                   provider.loveDday);
-                                              await updateSpecificUserData(
-                                                  provider.loverIdx,
-                                                  'love_dDay',
-                                                  provider.loveDday);
+                                              // await updateSpecificUserData(
+                                              //     provider.loverIdx,
+                                              //     'love_dDay',
+                                              //     provider.loveDday);
                                               if (context.mounted) {
                                                 Navigator.of(context).push(
                                                     MaterialPageRoute(
                                                         builder: (context) =>
-                                                            NickNameSettingScreen(
-                                                                isHost: widget
-                                                                    .isHost)));
+                                                            NickNameSettingScreen()));
                                               }
                                             },
                                             borderRadius:
@@ -177,7 +175,7 @@ class _DdaySettingScreen extends State<DdaySettingScreen> {
                                   (route) => false);
                             },
                             child: const Text(
-                              "로그아웃",
+                              "나가기",
                               style: TextStyleFamily.normalTextStyle,
                             ),
                           ),
