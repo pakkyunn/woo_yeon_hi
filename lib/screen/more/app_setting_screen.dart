@@ -71,7 +71,7 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
                                         const MaterialStatePropertyAll(1),
                                     onChanged: (bool value) async {
                                       value
-                                      ? await checkAndRequestNotificationPermission(context, _showDialog)
+                                      ? await checkAndRequestNotificationPermission(context, (ctx) => _showDialog(ctx))
                                         ? showPinkSnackBar(context, '앱 활동 알림이 설정되었습니다')
                                         : setState(() {
                                           value = false;
@@ -188,7 +188,7 @@ class _AppSettingScreenState extends State<AppSettingScreen> {
     });
   }
 
-  void _showDialog(){
+  void _showDialog(BuildContext context){
     showDialog(
         context: context,
         builder: (context) {

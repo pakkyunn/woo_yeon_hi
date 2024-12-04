@@ -69,6 +69,8 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'com.google.android.gms:play-services-location:21.3.0'
+
 //
 //    // Import the BoM for the Firebase platform
 //    implementation(platform("com.google.firebase:firebase-bom:33.4.0"))

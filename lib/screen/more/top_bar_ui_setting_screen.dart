@@ -76,8 +76,7 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
                   Navigator.pop(context);
                   showPinkSnackBar(context, "상단바 설정이 저장되었습니다");
                 } else {
-                  await checkAndRequestNotificationPermission(
-                      context, _showDialog)
+                  await checkAndRequestNotificationPermission(context, (ctx) => _showDialog(ctx))
                       ? {
                     cancelNotification(),
                     showCustomNotification(provider.loveDday, topBarIndex,
@@ -447,11 +446,11 @@ class _TopBarUiSettingScreenState extends State<TopBarUiSettingScreen> {
                           ),
                           Text(
                             '상단바를 사용하기 위해 알림 권한이 필요합니다.',
-                            style: TextStyleFamily.normalTextStyle,
+                            style: TextStyle(color: ColorFamily.gray, fontSize: 14, fontFamily: FontFamily.mapleStoryLight),
                           ),
                           Text(
                             '설정에서 알림 권한을 허용해주세요.',
-                            style: TextStyleFamily.normalTextStyle,
+                            style: TextStyle(color: ColorFamily.gray, fontSize: 14, fontFamily: FontFamily.mapleStoryLight),
                           ),
                         ],
                       ),

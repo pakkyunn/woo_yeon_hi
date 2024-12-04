@@ -33,11 +33,11 @@ class _DdaySettingCalendarState extends State<DdaySettingCalendar> {
     return Container(
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20), color: ColorFamily.white),
-        child: Consumer<CalendarProvider>(builder: (context, provider, child) {
+        child: Consumer2<UserProvider, CalendarProvider>(builder: (context, userProvider, calendarProvider, child) {
           return TableCalendar(
-            firstDay: DateTime.utc(2010, 1, 1),
+            firstDay: DateTime.utc(2000, 1, 1),
             lastDay: DateTime.now(),
-            focusedDay: provider.focusedDay,
+            focusedDay: calendarProvider.focusedDay,
             locale: 'ko_kr',
             currentDay: DateTime.now(),
             availableGestures: AvailableGestures.horizontalSwipe,
@@ -138,13 +138,13 @@ class _DdaySettingCalendarState extends State<DdaySettingCalendar> {
             ),
             calendarFormat: _calendarFormat,
             selectedDayPredicate: (day) {
-              return isSameDay(provider.selectedDay, day);
+              return isSameDay(calendarProvider.selectedDay, day);
             },
             onDaySelected: (selectedDay, focusedDay) {
-              if (!isSameDay(provider.selectedDay, selectedDay)) {
-                provider.setSelectedDay(selectedDay);
-                provider.setFocusedDay(focusedDay);
-                Provider.of<UserProvider>(context, listen: false).setLoveDday(dateToStringLight(provider.selectedDay!));
+              if (!isSameDay(calendarProvider.selectedDay, selectedDay)) {
+                calendarProvider.setSelectedDay(selectedDay);
+                calendarProvider.setFocusedDay(focusedDay);
+                userProvider.setLoveDday(dateToStringLight(calendarProvider.selectedDay!));
               }
             },
             onFormatChanged: (format) {
@@ -155,7 +155,7 @@ class _DdaySettingCalendarState extends State<DdaySettingCalendar> {
               }
             },
             onPageChanged: (focusedDay) {
-              provider.setFocusedDay(focusedDay);
+              calendarProvider.setFocusedDay(focusedDay);
             },
           );
         },

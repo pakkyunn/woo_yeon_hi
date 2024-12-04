@@ -188,23 +188,26 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> with WidgetsBindi
                         var imageName = "${provider.userIdx}_${DateTime.now()}";
 
                         if(provider.tempImagePath==provider.userProfileImagePath){ //프로필 사진을 변경하지 않은 경우
-                          updateUserProfileData(provider.userIdx,'user_profile_image','user_nickname', 'user_birth','profile_message',
-                              provider.tempImagePath, tempUserNickname, tempUserBirth, tempProfileMessage);
                           await provider.setUserProfile(provider.tempImagePath, provider.tempImage,
                               tempUserNickname, tempUserBirth, tempProfileMessage);
+                          updateUserProfileData(provider.userIdx,'user_profile_image','user_nickname', 'user_birth','profile_message',
+                              provider.tempImagePath, tempUserNickname, tempUserBirth, tempProfileMessage);
+                          updateSpecificUserData(provider.loverIdx, "lover_nickname", tempUserNickname);
                         } else if(provider.tempImagePath=="lib/assets/images/default_profile.png"){ // 기본 프로필 이미지로 변경하는 경우
                           deleteProfileImage(provider.userProfileImagePath); //storage에 저장되어 있던 기존 프로필사진 파일 삭제
-                          updateUserProfileData(provider.userIdx,'user_profile_image','user_nickname', 'user_birth','profile_message',
-                              "lib/assets/images/default_profile.png", tempUserNickname, tempUserBirth, tempProfileMessage);
                           await provider.setUserProfile(provider.tempImagePath, Image.asset("lib/assets/images/default_profile.png"),
                               tempUserNickname, tempUserBirth, tempProfileMessage);
+                          updateUserProfileData(provider.userIdx,'user_profile_image','user_nickname', 'user_birth','profile_message',
+                              "lib/assets/images/default_profile.png", tempUserNickname, tempUserBirth, tempProfileMessage);
+                          updateSpecificUserData(provider.loverIdx, "lover_nickname", tempUserNickname);
                         } else { // 새로운 프로필 사진으로 변경하는 경우
                           deleteProfileImage(provider.userProfileImagePath); //storage에 저장되어 있던 기존 프로필사진 파일 삭제
+                          await provider.setUserProfile(imageName, Image.file(File(provider.tempImagePath)),
+                              tempUserNickname, tempUserBirth, tempProfileMessage);
                           uploadProfileImage(provider.image!, imageName);
                           updateUserProfileData(provider.userIdx,'user_profile_image','user_nickname', 'user_birth','profile_message',
                               imageName, tempUserNickname, tempUserBirth, tempProfileMessage);
-                          await provider.setUserProfile(imageName, Image.file(File(provider.tempImagePath)),
-                              tempUserNickname, tempUserBirth, tempProfileMessage);
+                          updateSpecificUserData(provider.loverIdx, "lover_nickname", tempUserNickname);
                           // 상단바스타일3,4를 사용중인 경우 이미지 업데이트
                           if(provider.topBarType==3 || provider.topBarType==4){
                             showCustomNotification(provider.loveDday, provider.topBarType, provider.userProfileImage, provider.loverProfileImage);
@@ -236,7 +239,6 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> with WidgetsBindi
                           Stack(
                             children: [
                               Material(
-                                elevation: 1,
                                 borderRadius: BorderRadius.circular(65),
                                 child: InkWell(
                                   onTap: () {
@@ -407,7 +409,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> with WidgetsBindi
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            "상태 메시지",
+                            "프로필 메시지",
                             style: TextStyleFamily.normalTextStyle,
                           ),
                         ),

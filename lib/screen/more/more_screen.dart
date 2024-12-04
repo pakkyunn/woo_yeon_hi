@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
@@ -45,7 +46,6 @@ class _MoreScreenState extends State<MoreScreen> {
             child: Consumer<UserProvider>(builder: (context, provider, child) {
               return Column(
                 children: [
-                  SizedBox(height: deviceHeight * 0.02),
                   SizedBox(
                     width: deviceWidth - 40,
                     child: Row(
@@ -55,7 +55,7 @@ class _MoreScreenState extends State<MoreScreen> {
                           borderRadius: BorderRadius.circular(65),
                           child: InkWell(
                             onTap: () {
-                              provider.loverProfileImagePath ==
+                              provider.userProfileImagePath ==
                                   "lib/assets/images/default_profile.png"
                                   ? null
                                   : showDialog(
@@ -97,9 +97,9 @@ class _MoreScreenState extends State<MoreScreen> {
                         ),
                         const SizedBox(width: 20),
                         SizedBox(
-                          height: deviceWidth * 0.3,
-                          width: deviceWidth * 0.5,
+                          height: deviceWidth*0.3,
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
@@ -111,20 +111,14 @@ class _MoreScreenState extends State<MoreScreen> {
                                           color: ColorFamily.black,
                                           fontSize: 16,
                                           fontFamily:
-                                              FontFamily.mapleStoryBold)),
+                                          FontFamily.mapleStoryBold)),
                                   InkWell(
                                       onTap: () async {
-                                      //   Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileEditScreen())).then((_) {
-                                      //     Future.delayed(Duration(milliseconds: 300), () {
-                                      //       setState(() {});
-                                      //     });
-                                      //   });
                                         Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         const ProfileEditScreen()));
-                                            // .then((value) => setState(() {}));
                                       },
                                       child: SizedBox(
                                           width: 40,
@@ -135,11 +129,11 @@ class _MoreScreenState extends State<MoreScreen> {
                                           )))
                                 ],
                               ),
-                              const SizedBox(height: 15),
+                              const SizedBox(height: 10),
                               provider.userProfileMessage.isEmpty
                               ? SizedBox(
                                   width: deviceWidth * 0.4,
-                                  child: Text("상태메시지로 내 마음을\n표현해보세요!",
+                                  child: Text("프로필 메시지로 내 마음을\n표현해보세요!",
                                       style: const TextStyle(
                                           color: ColorFamily.gray,
                                           fontSize: 12,

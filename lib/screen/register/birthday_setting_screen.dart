@@ -245,71 +245,67 @@ class _BirthdaySettingScreenState extends State<BirthdaySettingScreen> {
                                         ),
                                       )),
                                 ])),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Material(
-                                    color: ColorFamily.white,
-                                    elevation: 0.5,
-                                    shadowColor: Colors.black,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20.0),
-                                    ),
-                                    child: InkWell(
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                        },
-                                        borderRadius:
-                                            BorderRadius.circular(20.0),
-                                        child: SizedBox(
-                                            height: deviceHeight * 0.045,
-                                            width: deviceWidth * 0.4,
-                                            child: Container(
-                                              alignment: Alignment.center,
-                                              child: const Text(
-                                                "이전",
-                                                style: TextStyleFamily
-                                                    .normalTextStyle,
-                                              ),
-                                            ))),
+                            Row(
+                              mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                              children: [
+                                Material(
+                                  color: ColorFamily.white,
+                                  elevation: 0.5,
+                                  shadowColor: Colors.black,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
                                   ),
-                                  Material(
-                                    color: ColorFamily.beige,
-                                    elevation: 0.5,
-                                    shadowColor: Colors.black,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20.0),
-                                    ),
-                                    child: InkWell(
+                                  child: InkWell(
                                       onTap: () {
-                                        provider.setUserBirth(
-                                            dateToString(userBirth));
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    HomePresetSettingScreen()));
+                                        Navigator.pop(context);
                                       },
-                                      borderRadius: BorderRadius.circular(20.0),
+                                      borderRadius:
+                                          BorderRadius.circular(20.0),
                                       child: SizedBox(
                                           height: deviceHeight * 0.045,
                                           width: deviceWidth * 0.4,
                                           child: Container(
                                             alignment: Alignment.center,
                                             child: const Text(
-                                              "다음",
+                                              "이전",
                                               style: TextStyleFamily
                                                   .normalTextStyle,
                                             ),
-                                          )),
-                                    ),
+                                          ))),
+                                ),
+                                Material(
+                                  color: ColorFamily.beige,
+                                  elevation: 0.5,
+                                  shadowColor: Colors.black,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
                                   ),
-                                ],
-                              ),
+                                  child: InkWell(
+                                    onTap: () {
+                                      provider.setUserBirth(
+                                          dateToString(userBirth));
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  HomePresetSettingScreen()));
+                                    },
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    child: SizedBox(
+                                        height: deviceHeight * 0.045,
+                                        width: deviceWidth * 0.4,
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          child: const Text(
+                                            "다음",
+                                            style: TextStyleFamily
+                                                .normalTextStyle,
+                                          ),
+                                        )),
+                                  ),
+                                ),
+                              ],
                             ),
                           ])),
                       Align(
@@ -317,6 +313,7 @@ class _BirthdaySettingScreenState extends State<BirthdaySettingScreen> {
                         child: TextButton(
                           onPressed: () {
                             signOut(context);
+                            showBlackToast("등록이 취소되었습니다");
                             Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(

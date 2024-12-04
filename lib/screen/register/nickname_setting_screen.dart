@@ -6,6 +6,7 @@ import 'package:woo_yeon_hi/screen/login/login_screen.dart';
 import 'package:woo_yeon_hi/style/text_style.dart';
 
 import '../../dao/user_dao.dart';
+import '../../dialogs.dart';
 import '../../provider/login_register_provider.dart';
 import '../../style/color.dart';
 import '../../style/font.dart';
@@ -197,83 +198,80 @@ class _NickNameSettingScreenState extends State<NickNameSettingScreen> {
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              // widget.isHost
-                                  Material(
-                                      color: ColorFamily.white,
-                                      elevation: 0.5,
-                                      shadowColor: Colors.black,
-                                      shape: RoundedRectangleBorder(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // widget.isHost
+                                Material(
+                                    color: ColorFamily.white,
+                                    elevation: 0.5,
+                                    shadowColor: Colors.black,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(20.0),
+                                    ),
+                                    child: InkWell(
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                        },
                                         borderRadius:
                                             BorderRadius.circular(20.0),
-                                      ),
-                                      child: InkWell(
-                                          onTap: () {
-                                            Navigator.pop(context);
-                                          },
-                                          borderRadius:
-                                              BorderRadius.circular(20.0),
-                                          child: SizedBox(
-                                              height: deviceHeight * 0.045,
-                                              width: deviceWidth * 0.4,
-                                              child: Container(
-                                                alignment: Alignment.center,
-                                                child: const Text(
-                                                  "이전",
-                                                  style: TextStyleFamily
-                                                      .normalTextStyle,
-                                                ),
-                                              ))),
-                                    ),
-                                  // : SizedBox(
-                                  //     height: deviceHeight * 0.045,
-                                  //     width: deviceWidth * 0.4),
-                              Material(
-                                color: ColorFamily.beige,
-                                elevation: 0.5,
-                                shadowColor: Colors.black,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                ),
-                                child: InkWell(
-                                  onTap: () {
-                                    if (provider.checkProvider(
-                                        loverNickNameTextEditController)) {
-                                      updateSpecificUserData(provider.userIdx,
-                                          'lover_nickname', loverNickname);
-                                      updateSpecificUserData(provider.loverIdx,
-                                          'user_nickname', loverNickname);
-                                      provider.setLoverNickname(loverNickname);
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  BirthdaySettingScreen()));
-                                    } else {
-                                      setState(() {
-                                        _showErrorMessages = true;
-                                      });
-                                    }
-                                  },
-                                  borderRadius: BorderRadius.circular(20.0),
-                                  child: SizedBox(
-                                      height: deviceHeight * 0.045,
-                                      width: deviceWidth * 0.4,
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        child: const Text(
-                                          "다음",
-                                          style:
-                                              TextStyleFamily.normalTextStyle,
-                                        ),
-                                      )),
-                                ),
+                                        child: SizedBox(
+                                            height: deviceHeight * 0.045,
+                                            width: deviceWidth * 0.4,
+                                            child: Container(
+                                              alignment: Alignment.center,
+                                              child: const Text(
+                                                "이전",
+                                                style: TextStyleFamily
+                                                    .normalTextStyle,
+                                              ),
+                                            ))),
+                                  ),
+                                // : SizedBox(
+                                //     height: deviceHeight * 0.045,
+                                //     width: deviceWidth * 0.4),
+                            Material(
+                              color: ColorFamily.beige,
+                              elevation: 0.5,
+                              shadowColor: Colors.black,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
                               ),
-                            ],
-                          ),
+                              child: InkWell(
+                                onTap: () async {
+                                  if (provider.checkProvider(
+                                      loverNickNameTextEditController)) {
+                                    await updateSpecificUserData(provider.userIdx,
+                                        'lover_nickname', loverNickname);
+                                    await updateSpecificUserData(provider.loverIdx,
+                                        'user_nickname', loverNickname);
+                                    provider.setLoverNickname(loverNickname);
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                BirthdaySettingScreen()));
+                                  } else {
+                                    setState(() {
+                                      _showErrorMessages = true;
+                                    });
+                                  }
+                                },
+                                borderRadius: BorderRadius.circular(20.0),
+                                child: SizedBox(
+                                    height: deviceHeight * 0.045,
+                                    width: deviceWidth * 0.4,
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        "다음",
+                                        style:
+                                            TextStyleFamily.normalTextStyle,
+                                      ),
+                                    )),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     )),
@@ -282,6 +280,7 @@ class _NickNameSettingScreenState extends State<NickNameSettingScreen> {
                   child: TextButton(
                     onPressed: () {
                       signOut(context);
+                      showBlackToast("등록이 취소되었습니다");
                       Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(

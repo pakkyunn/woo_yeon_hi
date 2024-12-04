@@ -67,14 +67,15 @@ Future<bool> isCodeConnected(String code) async {
   return false;
 }
 
-Future<void> saveUserInfo(String userAccount, int userIdx, int loginType) async {
+Future<void> saveUserInfo(String userAccount, int userIdx, int loginType, String loveDday) async {
   try {
     await setUserSequence(userIdx);
     await FirebaseFirestore.instance.collection('UserData').add({
       'user_idx': userIdx,
       'user_account': userAccount,
       'user_nickname': "기본별명",
-      'login_type':loginType,
+      'login_type': loginType,
+      'love_dDay' : loveDday
     });
   } catch (e) {
     print("Error writing document: $e");

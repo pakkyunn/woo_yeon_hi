@@ -27,26 +27,31 @@ class LoginScreen extends StatefulWidget {
 class _RegisterScreen extends State<LoginScreen> {
   bool loginSuccess = false;
 
-  signInWithGoogle() async {
+  Future<void> _signInWithGoogle() async {
     GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
     if (googleUser != null) {
       Provider.of<UserProvider>(context, listen: false)
           .setUserAccount(googleUser.email);
-      setState(() {
-        loginSuccess = true;
-      });
+      if (context.mounted) {
+        setState(() {
+          loginSuccess = true;
+        });
+      }
     } else {
       showBlackToast("구글 계정 로그인에 실패하였습니다");
     }
   }
 
-  signInWithKakao() async {
+  Future<void> _signInWithKakao() async {
     if (await isKakaoTalkInstalled()) {
       try {
         // 카카오톡 설치됨, 카카오톡으로 로그인 시도
+        print('카카오톡으로 로그인 시도');
         await UserApi.instance.loginWithKakaoTalk();
+        print('카카오톡으로 로그인');
         await _fetchKakaoUserInfo();
+        print('카카오 유저info fetch');
       } catch (error) {
         print('카카오톡으로 로그인 실패 $error');
         showBlackToast("카카오톡 로그인에 실패하였습니다");
@@ -56,7 +61,6 @@ class _RegisterScreen extends State<LoginScreen> {
           return;
         }
 
-        print('카카오 계정으로 로그인 시도');
         try {
           await UserApi.instance.loginWithKakaoAccount();
           await _fetchKakaoUserInfo();
@@ -76,17 +80,23 @@ class _RegisterScreen extends State<LoginScreen> {
     }
   }
 
-  _fetchKakaoUserInfo() async {
+  Future<void> _fetchKakaoUserInfo() async {
     try {
       User user = await UserApi.instance.me();
       Provider.of<UserProvider>(context, listen: false)
           .setUserAccount(user.id.toString());
-      setState(() {
-        loginSuccess = true;
-      });
+      if (context.mounted) {
+        setState(() {
+          loginSuccess = true;
+        });
+      }
     } catch (error) {
       print('사용자 정보 요청 실패 $error');
       showBlackToast("사용자 정보 요청에 실패하였습니다");
+    }
+    if (!context.mounted) {
+      print("context.mounted가 false입니다. 이후 코드 실행 중단.");
+      return;
     }
   }
 
@@ -122,28 +132,32 @@ class _RegisterScreen extends State<LoginScreen> {
                             onTap: () async {
                               switch (provider.userState) {
                                 case 0: // 미등록 상태
-                                  await signInWithGoogle();
-                                // 기존 등록 계정이 있는 경우
-                                  if (await provider.isUserAccountRegistered(provider.userAccount)) {
-                                      var userData = await getUserData(provider.userAccount);
-                                      if(context.mounted){
+                                  await _signInWithGoogle();
+                                  if (loginSuccess) {
+                                    // 기존 등록 계정이 있는 경우
+                                    if (await provider.isUserAccountRegistered(
+                                        provider.userAccount)) {
+                                      var userData = await getUserData(
+                                          provider.userAccount);
+                                      if (context.mounted) {
                                         showDialog(
                                             context: context,
                                             builder: (context) {
                                               return Dialog(
                                                 surfaceTintColor:
-                                                ColorFamily.white,
+                                                    ColorFamily.white,
                                                 backgroundColor:
-                                                ColorFamily.white,
+                                                    ColorFamily.white,
                                                 child: Wrap(
                                                   children: [
                                                     Padding(
                                                       padding: const EdgeInsets
-                                                          .fromLTRB(0, 30, 0, 20),
+                                                          .fromLTRB(
+                                                          0, 30, 0, 20),
                                                       child: Column(
                                                         mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
                                                         children: [
                                                           Column(
                                                             children: [
@@ -167,17 +181,21 @@ class _RegisterScreen extends State<LoginScreen> {
                                                           ),
                                                           Row(
                                                             mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
+                                                                MainAxisAlignment
+                                                                    .center,
                                                             children: [
                                                               TextButton(
                                                                   style: ButtonStyle(
                                                                       overlayColor:
-                                                                      MaterialStateProperty.all(ColorFamily
-                                                                          .gray)),
-                                                                  onPressed: (){Navigator.pop(context);},
+                                                                          WidgetStateProperty.all(ColorFamily
+                                                                              .gray)),
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                  },
                                                                   child:
-                                                                  const Text(
+                                                                      const Text(
                                                                     "확인",
                                                                     style: TextStyleFamily
                                                                         .dialogButtonTextStyle_pink,
@@ -192,74 +210,90 @@ class _RegisterScreen extends State<LoginScreen> {
                                               );
                                             }).then((_) async {
                                           final snackBar = SnackBar(
-                                            content: Text("기존 계정으로 로그인 중입니다...", textAlign: TextAlign.center, style: TextStyleFamily.normalTextStyle),
+                                            content: Text("기존 계정으로 로그인 중입니다...",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyleFamily
+                                                    .normalTextStyle),
                                             backgroundColor: ColorFamily.pink,
-                                            duration: Duration(minutes: 5), // 히스토리 저장작업이 끝날 때까지 스낵바가 유지되도록 설정
+                                            duration: Duration(
+                                                minutes:
+                                                    5), // 히스토리 저장작업이 끝날 때까지 스낵바가 유지되도록 설정
                                           );
-                                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(snackBar);
 
-                                          var loverProfileMessage = await getSpecificUserData(userData["lover_idx"], "profile_message");
-                                          var loverProfileImagePath = await getSpecificUserData(userData["lover_idx"], "user_profile_image");
-                                          final userProfileImage =
-                                          userData["user_profile_image"] == "lib/assets/images/default_profile.png"
-                                              ? Image.asset("lib/assets/images/default_profile.png")
-                                              : await getProfileImage(userData["user_profile_image"]);
+                                          var loverProfileMessage =
+                                              await getSpecificUserData(
+                                                  userData["lover_idx"],
+                                                  "profile_message");
+                                          var loverProfileImagePath =
+                                              await getSpecificUserData(
+                                                  userData["lover_idx"],
+                                                  "user_profile_image");
+                                          final userProfileImage = userData[
+                                                      "user_profile_image"] ==
+                                                  "lib/assets/images/default_profile.png"
+                                              ? Image.asset(
+                                                  "lib/assets/images/default_profile.png")
+                                              : await getProfileImage(userData[
+                                                  "user_profile_image"]);
                                           final loverProfileImage =
-                                          loverProfileImagePath == "lib/assets/images/default_profile.png"
-                                              ? Image.asset("lib/assets/images/default_profile.png")
-                                              : await getProfileImage(loverProfileImagePath);
-                                          final memoryBannerImage =
-                                          userData["memory_banner_image"] == ""
-                                              ? Image.asset("lib/assets/images/default_profile.png")
-                                              : await getMemoryBannerImage(userData["memory_banner_image"]);
+                                              loverProfileImagePath ==
+                                                      "lib/assets/images/default_profile.png"
+                                                  ? Image.asset(
+                                                      "lib/assets/images/default_profile.png")
+                                                  : await getProfileImage(
+                                                      loverProfileImagePath);
+                                          final memoryBannerImage = userData[
+                                                      "memory_banner_image"] ==
+                                                  ""
+                                              ? Image.asset(
+                                                  "lib/assets/images/default_profile.png")
+                                              : await getMemoryBannerImage(
+                                                  userData[
+                                                      "memory_banner_image"]);
                                           provider.setUserAllData(
-                                              userData[
-                                              "user_idx"],
-                                              userData[
-                                              "user_account"],
-                                              userData[
-                                              "app_lock_state"],
-                                              userData[
-                                              "home_preset_type"],
+                                              userData["user_idx"],
+                                              userData["user_account"],
+                                              userData["app_lock_state"],
+                                              userData["home_preset_type"],
                                               1,
-                                              userData[
-                                              "love_dDay"],
-                                              userData[
-                                              "lover_idx"],
-                                              userData[
-                                              "notification_allow"],
-                                              userData[
-                                              "profile_message"],
+                                              userData["love_dDay"],
+                                              userData["lover_idx"],
+                                              userData["notification_allow"],
+                                              userData["profile_message"],
                                               loverProfileMessage,
-                                              userData[
-                                              "top_bar_type"],
-                                              userData[
-                                              "user_birth"],
-                                              userData[
-                                              "user_nickname"],
-                                              userData[
-                                              "lover_nickname"],
-                                              userData[
-                                              "user_profile_image"],
+                                              userData["top_bar_type"],
+                                              userData["user_birth"],
+                                              userData["user_nickname"],
+                                              userData["lover_nickname"],
+                                              userData["user_profile_image"],
                                               loverProfileImagePath,
                                               userProfileImage,
                                               loverProfileImage,
-                                              userData[
-                                              "user_state"],
-                                              userData[
-                                              "memory_banner_image"],
+                                              userData["user_state"],
+                                              userData["memory_banner_image"],
                                               memoryBannerImage);
-                                          if(context.mounted){
-                                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                          if (context.mounted) {
+                                            ScaffoldMessenger.of(context)
+                                                .hideCurrentSnackBar();
                                             Navigator.pushReplacement(
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                    const MainScreen()));
-                                            showPinkSnackBar(context, "로그인 성공!");
-                                            updateSpecificUserData(provider.userIdx, "user_state", 1);
-                                            updateSpecificUserData(provider.userIdx, "login_type", 1);
-                                            const storage = FlutterSecureStorage();
+                                                        const MainScreen()));
+                                            showPinkSnackBar(
+                                                context, "로그인 성공!");
+                                            updateSpecificUserData(
+                                                provider.userIdx,
+                                                "user_state",
+                                                1);
+                                            updateSpecificUserData(
+                                                provider.userIdx,
+                                                "login_type",
+                                                1);
+                                            const storage =
+                                                FlutterSecureStorage();
                                             storage.write(
                                                 key: "userAccount",
                                                 value: provider.userAccount);
@@ -274,16 +308,17 @@ class _RegisterScreen extends State<LoginScreen> {
                                     else {
                                       var userIdx = await getUserSequence() + 1;
                                       await saveUserInfo(
-                                          provider.userAccount, userIdx, 1);
+                                          provider.userAccount, userIdx, 1, provider.loveDday);
                                       provider.setUserIdx(userIdx);
                                       provider.setLoginType(1);
                                       Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                              const CodeConnectScreen()));
+                                                  const CodeConnectScreen()));
                                       showBlackToast("구글 계정으로 로그인 되었습니다");
                                     }
+                                  }
                                 case 2: // 로그아웃 상태
                                   provider.loginType == 1
                                       ? {
@@ -296,7 +331,7 @@ class _RegisterScreen extends State<LoginScreen> {
                                               provider.userIdx,
                                               "user_state",
                                               1),
-                                        showPinkSnackBar(context, "로그인 성공!")
+                                          showPinkSnackBar(context, "로그인 성공!")
                                         }
                                       : showBlackToast("기존에 등록된 다른 계정이 존재합니다");
 
@@ -345,30 +380,33 @@ class _RegisterScreen extends State<LoginScreen> {
                             onTap: () async {
                               switch (provider.userState) {
                                 case 0: // 미등록 상태
-                                  await signInWithKakao();
-                                  if (loginSuccess == true) {
-                                    var userData =
-                                    await getUserData(provider.userAccount);
-                                    // 기존 등록 계정이 있는 경우
-                                    if (userData != {}) {
-                                      if(context.mounted){
+                                  await _signInWithKakao();
+                                  print(
+                                      "카카오 로그인 후 userAccount: ${provider.userAccount}");
+                                  if (loginSuccess) {
+                                    if (await provider.isUserAccountRegistered(
+                                        provider.userAccount)) {
+                                      var userData = await getUserData(
+                                          provider.userAccount);
+                                      if (context.mounted) {
                                         showDialog(
                                             context: context,
                                             builder: (context) {
                                               return Dialog(
                                                 surfaceTintColor:
-                                                ColorFamily.white,
+                                                    ColorFamily.white,
                                                 backgroundColor:
-                                                ColorFamily.white,
+                                                    ColorFamily.white,
                                                 child: Wrap(
                                                   children: [
                                                     Padding(
                                                       padding: const EdgeInsets
-                                                          .fromLTRB(0, 30, 0, 20),
+                                                          .fromLTRB(
+                                                          0, 30, 0, 20),
                                                       child: Column(
                                                         mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
                                                         children: [
                                                           Column(
                                                             children: [
@@ -392,17 +430,21 @@ class _RegisterScreen extends State<LoginScreen> {
                                                           ),
                                                           Row(
                                                             mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
+                                                                MainAxisAlignment
+                                                                    .center,
                                                             children: [
                                                               TextButton(
                                                                   style: ButtonStyle(
                                                                       overlayColor:
-                                                                      MaterialStateProperty.all(ColorFamily
-                                                                          .gray)),
-                                                                  onPressed: (){Navigator.pop(context);},
+                                                                          MaterialStateProperty.all(ColorFamily
+                                                                              .gray)),
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                  },
                                                                   child:
-                                                                  const Text(
+                                                                      const Text(
                                                                     "확인",
                                                                     style: TextStyleFamily
                                                                         .dialogButtonTextStyle_pink,
@@ -415,119 +457,129 @@ class _RegisterScreen extends State<LoginScreen> {
                                                   ],
                                                 ),
                                               );
-                                            }).then((_) async {
-                                          var loverProfileMessage = await getSpecificUserData(userData["lover_idx"], "profile_message");
-                                          var loverProfileImagePath = await getSpecificUserData(userData["lover_idx"], "user_profile_image");
-                                          final userProfileImage =
-                                          userData["user_profile_image"] == "lib/assets/images/default_profile.png"
-                                              ? Image.asset("lib/assets/images/default_profile.png")
-                                              : await getProfileImage(userData["user_profile_image"]);
-                                          final loverProfileImage =
-                                          loverProfileImagePath == "lib/assets/images/default_profile.png"
-                                              ? Image.asset("lib/assets/images/default_profile.png")
-                                              : await getProfileImage(loverProfileImagePath);
-                                          final memoryBannerImage =
-                                          userData["memory_banner_image"] == ""
-                                              ? Image.asset("lib/assets/images/default_profile.png")
-                                              : await getMemoryBannerImage(userData["memory_banner_image"]);
-                                          provider.setUserAllData(
-                                              userData[
-                                              "user_idx"],
-                                              userData[
-                                              "user_account"],
-                                              userData[
-                                              "app_lock_state"],
-                                              userData[
-                                              "home_preset_type"],
-                                              2,
-                                              userData[
-                                              "love_dDay"],
-                                              userData[
-                                              "lover_idx"],
-                                              userData[
-                                              "notification_allow"],
-                                              userData[
-                                              "profile_message"],
-                                              loverProfileMessage,
-                                              userData[
-                                              "top_bar_type"],
-                                              userData[
-                                              "user_birth"],
-                                              userData[
-                                              "user_nickname"],
-                                              userData[
-                                              "lover_nickname"],
-                                              userData[
-                                              "user_profile_image"],
-                                              loverProfileImagePath,
-                                              userProfileImage,
-                                              loverProfileImage,
-                                              userData[
-                                              "user_state"],
-                                              userData[
-                                              "memory_banner_image"],
-                                              memoryBannerImage);
-                                          if(context.mounted){
-                                            Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                    const MainScreen()));
-                                            showPinkSnackBar(context, "로그인 성공!");
-                                            updateSpecificUserData(provider.userIdx, "user_state", 1);
-                                            updateSpecificUserData(provider.userIdx, "login_type", 2);
-                                            const storage = FlutterSecureStorage();
-                                            storage.write(
-                                                key: "userAccount",
-                                                value: provider.userAccount);
-                                            storage.write(
-                                                key: "userIdx",
-                                                value: "${provider.userIdx}");
-                                          }
-                                        });
+                                            })
+                                          .then((_) async {
+                                            var loverProfileMessage =
+                                                await getSpecificUserData(
+                                                    userData["lover_idx"],
+                                                    "profile_message");
+                                            var loverProfileImagePath =
+                                                await getSpecificUserData(
+                                                    userData["lover_idx"],
+                                                    "user_profile_image");
+                                            final userProfileImage = userData[
+                                                        "user_profile_image"] ==
+                                                    "lib/assets/images/default_profile.png"
+                                                ? Image.asset(
+                                                    "lib/assets/images/default_profile.png")
+                                                : await getProfileImage(
+                                                    userData[
+                                                        "user_profile_image"]);
+                                            final loverProfileImage =
+                                                loverProfileImagePath ==
+                                                        "lib/assets/images/default_profile.png"
+                                                    ? Image.asset(
+                                                        "lib/assets/images/default_profile.png")
+                                                    : await getProfileImage(
+                                                        loverProfileImagePath);
+                                            final memoryBannerImage = userData[
+                                                        "memory_banner_image"] ==
+                                                    ""
+                                                ? Image.asset(
+                                                    "lib/assets/images/default_profile.png")
+                                                : await getMemoryBannerImage(
+                                                    userData[
+                                                        "memory_banner_image"]);
+                                            provider.setUserAllData(
+                                                userData["user_idx"],
+                                                userData["user_account"],
+                                                userData["app_lock_state"],
+                                                userData["home_preset_type"],
+                                                2,
+                                                userData["love_dDay"],
+                                                userData["lover_idx"],
+                                                userData["notification_allow"],
+                                                userData["profile_message"],
+                                                loverProfileMessage,
+                                                userData["top_bar_type"],
+                                                userData["user_birth"],
+                                                userData["user_nickname"],
+                                                userData["lover_nickname"],
+                                                userData["user_profile_image"],
+                                                loverProfileImagePath,
+                                                userProfileImage,
+                                                loverProfileImage,
+                                                userData["user_state"],
+                                                userData["memory_banner_image"],
+                                                memoryBannerImage);
+                                            if (context.mounted) {
+                                              Navigator.pushReplacement(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const MainScreen()));
+                                              showPinkSnackBar(
+                                                  context, "로그인 성공!");
+                                              updateSpecificUserData(
+                                                  provider.userIdx,
+                                                  "user_state",
+                                                  1);
+                                              updateSpecificUserData(
+                                                  provider.userIdx,
+                                                  "login_type",
+                                                  2);
+                                              const storage =
+                                                  FlutterSecureStorage();
+                                              storage.write(
+                                                  key: "userAccount",
+                                                  value: provider.userAccount);
+                                              storage.write(
+                                                  key: "userIdx",
+                                                  value: "${provider.userIdx}");
+                                            }
+                                          });
                                       }
-                                    }
-                                    else {
+                                    } else {
+                                      print("3번 체크");
                                       var userIdx = await getUserSequence() + 1;
                                       await saveUserInfo(
-                                          provider.userAccount, userIdx, 1);
+                                          provider.userAccount, userIdx, 2, provider.loveDday);
                                       provider.setUserIdx(userIdx);
                                       provider.setLoginType(2);
                                       Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                              const CodeConnectScreen()));
+                                                  const CodeConnectScreen()));
                                       showBlackToast("카카오 계정으로 로그인 되었습니다");
                                     }
                                   }
-
                                 case 2: // 로그아웃 상태
                                   provider.loginType == 2
                                       ? {
-                                    Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                            const MainScreen())),
-                                    updateSpecificUserData(
-                                        provider.userIdx,
-                                        "user_state",
-                                        1),
-                                  showPinkSnackBar(context, "로그인 성공!")
-                                  }
+                                          Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const MainScreen())),
+                                          updateSpecificUserData(
+                                              provider.userIdx,
+                                              "user_state",
+                                              1),
+                                          showPinkSnackBar(context, "로그인 성공!")
+                                        }
                                       : showBlackToast("기존에 등록된 다른 계정이 존재합니다");
 
                                 case 3: // 삭제 처리중 상태
                                   dialogTitleWithContent(context, "계정 삭제 처리중",
                                       "삭제 대기중인 계정이 있습니다.\n처리 화면으로 이동합니다.", () {
-                                        Navigator.pop(context);
-                                      }, () {
-                                        Navigator.pop(context);
-                                        Navigator.of(context).push(MaterialPageRoute(
-                                            builder: (context) =>
+                                    Navigator.pop(context);
+                                  }, () {
+                                    Navigator.pop(context);
+                                    Navigator.of(context).push(MaterialPageRoute(
+                                        builder: (context) =>
                                             const AccountProcessingScreen()));
-                                      });
+                                  });
                               }
                             },
                             borderRadius: BorderRadius.circular(20.0),

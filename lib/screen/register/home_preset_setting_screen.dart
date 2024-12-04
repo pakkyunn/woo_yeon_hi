@@ -5,6 +5,7 @@ import 'package:woo_yeon_hi/screen/register/register_done_screen.dart';
 import 'package:woo_yeon_hi/screen/login/login_screen.dart';
 import 'package:woo_yeon_hi/style/text_style.dart';
 
+import '../../dialogs.dart';
 import '../../provider/login_register_provider.dart';
 import '../../style/color.dart';
 import '../../style/font.dart';
@@ -213,73 +214,69 @@ class _RegisterDoneScreenState extends State<HomePresetSettingScreen> {
                                     ),
                                   )
                                 ])),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Material(
-                                    color: ColorFamily.white,
-                                    elevation: 0.5,
-                                    shadowColor: Colors.black,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20.0),
-                                    ),
-                                    child: InkWell(
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                        },
-                                        borderRadius:
-                                            BorderRadius.circular(20.0),
-                                        child: SizedBox(
-                                            height: deviceHeight * 0.045,
-                                            width: deviceWidth * 0.4,
-                                            child: Container(
-                                              alignment: Alignment.center,
-                                              child: const Text(
-                                                "이전",
-                                                style: TextStyleFamily
-                                                    .normalTextStyle,
-                                              ),
-                                            ))),
+                            Row(
+                              mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                              children: [
+                                Material(
+                                  color: ColorFamily.white,
+                                  elevation: 0.5,
+                                  shadowColor: Colors.black,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
                                   ),
-                                  Material(
-                                    color: ColorFamily.beige,
-                                    elevation: 0.5,
-                                    shadowColor: Colors.black,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20.0),
-                                    ),
-                                    child: InkWell(
+                                  child: InkWell(
                                       onTap: () {
-                                        provider
-                                            .setHomePresetType(presetIndex);
-                                        Navigator.pushAndRemoveUntil(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    RegisterDoneScreen(
-                                                        title: '')),
-                                            (route) => false);
+                                        Navigator.pop(context);
                                       },
-                                      borderRadius: BorderRadius.circular(20.0),
+                                      borderRadius:
+                                          BorderRadius.circular(20.0),
                                       child: SizedBox(
                                           height: deviceHeight * 0.045,
                                           width: deviceWidth * 0.4,
                                           child: Container(
                                             alignment: Alignment.center,
                                             child: const Text(
-                                              "다음",
+                                              "이전",
                                               style: TextStyleFamily
                                                   .normalTextStyle,
                                             ),
-                                          )),
-                                    ),
+                                          ))),
+                                ),
+                                Material(
+                                  color: ColorFamily.beige,
+                                  elevation: 0.5,
+                                  shadowColor: Colors.black,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
                                   ),
-                                ],
-                              ),
+                                  child: InkWell(
+                                    onTap: () {
+                                      provider
+                                          .setHomePresetType(presetIndex);
+                                      Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  RegisterDoneScreen(
+                                                      title: '')),
+                                          (route) => false);
+                                    },
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    child: SizedBox(
+                                        height: deviceHeight * 0.045,
+                                        width: deviceWidth * 0.4,
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          child: const Text(
+                                            "다음",
+                                            style: TextStyleFamily
+                                                .normalTextStyle,
+                                          ),
+                                        )),
+                                  ),
+                                ),
+                              ],
                             ),
                           ])),
                       Align(
@@ -287,6 +284,7 @@ class _RegisterDoneScreenState extends State<HomePresetSettingScreen> {
                         child: TextButton(
                           onPressed: () {
                             signOut(context);
+                            showBlackToast("등록이 취소되었습니다");
                             Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(

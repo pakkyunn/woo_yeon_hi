@@ -126,6 +126,11 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setLoverProfileMessage(String message) {
+    _loverProfileMessage = message;
+    notifyListeners();
+  }
+
   void setUserProfileImagePath(String imagePath) {
     _userProfileImagePath = imagePath;
     notifyListeners();
@@ -133,7 +138,6 @@ class UserProvider extends ChangeNotifier {
 
   void setLoverProfileImagePath(String imagePath) {
     _loverProfileImagePath = imagePath;
-    notifyListeners();
   }
 
   void setUserProfileImage(Image userProfileImage) {
@@ -324,18 +328,22 @@ class UserProvider extends ChangeNotifier {
   //   }
   // }
 
-  Future<bool> isUserAccountRegistered (String userAccount) async {
-    Query<Map<String, dynamic>> query = FirebaseFirestore.instance.collection('UserData');
-    bool _isRegistered = false;
-    var querySnapShot = await query.get();
-    for (var doc in querySnapShot.docs) {
-      if(doc["user_account"] == userAccount) {
-        _isRegistered = true;
-      } else {
-        _isRegistered = false;
-      }
+  Future<bool> isUserAccountRegistered(String userAccount) async {
+    try {
+      Query<Map<String, dynamic>> query = FirebaseFirestore.instance
+          .collection('UserData')
+          .where('user_account', isEqualTo: userAccount);
+
+      print("쿼리 시작: $userAccount");
+      QuerySnapshot<Map<String, dynamic>> querySnapshot = await query.get();
+      print("쿼리 결과: ${querySnapshot.docs.length}");
+
+      // 조건에 맞는 문서가 하나라도 존재하면 true 반환
+      return querySnapshot.docs.isNotEmpty;
+    } catch (e) {
+      print("isUserAccountRegistered 에러 발생: $e");
+      return false; // 기본값
     }
-    return _isRegistered;
   }
 }
 

@@ -109,56 +109,52 @@ class _DdaySettingScreen extends State<DdaySettingScreen> {
                                     ],
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      SizedBox(
-                                          height: deviceHeight * 0.045,
-                                          width: deviceWidth * 0.4),
-                                      Material(
-                                        color: ColorFamily.beige,
-                                        elevation: 0.5,
-                                        shadowColor: Colors.black,
-                                        shape: RoundedRectangleBorder(
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                        height: deviceHeight * 0.045,
+                                        width: deviceWidth * 0.4),
+                                    Material(
+                                      color: ColorFamily.beige,
+                                      elevation: 0.5,
+                                      shadowColor: Colors.black,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(20.0),
+                                      ),
+                                      child: InkWell(
+                                          onTap: () async {
+                                            await updateSpecificUserData(
+                                                provider.userIdx,
+                                                'love_dDay',
+                                                provider.loveDday);
+                                            await updateSpecificUserData(
+                                                provider.loverIdx,
+                                                'love_dDay',
+                                                provider.loveDday);
+                                            if (context.mounted) {
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          NickNameSettingScreen()));
+                                            }
+                                          },
                                           borderRadius:
                                               BorderRadius.circular(20.0),
-                                        ),
-                                        child: InkWell(
-                                            onTap: () async {
-                                              await updateSpecificUserData(
-                                                  provider.userIdx,
-                                                  'love_dDay',
-                                                  provider.loveDday);
-                                              // await updateSpecificUserData(
-                                              //     provider.loverIdx,
-                                              //     'love_dDay',
-                                              //     provider.loveDday);
-                                              if (context.mounted) {
-                                                Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            NickNameSettingScreen()));
-                                              }
-                                            },
-                                            borderRadius:
-                                                BorderRadius.circular(20.0),
-                                            child: Container(
-                                              height: deviceHeight * 0.045,
-                                              width: deviceWidth * 0.4,
-                                              alignment: Alignment.center,
-                                              child: const Text(
-                                                "다음",
-                                                style: TextStyleFamily
-                                                    .normalTextStyle,
-                                              ),
-                                            )),
-                                      ),
-                                    ],
-                                  ),
+                                          child: Container(
+                                            height: deviceHeight * 0.045,
+                                            width: deviceWidth * 0.4,
+                                            alignment: Alignment.center,
+                                            child: const Text(
+                                              "다음",
+                                              style: TextStyleFamily
+                                                  .normalTextStyle,
+                                            ),
+                                          )),
+                                    ),
+                                  ],
                                 ),
                               ],
                             )),
@@ -167,6 +163,7 @@ class _DdaySettingScreen extends State<DdaySettingScreen> {
                           child: TextButton(
                             onPressed: () {
                               signOut(context);
+                              showBlackToast("등록이 취소되었습니다");
                               Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(

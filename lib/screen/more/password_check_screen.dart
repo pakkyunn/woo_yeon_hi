@@ -95,65 +95,60 @@ class _PasswordCheckScreenState extends State<PasswordCheckScreen> {
                 //             index < checkingPasswordList.length);
                 //       })),
                 // ),
-                SizedBox(height: 200),
+                SizedBox(height: deviceHeight*0.2),
                 Column(
                   children: [
-                    SizedBox(height: 0),
-                    SizedBox(
-                      height: 70,
-                      width: deviceWidth-40,
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            height: 70,
-                            width: (deviceWidth-40)/3,
-                            child: InkWell(
-                              onTap: () {
-                                _addNumber(1);
-                              },
-                              child: Container(
-                                alignment: Alignment.center,
-                                child: const Text(
-                                  "1",
-                                  style: TextStyleFamily.passwordTextStyle,
-                                ),
+                    Row(
+                      children: [
+                        SizedBox(
+                          height: 70,
+                          width: (deviceWidth-40)/3,
+                          child: InkWell(
+                            onTap: () {
+                              _addNumber(1);
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: const Text(
+                                "1",
+                                style: TextStyleFamily.passwordTextStyle,
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: 70,
-                            width: (deviceWidth-40)/3,
-                            child: InkWell(
-                              onTap: () {
-                                _addNumber(2);
-                              },
-                              child: Container(
-                                alignment: Alignment.center,
-                                child: const Text(
-                                  "2",
-                                  style: TextStyleFamily.passwordTextStyle,
-                                ),
+                        ),
+                        SizedBox(
+                          height: 70,
+                          width: (deviceWidth-40)/3,
+                          child: InkWell(
+                            onTap: () {
+                              _addNumber(2);
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: const Text(
+                                "2",
+                                style: TextStyleFamily.passwordTextStyle,
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: 70,
-                            width: (deviceWidth-40)/3,
-                            child: InkWell(
-                              onTap: () {
-                                _addNumber(3);
-                              },
-                              child: Container(
-                                alignment: Alignment.center,
-                                child: const Text(
-                                  "3",
-                                  style: TextStyleFamily.passwordTextStyle,
-                                ),
+                        ),
+                        SizedBox(
+                          height: 70,
+                          width: (deviceWidth-40)/3,
+                          child: InkWell(
+                            onTap: () {
+                              _addNumber(3);
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: const Text(
+                                "3",
+                                style: TextStyleFamily.passwordTextStyle,
                               ),
                             ),
-                          )
-                        ],
-                      ),
+                          ),
+                        )
+                      ],
                     ),
                     SizedBox(
                       height: 70,

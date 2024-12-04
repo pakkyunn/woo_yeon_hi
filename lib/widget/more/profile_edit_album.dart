@@ -19,7 +19,7 @@ class _ProfileEditAlbumState extends State<ProfileEditAlbum> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      elevation: 1.5,
+      elevation: 1.0,
       borderRadius: BorderRadius.circular(100),
       child: InkWell(
         splashColor: ColorFamily.cream,
@@ -28,8 +28,8 @@ class _ProfileEditAlbumState extends State<ProfileEditAlbum> {
           showPhotoBottomSheet(context);
         },
         child: Container(
-          height: 36,
-          width: 36,
+          height: 34,
+          width: 34,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(100),
               color: ColorFamily.white,

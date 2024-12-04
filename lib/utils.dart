@@ -131,13 +131,12 @@ void signOut(BuildContext context) async {
       break;
   }
   await deleteUserData(Provider.of<UserProvider>(context, listen: false).userIdx);
-  await storage.delete(key: "userIdx");
-  await storage.delete(key: "userAccount");
   Provider.of<UserProvider>(context, listen: false).setUserIdx(0);
   Provider.of<UserProvider>(context, listen: false).setLoginType(0);
   Provider.of<UserProvider>(context, listen: false).setUserBirth(dateToString(DateTime.now()));
   Provider.of<UserProvider>(context, listen: false).setLoverNickname("");
-  showBlackToast("등록이 취소되었습니다");
+  await storage.delete(key: "userIdx");
+  await storage.delete(key: "userAccount");
 }
 
 Future<Map<String, dynamic>> fetchUserData() async {
@@ -248,6 +247,8 @@ Future<bool> checkAndRequestNotificationPermission(BuildContext context, Functio
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   NotificationSettings settings = await messaging.getNotificationSettings();
 
+  print('Current settings: ${settings.authorizationStatus}');
+
   if (settings.authorizationStatus == AuthorizationStatus.notDetermined) {
     NotificationSettings newSettings = await messaging.requestPermission(
       alert: true,
@@ -261,7 +262,7 @@ Future<bool> checkAndRequestNotificationPermission(BuildContext context, Functio
       return false;
     }
   } else if (settings.authorizationStatus == AuthorizationStatus.denied) {
-    showDialogFunction();
+    showDialogFunction(context);
     return false;
   }
 

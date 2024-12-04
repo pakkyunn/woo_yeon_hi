@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/svg.dart';
@@ -45,6 +46,7 @@ class _HomeScreenContainerState extends State<HomeScreenContainer> {
     // _getDatePlanData();
     _getLedgerData();
     _getScheduleData();
+    _listenToUserData();
   }
 
   // Future<void> _getDatePlanData() async {
@@ -54,6 +56,66 @@ class _HomeScreenContainerState extends State<HomeScreenContainer> {
   //   var datePlanList = await getHomePlanList(context);
   //   homeDatePlanProvider.setDatePlanList(datePlanList);
   // }
+
+  // 유저 정보 실시간 업데이트
+  void _listenToUserData() {
+    var userProvider = Provider.of<UserProvider>(context, listen: false);
+    // 별명
+    FirebaseFirestore.instance
+        .collection('UserData')
+        .where('user_idx', isEqualTo: userProvider.userIdx)
+        .snapshots()
+        .listen((querySnapshot) {
+      if (querySnapshot.docs.isNotEmpty) {
+        final data = querySnapshot.docs.first.data();
+        final nickname = data['user_nickname'] ?? "";
+
+        // 프로바이더에 닉네임 저장
+        userProvider.setUserNickname(nickname);
+      }
+    }, onError: (error) {
+      print("실시간 데이터 수신 중 오류 발생: $error");
+    });
+
+    // 프로필 메시지
+    FirebaseFirestore.instance
+        .collection('UserData')
+        .where('user_idx', isEqualTo: userProvider.loverIdx)
+        .snapshots()
+        .listen((querySnapshot) {
+      if (querySnapshot.docs.isNotEmpty) {
+        final data = querySnapshot.docs.first.data();
+        final msg = data['profile_message'] ?? "";
+
+        // 프로바이더에 프로필 메시지 저장
+        userProvider.setLoverProfileMessage(msg);
+      }
+    }, onError: (error) {
+      print("실시간 데이터 수신 중 오류 발생: $error");
+    });
+
+    // 프로필 사진
+    FirebaseFirestore.instance
+        .collection('UserData')
+        .where('user_idx', isEqualTo: userProvider.loverIdx)
+        .snapshots()
+        .listen((querySnapshot) async {
+      if (querySnapshot.docs.isNotEmpty) {
+        final data = querySnapshot.docs.first.data();
+        final imgPath = data['user_profile_image'] ?? "lib/assets/images/default_profile.png";
+
+        // 프로바이더에 프로필 메시지 저장
+        userProvider.setLoverProfileImagePath(imgPath);
+        final img =
+        userProvider.loverProfileImagePath == "lib/assets/images/default_profile.png"
+            ? Image.asset("lib/assets/images/default_profile.png")
+            : await getProfileImage(userProvider.loverProfileImagePath);
+        userProvider.setLoverProfileImage(img);
+      }
+    }, onError: (error) {
+      print("실시간 데이터 수신 중 오류 발생: $error");
+    });
+  }
 
   Future<void> _getLedgerData() async {
     // 캘린더 데이터 가져오기
@@ -340,9 +402,10 @@ Widget dDay(BuildContext context) {
           ),
         ),
         Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-              width: deviceWidth * 0.38,
+              width: deviceWidth * 0.35,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -367,9 +430,11 @@ Widget dDay(BuildContext context) {
                                           children: [
                                             ClipRRect(
                                               borderRadius: BorderRadius.vertical(top: Radius.circular(30)), // 상단 모서리 둥글게
-                                              child: Image(
-                                                  image: AssetImage(
-                                                      "lib/assets/images/default_profile.png")), // 이미지나 위젯을 둥글게 클립
+                                              child: AspectRatio(
+                                                  aspectRatio: 10/9,
+                                                  child: Image(
+                                                      image: AssetImage(
+                                                          "lib/assets/images/default_profile.png"), fit: BoxFit.cover))// 이미지나 위젯을 둥글게 클립
                                             ),
                                             Expanded(
                                               child: ClipRRect(
@@ -406,74 +471,117 @@ Widget dDay(BuildContext context) {
                                     ),
                                   );
                                 })
-                        : showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return Center(
-                              child: Material(
-                                color: Colors.transparent, // 기본 배경 제거
-                                child: Container(
-                                  width: deviceWidth * 0.8,
-                                  height: deviceHeight * 0.5,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(30), // 모든 모서리를 둥글게
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.vertical(top: Radius.circular(30)), // 상단 모서리 둥글게
-                                        child: provider.userProfileImage, // 이미지나 위젯을 둥글게 클립
+                            : showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Center(
+                                  child: Material(
+                                    color: Colors.transparent, // 기본 배경 제거
+                                    child: Container(
+                                      width: deviceWidth * 0.8,
+                                      height: deviceHeight * 0.5,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(30), // 모든 모서리를 둥글게
                                       ),
-                                      Expanded(
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)), // 하단 모서리 둥글게
-                                          child: Container(
-                                            color: ColorFamily.white,
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Row(
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            color: Colors.transparent,
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.vertical(
+                                                  top: Radius.circular(30)), // 상단 모서리 둥글게
+                                              child:
+                                              AspectRatio(
+                                                  aspectRatio: 10/9,
+                                                  child: FittedBox(
+                                                    fit: BoxFit.cover, // 이미지 비율에 맞게 채움
+                                                    child: provider.userProfileImage, // 이미지 위젯 그대로 사용
+                                                  ),
+                                            ),
+                                          )),
+                                          Expanded(
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)), // 하단 모서리 둥글게
+                                              child: Container(
+                                                color: ColorFamily.white,
+                                                child: Column(
                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                   children: [
-                                                    Expanded(
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.all(15),
-                                                        child: Text(
-                                                          provider.userProfileMessage,
-                                                          style: TextStyleFamily.normalTextStyle,
-                                                          overflow: TextOverflow.clip,
-                                                          softWrap: true,
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Expanded(
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.all(15),
+                                                            child: Text(
+                                                              provider.userProfileMessage,
+                                                              style: TextStyleFamily.normalTextStyle,
+                                                              overflow: TextOverflow.clip,
+                                                              softWrap: true,
+                                                            ),
+                                                          ),
                                                         ),
-                                                      ),
+                                                      ],
                                                     ),
                                                   ],
                                                 ),
-                                              ],
+                                              ),
                                             ),
                                           ),
-                                        ),
+                                        ],
                                       ),
-                                    ],
+                                    ),
                                   ),
-                                ),
-                              ),
+                                );
+                              },
                             );
-                          },
-                        );
                       },
                       child: ClipRRect(
-                          borderRadius: BorderRadius.circular(100),
-                          child: Container(
-                              width: deviceWidth * 0.20,
-                              height: deviceWidth * 0.20,
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      image: provider.userProfileImage.image,
-                                      // Image 객체의 image 속성을 사용
-                                      fit: BoxFit.cover) // 이미지를 원 안에 꽉 차게 함
-                                  )))),
+                        borderRadius: BorderRadius.circular(100),  // 원형 클리핑
+                        child: Container(
+                          width: deviceWidth * 0.20,
+                          height: deviceWidth * 0.20,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: ColorFamily.gray, // 테두리 색상
+                              width: 0.2, // 테두리 두께
+                            ),
+                            shape: BoxShape.circle,  // 원형 테두리
+                            image: DecorationImage(
+                              image: provider.userProfileImage.image,
+                              fit: BoxFit.cover, // 이미지를 원형에 맞게 꽉 차게 함
+                            ),
+                          ),
+                        ),
+                      )),
                   const SizedBox(height: 5),
+                  // StreamBuilder<QuerySnapshot>(
+                  //   stream: FirebaseFirestore.instance
+                  //       .collection('UserData') // 컬렉션 이름
+                  //       .where('user_idx', isEqualTo: provider.userIdx) // 조건 설정
+                  //       .snapshots(), // 실시간 데이터 스트림
+                  //   builder: (context, snapshot) {
+                  //     if (snapshot.connectionState == ConnectionState.waiting) {
+                  //       return Text("");
+                  //     }
+                  //
+                  //     if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  //       return Text("기본별명"); // 데이터가 없을 경우
+                  //     }
+                  //
+                  //     // Firestore에서 가져온 문서들 처리
+                  //     final userDocs = snapshot.data!.docs;
+                  //     final userNickname = userDocs.first['user_nickname']; // 첫 번째 문서의 닉네임 가져오기
+                  //
+                  //     return Text(userNickname,
+                  //         textAlign: TextAlign.center,
+                  //         style: const TextStyle(
+                  //             fontSize: 14,
+                  //             color: ColorFamily.black,
+                  //             fontFamily: FontFamily.mapleStoryLight));
+                  //   },
+                  // )
                   Text(provider.userNickname,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
@@ -499,7 +607,7 @@ Widget dDay(BuildContext context) {
               ),
             ),
             SizedBox(
-              width: deviceWidth * 0.38,
+              width: deviceWidth * 0.35,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -523,10 +631,12 @@ Widget dDay(BuildContext context) {
                                         child: Column(
                                           children: [
                                             ClipRRect(
-                                              borderRadius: BorderRadius.vertical(top: Radius.circular(30)), // 상단 모서리 둥글게
-                                              child: Image(
-                                                  image: AssetImage(
-                                                      "lib/assets/images/default_profile.png")), // 이미지나 위젯을 둥글게 클립
+                                                borderRadius: BorderRadius.vertical(top: Radius.circular(30)), // 상단 모서리 둥글게
+                                                child: AspectRatio(
+                                                    aspectRatio: 10/9,
+                                                    child: Image(
+                                                        image: AssetImage(
+                                                            "lib/assets/images/default_profile.png"), fit: BoxFit.cover))// 이미지나 위젯을 둥글게 클립
                                             ),
                                             Expanded(
                                               child: ClipRRect(
@@ -578,10 +688,20 @@ Widget dDay(BuildContext context) {
                                         ),
                                         child: Column(
                                           children: [
-                                            ClipRRect(
-                                              borderRadius: BorderRadius.vertical(top: Radius.circular(30)), // 상단 모서리 둥글게
-                                              child: provider.loverProfileImage, // 이미지나 위젯을 둥글게 클립
-                                            ),
+                                            Container(
+                                                color: Colors.transparent,
+                                                child: ClipRRect(
+                                                  borderRadius: BorderRadius.vertical(
+                                                      top: Radius.circular(30)), // 상단 모서리 둥글게
+                                                  child:
+                                                  AspectRatio(
+                                                    aspectRatio: 10/9,
+                                                    child: FittedBox(
+                                                      fit: BoxFit.cover, // 이미지 비율에 맞게 채움
+                                                      child: provider.loverProfileImage, // 이미지 위젯 그대로 사용
+                                                    ),
+                                                  ),
+                                                )),
                                             Expanded(
                                               child: ClipRRect(
                                                 borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)), // 하단 모서리 둥글게
@@ -597,7 +717,8 @@ Widget dDay(BuildContext context) {
                                                             child: Padding(
                                                               padding: const EdgeInsets.all(15),
                                                               child: Text(
-                                                                provider.loverProfileMessage,                                                                style: TextStyleFamily.normalTextStyle,
+                                                                provider.loverProfileMessage,
+                                                                style: TextStyleFamily.normalTextStyle,
                                                                 overflow: TextOverflow.clip,
                                                                 softWrap: true,
                                                               ),
@@ -618,16 +739,23 @@ Widget dDay(BuildContext context) {
                                 });
                       },
                       child: ClipRRect(
-                          borderRadius: BorderRadius.circular(100),
-                          child: Container(
-                              width: deviceWidth * 0.20,
-                              height: deviceWidth * 0.20,
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      image: provider.loverProfileImage.image,
-                                      // Image 객체의 image 속성을 사용
-                                      fit: BoxFit.cover) // 이미지를 원 안에 꽉 차게 함
-                                  )))),
+                        borderRadius: BorderRadius.circular(100),  // 원형 클리핑
+                        child: Container(
+                          width: deviceWidth * 0.20,
+                          height: deviceWidth * 0.20,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: ColorFamily.gray, // 테두리 색상
+                              width: 0.2  , // 테두리 두께
+                            ),
+                            shape: BoxShape.circle,  // 원형 테두리
+                            image: DecorationImage(
+                              image: provider.loverProfileImage.image,
+                              fit: BoxFit.cover, // 이미지를 원형에 맞게 꽉 차게 함
+                            ),
+                          ),
+                        ),
+                      )),
                   const SizedBox(height: 5),
                   InkWell(
                     splashFactory: NoSplash.splashFactory,
@@ -698,49 +826,52 @@ Widget accountBook(BuildContext context) {
           children: [
             SizedBox(
               width: deviceWidth * 0.38,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              child: Wrap(
                 children: [
-                  SizedBox(
-                    height: 35,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                  Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    SizedBox(
+                      height: 35,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                              "${provider.monthExpenditureTargetDateTime.year}",
+                              style: TextStyleFamily.normalTextStyle),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        IconButton(
+                          onPressed: () async {
+                            provider.updatePreviousMonth();
+                            await provider.getMonthExpenditureSum();
+                          },
+                          icon: SvgPicture.asset(
+                              'lib/assets/icons/arrow_left.svg'),
+                        ),
                         Text(
-                            "${provider.monthExpenditureTargetDateTime.year}",
-                            style: TextStyleFamily.normalTextStyle),
+                            "${provider.monthExpenditureTargetDateTime.month}월",
+                            style: const TextStyle(
+                                color: ColorFamily.black,
+                                fontSize: 24,
+                                fontFamily: FontFamily.mapleStoryLight)),
+                        IconButton(
+                          onPressed: () async {
+                            provider.updateNextMonth();
+                            await provider.getMonthExpenditureSum();
+                          },
+                          icon: SvgPicture.asset(
+                              'lib/assets/icons/arrow_right.svg'),
+                        ),
                       ],
                     ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        onPressed: () async {
-                          provider.updatePreviousMonth();
-                          await provider.getMonthExpenditureSum();
-                        },
-                        icon: SvgPicture.asset(
-                            'lib/assets/icons/arrow_left.svg'),
-                      ),
-                      Text(
-                          "${provider.monthExpenditureTargetDateTime.month}월",
-                          style: const TextStyle(
-                              color: ColorFamily.black,
-                              fontSize: 24,
-                              fontFamily: FontFamily.mapleStoryLight)),
-                      IconButton(
-                        onPressed: () async {
-                          provider.updateNextMonth();
-                          await provider.getMonthExpenditureSum();
-                        },
-                        icon: SvgPicture.asset(
-                            'lib/assets/icons/arrow_right.svg'),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 35),
-                ],
+                    const SizedBox(height: 35),
+                  ],
+                )]
               ),
             ),
             const SizedBox(width: 10),

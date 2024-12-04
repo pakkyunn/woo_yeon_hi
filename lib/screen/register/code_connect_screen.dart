@@ -445,6 +445,7 @@ class _ConnectCodeScreenState extends State<CodeConnectScreen> {
                               child: TextButton(
                                 onPressed: () async {
                                   signOut(context);
+                                  showBlackToast("등록이 취소되었습니다");
                                   await deleteConnectCodeData(_connectCode);
                                   Navigator.pushAndRemoveUntil(
                                       context,
@@ -477,17 +478,18 @@ class _ConnectCodeScreenState extends State<CodeConnectScreen> {
         && DateTime.now().isBefore(DateTime.parse(await getSpecificConnectCodeData(codeInput, 'expired_time')))
     ){
       var hostIdx = await getSpecificConnectCodeData(codeInput, 'host_idx');
+      userProvider.setLoverIdx(hostIdx);
+      userProvider.setLoveDday(dateToString(DateTime.now()));
       await deleteConnectCodeData(connectCode);
       await saveLoverIdx(userProvider.userIdx, hostIdx);
       await updateConnectCode(codeInput, userProvider.userIdx);
-      userProvider.setLoverIdx(hostIdx);
-      userProvider.setLoveDday(dateToString(DateTime.now()));
       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const DdaySettingScreen()), (route) => false);
+      showBlackToast("연결되었습니다!");
+
 
       //게스트화면 이동
       // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) =>
       // const NickNameSettingScreen(isHost: false)), (route) => false);
-      showBlackToast("연결되었습니다!");
     } else {
       showBlackToast("유효하지 않은 연결코드입니다");
     }
