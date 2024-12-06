@@ -340,8 +340,19 @@ class _CalendarAddScreenState extends State<CalendarAddScreen> {
 
     await addScheduleData(schedule); // 컬렉션에 저장
     await calendarScreenProvider.updateScheduleList(context);
+    _getScheduleData(context);
   }
 }
+
+Future<void> _getScheduleData(BuildContext context) async {
+  // 캘린더 데이터 가져오기
+  var homeCalendarProvider = Provider.of<HomeCalendarProvider>(context, listen: false);
+  var scheduleList = await getHomeCalendarScheduleList(context);
+  homeCalendarProvider.setScheduleList(scheduleList);
+  homeCalendarProvider.setListIndex();
+  homeCalendarProvider.setSelectedDayScheduleList();
+}
+
 
 Widget _buildColorOption(BuildContext context, ScheduleColorType color, Color currentColor, ValueChanged<Color> onColorChanged) {
   return GestureDetector(
