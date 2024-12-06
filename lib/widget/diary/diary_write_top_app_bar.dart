@@ -89,7 +89,6 @@ void _onCancleDone(BuildContext context) {
 
 Future<void> _onConfirmDone(BuildContext context, DiaryEditProvider provider, int userIdx) async {
   Navigator.pop(context); // 다이얼로그 팝
-  Navigator.pop(context); // 일기 작성 페이지 팝
 
   var diaryIdx = await getDiarySequence() + 1;
   await setDiarySequence(diaryIdx);
@@ -102,13 +101,15 @@ Future<void> _onConfirmDone(BuildContext context, DiaryEditProvider provider, in
       diaryUserIdx: userIdx, // 임시
       diaryDate: todayFormatted,
       diaryWeather: provider.weatherType,
-      diaryImage: imageName,
+      diaryImagePath: imageName,
       diaryTitle: provider.titleTextEditController.text,
       diaryContent: provider.contentTextEditController.text,
       diaryLoverCheck: false,
       diaryState: DiaryState.STATE_NORMAL.state);
   await addDiary(diary);
   await uploadDiaryImage(provider.image!, imageName);
+  Provider.of<DiaryProvider>(context, listen: false).fetchDiaries(context);
+  Navigator.pop(context); // 일기 작성 페이지 팝
 }
 
 void _onCancelBack(BuildContext context){

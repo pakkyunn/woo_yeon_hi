@@ -72,7 +72,7 @@ class AppWidgetProvider : HomeWidgetProvider() {
 
                         // 두 날짜의 차이를 '일' 단위로 계산
                         val diffInMillis = currentDate.timeInMillis - startCalendar.timeInMillis
-                        dDayCounter = (diffInMillis / (1000 * 60 * 60 * 24)).toInt() + 1
+                        dDayCounter = (diffInMillis / (1000 * 60 * 60 * 24)).toInt()
                     } else {
                         // startDate가 null인 경우 처리
                         dDayCounter = 0
@@ -101,7 +101,7 @@ class AppWidgetProvider : HomeWidgetProvider() {
     }
 
     private fun _stringToDate(dateString: String): Date? {
-        val dateFormat = SimpleDateFormat("yyyy. MM. d.", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("yy. M. d.", Locale.getDefault())
         return try {
             dateFormat.parse(dateString)
         } catch (e: ParseException) {

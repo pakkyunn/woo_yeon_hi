@@ -386,8 +386,7 @@ void showFilterBottomSheet(DiaryProvider provider, int user_idx, int lover_idx, 
                               backgroundColor: ColorFamily.beige,
                               surfaceTintColor: ColorFamily.beige,
                             ),
-                            onPressed: () {
-                              Navigator.pop(context);
+                            onPressed: () async {
                               provider.setFilterList([]);
                               // 작성자 유형
                               provider.addFilterListItem(provider.editorType[
@@ -421,6 +420,8 @@ void showFilterBottomSheet(DiaryProvider provider, int user_idx, int lover_idx, 
                               provider.isSelected_sort
                                   .indexWhere((element) => element)]);
                               provider.providerNotify();
+                              provider.diaryFuture = provider.getDiary(context);
+                              Navigator.pop(context);
                             },
                             child: const Text(
                               "확인",

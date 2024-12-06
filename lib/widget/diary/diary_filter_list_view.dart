@@ -49,6 +49,7 @@ class _DiaryFilterListViewState extends State<DiaryFilterListView> {
               widget.provider.setEndPeriod("");
             }
             widget.provider.filterList[index] = "";
+            widget.provider.diaryFuture = widget.provider.getDiary(context);
             widget.provider.providerNotify();
           });
         },

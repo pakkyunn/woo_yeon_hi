@@ -52,21 +52,21 @@ class TextStyleFamily{
   /// 다이얼로그 타이틀 텍스트 스타일. size 20, black, bold
   static const TextStyle dialogTitleTextStyle = TextStyle(
       fontFamily: FontFamily.mapleStoryLight,
-      fontSize: 20,
+      fontSize: 18,
       color: ColorFamily.black
   );
 
   /// 다이얼로그 버튼 텍스트 스타일. size 20, black
   static const TextStyle dialogButtonTextStyle = TextStyle(
       fontFamily: FontFamily.mapleStoryLight,
-      fontSize: 20,
+      fontSize: 18,
       color: ColorFamily.black
   );
 
   /// 다이얼로그 강조 버튼 텍스트 스타일. size 20, pink
   static const TextStyle dialogButtonTextStyle_pink = TextStyle(
       fontFamily: FontFamily.mapleStoryLight,
-      fontSize: 20,
+      fontSize: 18,
       color: ColorFamily.pink
   );
   /// 소제목 텍스트 스타일. size 15

@@ -25,33 +25,12 @@ class DiaryScreen extends StatefulWidget {
 }
 
 class _DiaryScreenState extends State<DiaryScreen> with RouteAware {
-  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _fetchData();
+    Provider.of<DiaryProvider>(context, listen: false).fetchDiaries(context);
   }
-
-  Future<void> _fetchData() async {
-    setState(() {
-      _isLoading = true;
-    });
-    await Provider.of<DiaryProvider>(context, listen: false).fetchDiaries(context);
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // 처음 빌드될 때가 아닌, 다른 화면에서 돌아왔을 때만 새로고침이 되도록 체크
-    if (ModalRoute.of(context)?.isCurrent ?? false) {
-      _fetchData();
-    }
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -128,49 +107,33 @@ class _DiaryScreenState extends State<DiaryScreen> with RouteAware {
                   //       return Expanded(child: DiaryGridView(diary2Provider));
                   //     }
                   //   }),
-                  _isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(
-                        color: ColorFamily.pink,
-                      ))
-                  : diaryProvider.diaryData.isEmpty
-                    ? const Expanded(child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("일기 목록 없음", style: TextStyleFamily
-                            .smallTitleTextStyle)
-                      ]))
-                    : Expanded(child: DiaryGridView(diaryProvider))
-
-                  // FutureBuilder(
-                  //   future: diaryProvider.diaryFuture,
-                  //   builder: (context, snapshot){
-                  //     if(snapshot.hasData == false){
-                  //       return SizedBox(
-                  //         height: MediaQuery.of(context).size.height*0.5,
-                  //         child: const Center(
-                  //           child: CircularProgressIndicator(
-                  //             color: ColorFamily.pink,
-                  //           ),
-                  //         ),
-                  //       );
-                  //     }else if(snapshot.hasError){
-                  //       return const Text("오류 발생", style: TextStyleFamily.normalTextStyle);
-                  //     }else if(diaryProvider.diaryData.isEmpty) {
-                  //       //필터링 조건에 맞는 일기가 없을 때
-                  //         return const Expanded(child: Column(
-                  //             crossAxisAlignment: CrossAxisAlignment.center,
-                  //             mainAxisAlignment: MainAxisAlignment.center,
-                  //             children: [
-                  //               Text("일기 목록 없음", style: TextStyleFamily
-                  //                   .smallTitleTextStyle)
-                  //             ]));
-                  //       }else {
-                  //         return Expanded(child: DiaryGridView(diaryProvider));
-                  //       }
-                  //     }
-                  // ),
+                  FutureBuilder(
+                    future: diaryProvider.diaryFuture,
+                    builder: (context, snapshot){
+                      if(snapshot.hasData == false){
+                        return const Center(
+                            child: CircularProgressIndicator(
+                              color: ColorFamily.pink,
+                            )
+                        );
+                      }else if(snapshot.hasError){
+                        return const Text("오류 발생", style: TextStyleFamily.normalTextStyle);
+                      } else{
+                        //TODO 필터링 조건에 맞는 일기가 없을 때
+                        if(diaryProvider.diaryList.isEmpty) {
+                          return const Expanded(child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text("일기 목록 없음", style: TextStyleFamily
+                                    .smallTitleTextStyle)
+                              ]));
+                        } else {
+                          return Expanded(child: DiaryGridView(diaryProvider));
+                        }
+                      }
+                    },
+                  ),
                 ],
               ),
             )

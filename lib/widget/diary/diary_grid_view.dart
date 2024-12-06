@@ -15,54 +15,102 @@ import '../../screen/diary/diary_unchecked_screen.dart';
 
 class DiaryGridView extends StatefulWidget {
   DiaryGridView(this.provider, {super.key});
+
   DiaryProvider provider;
+
   @override
   State<DiaryGridView> createState() => _DiaryGridViewState();
 }
 
 class _DiaryGridViewState extends State<DiaryGridView> {
-
   @override
   Widget build(BuildContext context) {
-    var userIdx = Provider.of<UserProvider>(context, listen: false).userIdx;
+    var userProvider = Provider.of<UserProvider>(context, listen: false);
+    var userIdx = userProvider.userIdx;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      var unCheckedDiary = isReadAll(userIdx, widget.provider.diaryData);
-      if(unCheckedDiary != null){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => DiaryUncheckedScreen(unCheckedDiary)));
+      var unCheckedDiary = isReadAll(userIdx, widget.provider.diaryList);
+      if (unCheckedDiary != null) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => DiaryUncheckedScreen(unCheckedDiary)));
       }
-
     });
     return RefreshIndicator(
       onRefresh: () async {
         await Provider.of<DiaryProvider>(context, listen: false).fetchDiaries(context);
-        // setState(() {}); // 데이터가 갱신된 후 화면을 다시 그리기 위해 호출
       },
-      child: MasonryGridView.count(
-        itemCount: widget.provider.diaryData.length,
-        crossAxisCount: 2,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-        itemBuilder: (context, index) {
-          return FutureBuilder(
-              future: makeDiary(context, widget.provider.diaryData[index]),
-              builder: (context, widgetSnapshot) {
-                if (widgetSnapshot.connectionState == ConnectionState.waiting) {
-                  return const SizedBox(); // 로딩 중일 때 표시할 위젯
-                } else if (widgetSnapshot.hasError) {
-                  return const Center(
-                    child: Text(
-                      "이미지 오류",
-                      style: TextStyleFamily.normalTextStyle,
-                    ),
-                  );
-                } else if (widgetSnapshot.hasData) {
-                  return widgetSnapshot.data!;
-                } else {
-                  return const SizedBox(); // 예외 처리
-                }
-              });
-        },
+      child: CustomScrollView(
+        slivers: [
+          SliverPadding(
+            padding: EdgeInsets.all(10),
+            sliver: SliverGrid(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, // 열의 개수
+                mainAxisSpacing: 5,
+                crossAxisSpacing: 5,
+                childAspectRatio: 0.75,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+                  return FutureBuilder(
+                      future:
+                          makeDiary(context, widget.provider.diaryList[index]),
+                      builder: (context, widgetSnapshot) {
+                        if (widgetSnapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const SizedBox(); // 로딩 중일 때 표시할 위젯
+                        } else if (widgetSnapshot.hasError) {
+                          return const Center(
+                            child: Text(
+                              "이미지 오류",
+                              style: TextStyleFamily.normalTextStyle,
+                            ),
+                          );
+                        } else if (widgetSnapshot.hasData) {
+                          return widgetSnapshot.data!;
+                        } else {
+                          return const SizedBox(); // 예외 처리
+                        }
+                      });
+                },
+                childCount: widget.provider.diaryList.length, // 항목 수
+              ),
+            ),
+          ),
+          // 추가 여백 공간을 위한 Sliver
+          SliverToBoxAdapter(
+            child: SizedBox(height: 50), // 플로팅 버튼이 가리지 않도록 할 높이
+          ),
+        ],
       ),
+
+      // MasonryGridView.count(
+      //     itemCount: widget.provider.diaryList.length,
+      //     crossAxisCount: 2,
+      //     mainAxisSpacing: 10,
+      //     crossAxisSpacing: 10,
+      //     itemBuilder: (context, index) {
+      //       return FutureBuilder(
+      //           future: makeDiary(context, widget.provider.diaryList[index]),
+      //           builder: (context, widgetSnapshot) {
+      //             if (widgetSnapshot.connectionState ==
+      //                 ConnectionState.waiting) {
+      //               return const SizedBox(); // 로딩 중일 때 표시할 위젯
+      //             } else if (widgetSnapshot.hasError) {
+      //               return const Center(
+      //                 child: Text(
+      //                   "이미지 오류",
+      //                   style: TextStyleFamily.normalTextStyle,
+      //                 ),
+      //               );
+      //             } else if (widgetSnapshot.hasData) {
+      //               return widgetSnapshot.data!;
+      //             } else {
+      //               return const SizedBox(); // 예외 처리
+      //             }
+      //           });
+      //     }),
     );
   }
 }
@@ -70,11 +118,18 @@ class _DiaryGridViewState extends State<DiaryGridView> {
 Future<Widget> makeDiary(BuildContext context, Diary diary) async {
   var userProvider = Provider.of<UserProvider>(context, listen: false);
 
+  // Future<void> _fetchData() async {
+  //   var diaryProvider = Provider.of<DiaryProvider>(context, listen: false);
+  //   diaryProvider.setLoading(true);
+  //   await diaryProvider.getDiary(context);
+  //   diaryProvider.setLoading(false);
+  // }
+
   return InkWell(
     splashColor: Colors.transparent,
-    onTap: (){
-      Navigator.push(context, 
-      MaterialPageRoute(builder: (context) => DiaryDetailScreen(diary)));
+    onTap: () {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => DiaryDetailScreen(diary)));
     },
     child: Card(
       color: ColorFamily.white,
@@ -86,11 +141,9 @@ Future<Widget> makeDiary(BuildContext context, Diary diary) async {
         child: Column(
           children: [
             AspectRatio(
-                aspectRatio: 1.0,
-                child: await getDiaryImage(diary.diaryImage)
+                aspectRatio: 1.0, child: await getDiaryImage(diary.diaryImagePath)
                 // child: await getDiaryImagePath(diary.diaryImage)
-              
-            ),
+                ),
             const SizedBox(
               height: 10,
             ),
@@ -106,8 +159,10 @@ Future<Widget> makeDiary(BuildContext context, Diary diary) async {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text(diary.diaryUserIdx==userProvider.userIdx
-                    ?userProvider.userNickname :userProvider.loverNickname,
+                Text(
+                  diary.diaryUserIdx == userProvider.userIdx
+                      ? userProvider.userNickname
+                      : userProvider.loverNickname,
                   style: TextStyleFamily.normalTextStyle,
                 ),
               ],

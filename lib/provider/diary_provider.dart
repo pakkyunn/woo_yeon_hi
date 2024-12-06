@@ -1,9 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:scroll_date_picker/scroll_date_picker.dart';
 import 'package:woo_yeon_hi/dao/diary_dao.dart';
 import 'package:woo_yeon_hi/provider/login_register_provider.dart';
 
+import '../enums.dart';
 import '../model/diary_model.dart';
 import '../utils.dart';
 
@@ -20,7 +23,7 @@ class DiaryProvider extends ChangeNotifier{
   List<String> _filterList = ["전체", "최신순"];
 
   int? _diaryUserIdx;
-  List<Diary> _diaryData = [];
+  List<Diary> _diaryList = [];
   Future<List<Diary>>? diaryFuture;
 
   bool _isLoading = false;
@@ -35,7 +38,7 @@ class DiaryProvider extends ChangeNotifier{
   List<bool> get isSelected_editor => _isSelected_editor;
   List<bool> get isSelected_sort => _isSelected_sort;
   List<String> get filterList => _filterList;
-  List<Diary> get diaryData => _diaryData;
+  List<Diary> get diaryList => _diaryList;
   int? get diaryUserIdx => _diaryUserIdx;
 
 
@@ -45,11 +48,9 @@ class DiaryProvider extends ChangeNotifier{
 
 
   Future<List<Diary>> getDiary(BuildContext context) async {
-    print("Fetching diary data..."); // 호출 여부 확인용
+    _diaryList.clear();
 
-    _diaryData.clear();
-
-    int? user_idx = Provider.of<UserProvider>(context, listen: false).userIdx;
+    int user_idx = Provider.of<UserProvider>(context, listen: false).userIdx;
     int lover_idx = Provider.of<UserProvider>(context, listen: false).loverIdx;
 
     int filter_editor = _isSelected_editor.indexWhere((element) => element);
@@ -76,10 +77,10 @@ class DiaryProvider extends ChangeNotifier{
           filter_end);
 
       for (var mapData in mapList) {
-        _diaryData.add(Diary.fromData(mapData));
+        _diaryList.add(Diary.fromData(mapData));
       }
 
-      return _diaryData;
+      return _diaryList;
 
     } catch(error) {
       _isLoading = false;
@@ -93,9 +94,33 @@ class DiaryProvider extends ChangeNotifier{
   Future<void> fetchDiaries(BuildContext context) async {
     // 데이터 가져오기
     diaryFuture = getDiary(context);
-    _diaryData = await diaryFuture!;
+    _diaryList = await diaryFuture!;
     notifyListeners();
   }
+
+  // 교환일기 작성 차례를 확인하는 메서드
+  bool isPersonToWrite (BuildContext context) {
+    int loverIdx = Provider.of<UserProvider>(context, listen: false).loverIdx;
+
+    List<Diary> sortedList = _diaryList
+        .toList() // 원본 리스트를 복사
+      ..sort((a, b) {
+        // "_" 이후의 날짜 문자열 추출
+        DateTime dateA = DateTime.parse(a.diaryImagePath.split('_')[1]);
+        DateTime dateB = DateTime.parse(b.diaryImagePath.split('_')[1]);
+
+        return dateB.compareTo(dateA); // 내림차순 정렬
+      });
+
+
+    // 가장 최근 일기의 작성 유저가 연인일 경우
+    if(sortedList[0].diaryUserIdx == loverIdx){
+      return true;
+    } else {
+      return false;
+    }
+  }
+
 
   void setUserIdx(int? idx){
     _diaryUserIdx = idx;

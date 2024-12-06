@@ -31,7 +31,7 @@ Future<void> addDiary(Diary diary) async {
     "diary_user_idx": diary.diaryUserIdx,
     "diary_date": diary.diaryDate,
     "diary_weather": diary.diaryWeather,
-    "diary_image": diary.diaryImage,
+    "diary_image": diary.diaryImagePath,
     "diary_title": diary.diaryTitle,
     "diary_content": diary.diaryContent,
     "diary_lover_check": diary.diaryLoverCheck,
@@ -96,7 +96,7 @@ Future<List<Map<String, dynamic>>> getDiaryData(
     int filter_sort,
     String filter_start,
     String filter_end) async {
-  List<Map<String, dynamic>> results = [];
+  // List<Map<String, dynamic>> results = [];
 
   Query<Map<String, dynamic>> query =
   FirebaseFirestore.instance.collection('DiaryData');
@@ -107,7 +107,6 @@ Future<List<Map<String, dynamic>>> getDiaryData(
   // 내가 쓴 일기
   if (filter_editor == DiaryEditorState.EDITOR_USER.type) {
     query = query.where('diary_user_idx', isEqualTo: user_idx);
-    print("Query: diary_user_idx == $user_idx");
   }
   // 연인이 쓴 일기
   else if (filter_editor == DiaryEditorState.EDITOR_LOVER.type) {
@@ -118,17 +117,6 @@ Future<List<Map<String, dynamic>>> getDiaryData(
     query = query.where('diary_user_idx', whereIn: [user_idx, lover_idx]);
   }
 
-  // 기간 조회
-  if (filter_start.isNotEmpty && filter_end.isNotEmpty) {
-    query = query
-        .where('diary_date', isGreaterThanOrEqualTo: filter_start)
-        .where('diary_date', isLessThanOrEqualTo: filter_end);
-  } else if (filter_start.isNotEmpty && filter_end.isEmpty) {
-    query = query.where('diary_date', isGreaterThanOrEqualTo: filter_start);
-  } else if (filter_start.isEmpty && filter_end.isNotEmpty) {
-    query = query.where('diary_date', isLessThanOrEqualTo: filter_end);
-  }
-
   // 정렬 조건
   if (filter_sort == DiarySortState.SORT_ASC.type) {
     query = query.orderBy('diary_idx', descending: false);
@@ -136,11 +124,40 @@ Future<List<Map<String, dynamic>>> getDiaryData(
     query = query.orderBy('diary_idx', descending: true);
   }
 
-  // 실제로 실행되는 쿼리와 결과 확인
+  // 우선 기간에 상관없이 데이터 가져오기
   var querySnapShot = await query.get();
-  for (var doc in querySnapShot.docs) {
-    results.add(doc.data());
-  }
+
+  DateTime? filterStartDate = filter_start.isNotEmpty
+      ? stringToDate(filter_start)
+      : null;
+  DateTime? filterEndDate = filter_end.isNotEmpty
+      ? stringToDate(filter_end)
+      : null;
+
+  // 기간 조회
+  List<Map<String, dynamic>> results = querySnapShot.docs
+      .map((doc) => doc.data())
+      .where((entry) {
+    if (filterStartDate != null || filterEndDate != null) {
+      String diaryDateStr = entry['diary_date'] as String;
+      DateTime diaryDate = stringToDate(diaryDateStr);
+
+      // 날짜 비교
+      if (filterStartDate != null && filterEndDate != null) {
+        return diaryDate.isAfter(filterStartDate.subtract(Duration(days: 1))) &&
+            diaryDate.isBefore(filterEndDate.add(Duration(days: 1)));
+      } else if (filterStartDate != null) {
+        return diaryDate.isAfter(filterStartDate.subtract(Duration(days: 1)));
+      } else if (filterEndDate != null) {
+        return diaryDate.isBefore(filterEndDate.add(Duration(days: 1)));
+      }
+    }
+    return true; // 날짜 필터가 없으면 모든 데이터를 포함
+  }).toList();
+
+  // for (var doc in querySnapShot.docs) {
+  //   results.add(doc.data());
+  // }
 
   return results;
 }

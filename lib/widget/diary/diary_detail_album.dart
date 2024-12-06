@@ -23,7 +23,7 @@ class _DiaryDetailAlbumState extends State<DiaryDetailAlbum> {
           surfaceTintColor: ColorFamily.white,
           elevation: 1,
           child: FutureBuilder(
-            future: getDiaryImage(widget.diary.diaryImage),
+            future: getDiaryImage(widget.diary.diaryImagePath),
             builder: (context, snapshot) {
               if (snapshot.hasData == false) {
                 return const SizedBox();

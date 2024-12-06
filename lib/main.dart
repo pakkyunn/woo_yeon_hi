@@ -27,6 +27,8 @@ import 'package:home_widget/home_widget.dart';
 import 'dao/history_dao.dart';
 import 'firebase_options.dart';
 
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -172,6 +174,7 @@ class _WooYeonHiState extends State<WooYeonHi> {
           ChangeNotifierProvider(create: (context) => PasswordProvider()),
         ],
         child: MaterialApp(
+          navigatorObservers: [routeObserver],
           debugShowCheckedModeBanner: false,
           title: "WooYeonHi",
           theme: ThemeData(
