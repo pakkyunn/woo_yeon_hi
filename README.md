@@ -1,53 +1,28 @@
-# FinalProject-woo_yeon_hi
-테킷 앱스쿨: 안드로이드2기 (우연히) - 5팀
+<img src="https://github.com/user-attachments/assets/abea5f1d-342a-4006-a7e7-90ba60e2e9a5" width="960" height="540"/>
+
+
 
 
 ### Intro
 <hr>
 
 -  프로젝트명  : 우연히 (우리의 연애 히스토리)
--  기획기간    : 2024.05.13 ~ 2024.05.19
--  개발기간    : 2024.05.19 ~ 2024.06.13 (팀프로젝트) / 2024.06.13 ~ (개인프로젝트) 
--  개발인원    : 5명
+-  개발기간    : 2024. 5. 13. ~ 2024. 6. 13. - 팀(5인) 개발
+                 2024. 6. 13. ~ 2024. 12. 8. - 개인 개발
 -  개발환경    : Android Studio
 -  개발언어    : Dart
 -  데이터베이스: Firebase
 
 
-###  Member 
-
-<hr>
-
-<h4> 채명훈</h4>
-<a href="https://github.com/gns402">
-<img src="http://img.shields.io/badge/gns402-gray?logo=github"/>
-</a>
-<h4> 박현준</h4>
-<a href="https://github.com/pakkyunn">
-<img src="http://img.shields.io/badge/pakkyunn-gray?logo=github"/>
-</a>
-<h4> 황인웅</h4>
-<a href="https://github.com/Dev-inwoong">
-<img src="http://img.shields.io/badge/Dev-inwoong-gray?logo=github"/>
-</a>
-<h4> 임정현</h4>
-<a href="https://github.com/99HeartHyun">
-<img src="http://img.shields.io/badge/99HeartHyun-gray?logo=github"/>
-</a>
-<h4> 정영준</h4>
-<a href="https://github.com/YeongJun0928">
-<img src="http://img.shields.io/badge/YeongJun0928-gray?logo=github"/>
-</a>
-
 ###  Link
 
 <hr>
 
-노션 링크 : <a href="https://www.notion.so/likelion/cb65bd2850174dbd8d128e810f9408d8">Notion</a>
+노션 링크 : <a href="https://www.notion.so/eae10f1f3496491b9877d2d0850d873b?pvs=4">Notion</a>
 
 </br>
 
-피그마 링크 : <a href="https://www.figma.com/design/V3LpeD6ZxR5Fyg4qnztUZZ/%EC%95%8C%EB%A6%BC%EC%8A%A4%EC%BF%A8(%EA%B0%80%EC%A0%9C)?node-id=0-1&t=ipH1LjwbalXGo77A-0">Figma</a>
+피그마 링크 : <a href="https://www.figma.com/design/RYQz0tqQXSOuzYtKq4PuBh/%EC%9A%B0%EC%97%B0%ED%9E%88?node-id=0-1&t=vomWqLAwM6FwlJB7-1">Figma</a>
 
 </br>
 
