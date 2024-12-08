@@ -1,18 +1,18 @@
-<img src="https://github.com/user-attachments/assets/abea5f1d-342a-4006-a7e7-90ba60e2e9a5" width="960" height="540"/>
+### 우연히
+<img src="https://github.com/user-attachments/assets/abea5f1d-342a-4006-a7e7-90ba60e2e9a5" width="720" height="400"/>
 
+### HowToStart
 
-
-
-### Intro
+### Info
 <hr>
 
 -  프로젝트명  : 우연히 (우리의 연애 히스토리)
--  개발기간    : 2024. 5. 13. ~ 2024. 6. 13. - 팀(5인) 개발
-                 2024. 6. 13. ~ 2024. 12. 8. - 개인 개발
+-  개발기간    : 24. 5. 13. ~ 24. 6. 13. - 팀(5인) 개발 / 24. 6. 13. ~ 24. 12. 8. - 개인 개발
 -  개발환경    : Android Studio
 -  개발언어    : Dart
 -  데이터베이스: Firebase
 
+</br>
 
 ###  Link
 
@@ -28,7 +28,9 @@
 
 시연 영상 링크 : <a href="https://youtu.be/@@@@@@@">Youtube</a>
 
-### Etc
+</br>
+
+### Prize
 
 <hr>
 
