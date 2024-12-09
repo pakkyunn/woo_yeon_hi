@@ -39,32 +39,24 @@ class _FootprintPhotoMapScreenState extends State<FootprintPhotoMapScreen> {
   OverlayInfo overlayInfo = OverlayInfo.KOREA_FULL;
   bool isLoading = true;  // 로딩 상태 변수
 
-  Future<bool> getHistoryData() async {
-    var provider = Provider.of<FootprintPhotoMapHistoryProvider>(context, listen: false);
-    var historyList = await getHistory(context);
-    provider.setHistoryList(historyList);
-
-    return true;
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    getHistoryData();
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   Provider.of<FootprintPhotoMapHistoryProvider>(context, listen: false).getHistoryList(context);
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<FootprintPhotoMapHistoryProvider, FootprintPhotoMapOverlayProvider>(
-        builder: (context, photoMapHistoryProvider, photoMapOverlayProvider, _) {
-          return FutureBuilder(
-      future: getHistoryData(),
-      builder: (context, snapshot){
-        if(snapshot.hasData == false){
-          return const Center(child: CircularProgressIndicator(color: ColorFamily.pink));
-        }else if(snapshot.hasError){
-          return const Center(child: Text("error"));
-        }else{
+    return Consumer2<FootprintHistoryProvider, FootprintPhotoMapOverlayProvider>(
+        builder: (context, historyProvider, photoMapOverlayProvider, _) {
+      //     return FutureBuilder(
+      // future: photoMapHistoryProvider.getHistoryList(context),
+      // builder: (context, snapshot){
+      //   if(snapshot.hasData == false){
+      //     return const Center(child: CircularProgressIndicator(color: ColorFamily.pink));
+      //   }else if(snapshot.hasError){
+      //     return const Center(child: Text("error"));
+      //   }else{
           return Stack(
                     children: [
                     RepaintBoundary(
@@ -72,7 +64,7 @@ class _FootprintPhotoMapScreenState extends State<FootprintPhotoMapScreen> {
                       child: NaverMap(
                         onMapReady: (NaverMapController controller) async {
                           _mapController = controller;
-                          loadMapData(photoMapHistoryProvider.historyList, photoMapOverlayProvider);
+                          loadMapData(historyProvider.historyList, photoMapOverlayProvider);
                         },
                         options: NaverMapViewOptions(
                             scaleBarEnable: false,
@@ -94,10 +86,10 @@ class _FootprintPhotoMapScreenState extends State<FootprintPhotoMapScreen> {
                         ),
                     ]
                   );
-              }
-        });
-                },
-        );
+              });
+        // });
+        //         },
+        // );
   }
 
   Future<void> loadMapData(List<History> historyList, FootprintPhotoMapOverlayProvider provider) async {

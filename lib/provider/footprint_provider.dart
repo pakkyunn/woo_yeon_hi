@@ -33,8 +33,8 @@ class FootprintProvider extends ChangeNotifier{
 
 }
 
-/// 히스토리 탭 그리드뷰 항목 상태관리 프로바이더
-class FootprintHistoryGridViewProvider extends ChangeNotifier {
+/// 히스토리 항목 상태관리 프로바이더
+class FootprintHistoryProvider extends ChangeNotifier {
 
   List<History> _historyList = [];
   List<History> get historyList => _historyList;
@@ -48,6 +48,15 @@ class FootprintHistoryGridViewProvider extends ChangeNotifier {
 
   void setHistoryList(List<History> historyList) {
     _historyList = historyList;
+    notifyListeners();
+  }
+
+  void modifyHistory(Map<String, dynamic> historyMap, int index) {
+    _historyList[index].historyLocation = historyMap["history_location"];
+    _historyList[index].historyPlaceName = historyMap["history_place_name"];
+    _historyList[index].historyDate = historyMap["history_date"];
+    _historyList[index].historyTitle = historyMap["history_title"];
+    _historyList[index].historyContent = historyMap["history_content"];
     notifyListeners();
   }
 }
@@ -64,9 +73,11 @@ class FootprintPhotoMapHistoryProvider extends ChangeNotifier{
   //   return true;
   // }
 
-  void setHistoryList(List<History> historyList) {
-    _historyList = historyList;
+  Future<bool> getHistoryList(BuildContext context) async {
+    List<History> list = await getHistory(context);
+    _historyList = list;
     notifyListeners();
+    return true;
   }
 
   // Future<void> loadMapData(BuildContext context, NaverMapController mapController) async {

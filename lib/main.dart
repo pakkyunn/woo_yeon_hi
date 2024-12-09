@@ -165,7 +165,7 @@ class _WooYeonHiState extends State<WooYeonHi> {
           ChangeNotifierProvider(create: (context) => DiaryProvider()),
           ChangeNotifierProvider(create: (context) => LedgerProvider(context)),
           ChangeNotifierProvider(create: (context) => FootprintProvider()),
-          ChangeNotifierProvider(create: (context) => FootprintHistoryGridViewProvider()),
+          ChangeNotifierProvider(create: (context) => FootprintHistoryProvider()),
           ChangeNotifierProvider(create: (context) => FootprintPhotoMapHistoryProvider()),
           ChangeNotifierProvider(create: (context) => FootprintPhotoMapOverlayProvider()),
           ChangeNotifierProvider(create: (context) => DatePlanSlidableProvider()),

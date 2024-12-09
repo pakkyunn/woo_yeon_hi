@@ -33,17 +33,17 @@ class FootprintHistoryScreenState extends State<FootprintHistoryScreen> {
   // late ReverseGeoCodingApi _reverseGCApi;
   bool _isLoading = true;
 
-  @override
-  void initState() {
-    super.initState();
-    _fetchData();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _fetchData();
+  // }
 
   Future<void> _fetchData() async {
     setState(() {
       _isLoading = true;
     });
-    await Provider.of<FootprintHistoryGridViewProvider>(context, listen: false).fetchHistoryData(context);
+    await Provider.of<FootprintHistoryProvider>(context, listen: false).fetchHistoryData(context);
     setState(() {
       _isLoading = false;
     });
@@ -53,22 +53,22 @@ class FootprintHistoryScreenState extends State<FootprintHistoryScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     // 처음 빌드될 때가 아닌, 다른 화면에서 돌아왔을 때만 새로고침이 되도록 체크
-    if (ModalRoute.of(context)?.isCurrent ?? false) {
+    // if (ModalRoute.of(context)?.isCurrent ?? false) {
       _fetchData();
-    }
+    // }
   }
 
   @override
   Widget build(BuildContext context) {
     // setHttp();
-    return Consumer<FootprintHistoryGridViewProvider>(
+    return Consumer<FootprintHistoryProvider>(
         builder: (context, provider, _) {
           return _isLoading
           ? const Center(
                       child: CircularProgressIndicator(
                         color: ColorFamily.pink,
                       ))
-          : provider.historyList.length == 0
+          : provider.historyList.isEmpty
               ? const Center(
                   child: Text("히스토리 없음",
                       style: TextStyleFamily.hintTextStyle),
@@ -199,7 +199,7 @@ class FootprintHistoryScreenState extends State<FootprintHistoryScreen> {
   // }
 
   Widget makeHistoryItem(BuildContext context, int index,
-      FootprintHistoryGridViewProvider provider) {
+      FootprintHistoryProvider provider) {
     return InkWell(
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,

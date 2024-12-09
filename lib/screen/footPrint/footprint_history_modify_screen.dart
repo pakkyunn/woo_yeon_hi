@@ -84,7 +84,6 @@ class _FootprintHistoryModifyScreenState
 
   void _onConfirm_back(BuildContext context) {
     Navigator.pop(context); // 다이얼로그 팝
-    // Navigator.pop(context); // 히스토리 수정 페이지 팝
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(

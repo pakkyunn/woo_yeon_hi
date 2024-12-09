@@ -36,13 +36,13 @@ class _FootprintHistoryDetailScreenState
 
   List<bool> _overflowStates = [];
 
-  bool _isLoading = true;
+  bool _isLoading = false;
   bool _isScreenPopped = false; // 화면 전환 상태를 추적하는 플래그
 
   @override
   void initState() {
     super.initState();
-    _fetchData();
+    // _fetchData();
 
     //인덱스로 스크롤 이동
     _controller.scrollToIndex(
@@ -56,10 +56,10 @@ class _FootprintHistoryDetailScreenState
     setState(() {
       _isLoading = true;
     });
-    var provider =
-        Provider.of<FootprintHistoryGridViewProvider>(context, listen: false);
-    var updatedList = await getHistory(context);
-    provider.setHistoryList(updatedList);
+    // var provider =
+    //     Provider.of<FootprintHistoryProvider>(context, listen: false);
+    // var updatedList = await getHistory(context);
+    // provider.setHistoryList(updatedList);
     _checkOverflowForAllItems();
     setState(() {
       _isLoading = false;
@@ -69,20 +69,20 @@ class _FootprintHistoryDetailScreenState
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // 처음 빌드될 때가 아닌, 다른 화면에서 돌아왔을 때만 새로고침이 되도록 체크
-    if (_isScreenPopped && (ModalRoute.of(context)?.isCurrent ?? false)) {
-      _fetchData();
-    }
-    setState(() {
-      _isScreenPopped = false;
-    });
+    // if (_isScreenPopped && (ModalRoute.of(context)?.isCurrent ?? false)) {
+    //   _fetchData();
+    // }
+    _checkOverflowForAllItems();
+    // setState(() {
+    //   _isScreenPopped = false;
+    // });
   }
 
   void _checkOverflowForAllItems() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       List<bool> tempOverflowStates = [];
 
-      for (var item in Provider.of<FootprintHistoryGridViewProvider>(context,
+      for (var item in Provider.of<FootprintHistoryProvider>(context,
               listen: false)
           .historyList) {
         final textPainter = TextPainter(
@@ -105,7 +105,7 @@ class _FootprintHistoryDetailScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<FootprintHistoryGridViewProvider>(
+    return Consumer<FootprintHistoryProvider>(
         builder: (context, historyGridViewProvider, _) {
       return _isLoading
           ? const Center(
@@ -344,7 +344,7 @@ class _FootprintHistoryDetailScreenState
 
   void _showModalBottomSheet(BuildContext context, History history, int index) {
     var deviceWidth = MediaQuery.of(context).size.width;
-    var provider = Provider.of<FootprintHistoryGridViewProvider>(context, listen: false);
+    var provider = Provider.of<FootprintHistoryProvider>(context, listen: false);
 
     showModalBottomSheet(
         context: context,

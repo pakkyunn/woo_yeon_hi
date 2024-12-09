@@ -102,6 +102,7 @@ class _FootprintHistoryWriteTopAppBarState
     var historySequence = await getHistorySequence() + 1;
     setHistorySequence(historySequence);
     var userProvider = Provider.of<UserProvider>(context, listen: false);
+    var historyProvider = Provider.of<FootprintHistoryProvider>(context, listen: false);
 
     var imageNameList = List.generate(
         widget.provider.albumImages.length,
@@ -123,18 +124,18 @@ class _FootprintHistoryWriteTopAppBarState
     Navigator.pop(context); // 다이얼로그 팝
 
     final snackBar = SnackBar(
-      content: Text("히스토리를 저장하고 있습니다...", textAlign: TextAlign.center, style: TextStyleFamily.normalTextStyle),
+      content: Text("히스토리 저장 중...", textAlign: TextAlign.center, style: TextStyleFamily.normalTextStyle),
       backgroundColor: ColorFamily.pink,
       duration: Duration(minutes: 5), // 히스토리 저장작업이 끝날 때까지 스낵바가 유지되도록 설정
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
     await addHistory(history);
-    var newHistoryList = await getHistory(context);
-    var newHistoryIndex = newHistoryList.indexWhere((history) => history.historyIdx == historySequence);
     for(var i = 0 ; i < imageNameList.length ; i++){
       await uploadHistoryImage(widget.provider.albumImages[i], imageNameList[i]);
     }
+    historyProvider.setHistoryList(await getHistory(context));
+    var newHistoryIndex = historyProvider.historyList.indexWhere((history) => history.historyIdx == historySequence);
     // Provider.of<FootprintPhotoMapHistoryProvider>(context, listen: false).setHistoryList(newHistoryList);
 
     // Navigator.pop(context); // 히스토리 작성 페이지 팝

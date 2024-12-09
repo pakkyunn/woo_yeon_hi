@@ -44,7 +44,9 @@ class _FootprintScreenState extends State<FootprintScreen> {
       child: Scaffold(
         backgroundColor: ColorFamily.cream,
         appBar: const FootprintTopAppBar(),
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton:
+        footprintProvider.currentPageIndex == 0
+        ? FloatingActionButton(
           // mini: true,
           // splashColor: Colors.transparent,
           // elevation: 3,
@@ -52,18 +54,10 @@ class _FootprintScreenState extends State<FootprintScreen> {
           shape: const CircleBorder(),
           child: SvgPicture.asset('lib/assets/icons/add.svg'),
           onPressed: () {
-            switch (footprintProvider.currentPageIndex) {
-              // 히스토리
-              case 0: Navigator.push(context, MaterialPageRoute(builder: (context) => const FootprintHistoryWriteScreen()));
-
-              // 포토맵
-              case 1: Navigator.push(context, MaterialPageRoute(builder: (context) => const FootprintHistoryWriteScreen()));
-
-              // 데이트 플랜
-              // case 2: Navigator.push(context, MaterialPageRoute(builder: (context) => const FootprintDatePlanMakeScreen()));
-            }
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const FootprintHistoryWriteScreen()));
           },
-        ),
+        )
+        : null,
         body: Column(
           children: [
             const FootprintTabBar(),
