@@ -18,7 +18,7 @@
 <hr>
 
 ㆍ연인들이 함께 보낸 추억을 기록하고, 속마음을 공유할 수 있는 서비스를 제공합니다.   
-  또한 데이트 소비 패턴을 파악하고 일정을 계획하는 데에 도움을 주어, 더욱 풍부한 데이트 경험을 만들어줍니다. 
+  데이트 소비 패턴을 파악하고 일정을 계획하는 데에 도움을 주어, 더욱 풍부한 데이트 경험을 만들어줍니다. 
   
 </br>
 
@@ -31,7 +31,7 @@
 </br>
 
 기술스택 :
-|Category|Tech Stack|
+|***Category***|***Tech Stack***|
 |:---:|:---:|
 |**Network**|HTTP, Retrofit|
 |**Data**|Firebase|
@@ -44,15 +44,15 @@
 
 <hr>
 
-시연 영상 링크 : <a href="https://youtu.be/Fq8-CaGvP_Y">Youtube</a>
+앱 시연 영상 : <a href="https://youtu.be/Fq8-CaGvP_Y">Youtube</a>
 
 </br>
 
-피그마 링크 : <a href="https://www.figma.com/design/RYQz0tqQXSOuzYtKq4PuBh/%EC%9A%B0%EC%97%B0%ED%9E%88?node-id=0-1&t=vomWqLAwM6FwlJB7-1">Figma</a>
+피그마 : <a href="https://www.figma.com/design/RYQz0tqQXSOuzYtKq4PuBh/%EC%9A%B0%EC%97%B0%ED%9E%88?node-id=0-1&t=vomWqLAwM6FwlJB7-1">Figma</a>
 
 </br>
 
-노션 링크 : <a href="https://www.notion.so/eae10f1f3496491b9877d2d0850d873b?pvs=4">Notion</a>
+노션 : <a href="https://www.notion.so/eae10f1f3496491b9877d2d0850d873b?pvs=4">Notion</a>
 
 </br>
 
