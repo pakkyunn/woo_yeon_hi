@@ -1,7 +1,6 @@
 ### 우연히
+<hr>
 <img src="https://github.com/user-attachments/assets/abea5f1d-342a-4006-a7e7-90ba60e2e9a5" width="720" height="400"/>
-
-### HowToStart
 
 ### Info
 <hr>
@@ -18,7 +17,7 @@
 
 <hr>
 
-노션 링크 : <a href="https://www.notion.so/eae10f1f3496491b9877d2d0850d873b?pvs=4">Notion</a>
+시연 영상 링크 : <a href="https://youtu.be/Fq8-CaGvP_Y">Youtube</a>
 
 </br>
 
@@ -26,7 +25,7 @@
 
 </br>
 
-시연 영상 링크 : <a href="https://youtu.be/@@@@@@@">Youtube</a>
+노션 링크 : <a href="https://www.notion.so/eae10f1f3496491b9877d2d0850d873b?pvs=4">Notion</a>
 
 </br>
 
