@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:woo_yeon_hi/provider/login_register_provider.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'dao/user_dao.dart';
 import 'dialogs.dart';
@@ -207,10 +208,10 @@ Future<Map<String, dynamic>> fetchUserData() async {
 
 //TODO 추후 메일 양식 수정(디자인, 내용 등)
 Future<void> sendEmail(String recipientEmail, String code) async {
-  String wooyeonhiMail = 'pakkyunn@gmail.com'; // 관리자 이메일 계정
-  String password = 'qnhfeuwghjxelnpn'; // 관리자 이메일 계정의 앱 비밀번호
+  String? wooyeonhiMail = dotenv.env['WOO_YEON_HI_MAIL_ADDRESS']; // 관리자 이메일 계정
+  String? password = dotenv.env['WOO_YEON_HI_MAIL_PASSWORD']; // 관리자 이메일 계정의 앱 비밀번호
 
-  final smtpServer = gmail(wooyeonhiMail, password);
+  final smtpServer = gmail(wooyeonhiMail!, password!);
 
   final message = Message()
     ..from = Address('우연히 ($wooyeonhiMail)')
